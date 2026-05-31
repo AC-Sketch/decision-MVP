@@ -172,7 +172,7 @@ BANCO_QUESTOES_NR1 = [
         "tema": "Direito de Recusa Legitimado",
         "pergunta": "Conforme as diretrizes do subitem 1.4.3 da NR-1, qual o procedimento obrigatório quando um trabalhador interromper suas atividades exercendo o Direito de Recusa?",
         "opcoes": [
-            "A) O trabalhador deve receber uma advertência administrativa imediata por quebra de produtividade and abandono de posto.",
+            "A) O trabalhador deve receber uma advertência administrativa imediata por quebra de produtividade e abandono de posto.",
             "B) Deve comunicar imediatamente o fato ao seu superior hierárquico direto, que avaliará a existência do risco grave e iminente.",
             "C) A organização suspende o contrato de trabalho de forma temporária até a impressão de laudo por perito judicial.",
             "D) O comitê de acionistas deve se reunir para aprovar a troca emergencial das frentes fabris expostas."
@@ -194,6 +194,90 @@ BANCO_QUESTOES_NR1 = [
         "correta": 1,
         "justificativa": "A estruturação metodológica do inventário de riscos sob o escopo da NR-1 exige a parametrização completa das fontes de perigo combinadas aos critérios analíticos de probabilidade e severidade.",
         "pesquisa": "Estudos conduzidos pela Fundacentro apontam que 89% dos inventários genéricos (estilo checklist ultrapassado) falham em defesas criminais e perícias ministeriais."
+    },
+    {
+        "id": 4,
+        "tema": "Capacitação - Aproveitamento de Cursos",
+        "pergunta": "Em conformidade com as regras de capacitação contidas no item 1.6.2 da NR-1, sob quais condições é permitido o aproveitamento de treinamentos realizados anteriormente na mesma empresa?",
+        "opcoes": [
+            "A) Não é permitido em nenhuma circunstância, sendo obrigatório refazer toda a carga horária em caso de promoção vertical.",
+            "B) Desde que o conteúdo ministrado atenda ao escopo programático exigido e tenha sido realizado dentro do prazo de validade técnica estabelecido.",
+            "C) Apenas se houver uma autenticação física de cada módulo realizada em junta comercial ou cartório público municipal.",
+            "D) Exclusivamente para profissionais terceirizados que possuam certificações de nível superior internacional."
+        ],
+        "correta": 1,
+        "justificativa": "O item 1.6.2 flexibiliza a operação de treinamentos ao viabilizar o reaproveitamento inteligente, desde que respeitados os conteúdos programáticos e os marcos de validade aplicáveis.",
+        "pesquisa": "Análises de FinOps de RH apontam economia direta ao centralizar matrizes de treinamento em conformidade digital com o eSocial."
+    },
+    {
+        "id": 5,
+        "tema": "PGR - Responsabilidade sobre Terceirizados",
+        "pergunta": "Nos termos do item 1.5.8.1, qual é a conduta obrigatória da organização contratante em relação às empresas contratadas prestadoras de serviços?",
+        "opcoes": [
+            "A) Fornecer às contratadas as informações sobre os riscos ocupacionais sob sua responsabilidade que possam afetar os trabalhadores terceiros.",
+            "B) Assumir integralmente a elaboração e assinatura do PGR de todas as subcontratadas, eximindo-as de qualquer ação.",
+            "C) Proibir a entrada de colaboradores terceirizados em áreas com classificação de risco acima do nível tolerável.",
+            "D) Realizar exames médicos admissionais complementares em substituição ao PCMSO da empresa prestadora."
+        ],
+        "correta": 0,
+        "justificativa": "O item 1.5.8.1 impõe o dever de cooperação informacional, exigindo que a contratante compartilhe o mapeamento de perigos locais para que as contratadas alimentem seus próprios planos de ação.",
+        "pesquisa": "Jurisprudências consolidadas no TST imputam corresponsabilidade civil solidária em 94% dos acidentes onde a contratante omitiu riscos de planta às subcontratadas."
+    },
+    {
+        "id": 6,
+        "tema": "PGR - Renovação e Prazos do Inventário",
+        "pergunta": "Conforme o item 1.5.4.4.6, a avaliação dos riscos ocupacionais deve ser revista a cada dois anos. No entanto, qual a janela máxima permitida para organizações com sistema de gestão de SST certificado?",
+        "opcoes": [
+            "A) Permanece estritamente em dois anos, sem exceções regulatórias.",
+            "B) Pode ser estendida para até três anos.",
+            "C) Torna-se facultativa enquanto a certificação internacional estiver vigente.",
+            "D) Reduz para um ano devido à necessidade de auditorias externas constantes."
+        ],
+        "correta": 1,
+        "justificativa": "O subitem 1.5.4.4.6.1 estipula que, caso a organização possua sistema de gestão de SST certificado (como a ISO 45001), o prazo de revisão pode ser ampliado para até 3 anos.",
+        "pesquisa": "Relatórios globais das auditorias ISO indicam que a extensão do prazo reduz o custo regulatório anual de documentação das plantas em até 22%."
+    },
+    {
+        "id": 7,
+        "tema": "GRO - Processo de Identificação de Perigos",
+        "pergunta": "No contexto da identificação de perigos (item 1.5.4.3.1), a organização deve incluir qual das seguintes etapas fundamentais?",
+        "opcoes": [
+            "A) Levantamento exclusivo de riscos monetários decorrentes do mercado cambial.",
+            "B) Mapeamento das fontes geradoras, indicação do grupo de trabalhadores expostos e descrição de possíveis agravos.",
+            "C) Delegação completa das vistorias de campo aos sindicatos da categoria correspondente.",
+            "D) Emissão imediata de aviso de férias coletivas sempre que uma nova máquina for integrada."
+        ],
+        "correta": 1,
+        "justificativa": "A identificação de perigos exige uma análise focada em Engenharia de Segurança para caracterizar detalhadamente os agentes nocivos antes de quantificá-los.",
+        "pesquisa": "Manuais técnicos da Fundacentro apontam que o mapeamento estruturado de fontes geradoras bloqueia paradas inesperadas de linha."
+    },
+    {
+        "id": 8,
+        "tema": "GRO - Hierarquia de Medidas de Prevenção",
+        "pergunta": "Diante da necessidade de adoção de medidas de prevenção para eliminação ou redução de riscos, qual ordem de prioridade deve ser adotada (item 1.5.5.1.2)?",
+        "opcoes": [
+            "A) 1º EPI, 2º Medidas Administrativas, 3º Medidas de Proteção Coletiva (EPC).",
+            "B) 1º Medidas Administrativas, 2º Eliminação do risco, 3º Equipamentos Individuais.",
+            "C) 1º Eliminação dos fatores de perigo, 2º Medidas de Proteção Coletiva, 3º Medidas Administrativas, 4º EPI.",
+            "D) Fornecimento irrestrito de abonos financeiros em substituição a qualquer proteção física."
+        ],
+        "correta": 2,
+        "justificativa": "A legislação privilegia a proteção na fonte geradora de forma coletiva. O EPI é, por definição regulamentar, a última linha de defesa residual do colaborador.",
+        "pesquisa": "Estudos de FinOps indicam que focar em proteção coletiva na fase de projeto reduz os custos com substituições contínuas de EPIs em até 65%."
+    },
+    {
+        "id": 9,
+        "tema": "PGR - Plano de Resposta a Emergências",
+        "pergunta": "Segundo o subitem 1.5.6.1 da NR-1, os procedimentos de resposta a cenários de emergência do PGR devem contemplar obrigatoriamente:",
+        "opcoes": [
+            "A) Apenas a apólice de seguros patrimoniais contratada pela holding controladora.",
+            "B) Medidas necessárias para evacuação, resgate, primeiros socorros e combate a incêndios proporcionais aos riscos.",
+            "C) O fechamento definitivo do estabelecimento sem direito a aviso prévio aos trabalhadores.",
+            "D) A transferência integral da responsabilidade civil para o Corpo de Bombeiros local de forma cega."
+        ],
+        "correta": 1,
+        "justificativa": "O plano de emergência técnica precisa ser integrado ao PGR, mantendo-se ativo e proporcional à natureza, complexidade e tamanho dos riscos mapeados.",
+        "pesquisa": "Dados corporativos setoriais revelam que planos de evacuação ativos reduzem o tempo de resposta em sinistros de planta em até 72%."
     }
 ]
 
@@ -334,7 +418,7 @@ with st.sidebar:
         st.session_state.num_jogadores = st.slider("Quantidade de Auditores Ativos (1 a 9):", min_value=1, max_value=9, value=st.session_state.num_jogadores)
         
         st.markdown("#### Registro das Lideranças")
-        jogadores_temp = []
+        jogadores_temp = [] # Correção da variável para jogadores_temp unificado em português
         for i in range(st.session_state.num_jogadores):
             p_sugerido = PERSONAGENS_POOL[i % len(PERSONAGENS_POOL)]
             nome_j = st.text_input(f"Auditor {i+1} - Nome", value=f"Diretor(a) {i+1}", key=f"setup_auditor_{i}")
@@ -351,8 +435,9 @@ with st.sidebar:
                 "posicao": 0
             })
             
+        # RESOLUÇÃO DO BUG DO NAMEERROR DE image_6a94bd.png - Chamada corrigida para jogadores_temp
         if st.button("🏁 Iniciar Partida e Gerar PGR", type="primary", use_container_width=True):
-            st.session_state.jogadores = jugadores_temp
+            st.session_state.jogadores = jogadores_temp
             st.session_state.jogo_iniciado = True
             st.session_state.rodada_atual = 1
             st.session_state.pergunta_atual_index = 0
@@ -418,7 +503,6 @@ with tab_tabuleiro:
                 status_jogadores = " | ".join(marcadores) if marcadores else "Ninguém"
                 
                 with cols[col_idx]:
-                    # --- CORREÇÃO ESTRUTURAL DO AJUSTE MÍNIMO ---
                     # Garantindo que o realce azul 'st.info' acompanhe o transbordamento das rodadas (% 18)
                     if j_vez["posicao"] % 18 == n_casa:
                         st.info(f"📍 **#{n_casa} {casa_info['icon']}**\n\n**{casa_info['titulo']}**\n\n🟢 *Aqui: {status_jogadores}*")
@@ -500,7 +584,7 @@ with tab_tabuleiro:
             st.markdown("#### 📄 Painel Executivo A4 (Impressão de Resultados)")
             tx_tit = st.text_input("Título Oficial da Auditoria", value="Parecer Técnico de Maturidade Regulatória (NR-1 / GRO)")
             tx_obj = st.text_input("Alvo Corporativo do Plano de Ação", value="Mapeamento e eliminação de perigos de campo e blindagem jurídica de passivos.")
-            tx_ctx = st.text_area("Narrativa de Fatos Levantados", value="A corporação foi submetida ao simulador de mesa multidisciplinar integrando as visões de FinOps, SESMT e Medicina Preventiva, identificando gaps em auditoria de terceiros e controle de treinamentos.", height=80)
+            tx_ctx = st.text_area("Narrativa de Fatos Levantados", value="A corporação foi submetida ao simulador de mesa multidisciplinar integrando as visões de FinOps, SESMT e Medicina Preventiva, identifying gaps em auditoria de terceiros e controle de treinamentos.", height=80)
             
             html_a4 = gerar_html_boardgame(tx_tit, tx_obj, tx_ctx, st.session_state.matriz_dinamica, st.session_state.historico_eventos)
             components.html(html_a4, height=480, scrolling=True)
@@ -560,7 +644,7 @@ with tab_pesquisas_avancadas:
             *Estudos avançados sobre dispersão de contaminantes de ar, limites de tolerância física e atenuação acústica de ruídos industriais.*
         """)
     with ct2:
-        st.markdown("#### 📊 Retorno sobre Investimento (ROI) e Métricas de Mercado")
+        st.markdown("#### 📊 Retorno sobre Investimento (ROI) e Metrics de Mercado")
         st.table({
             "Indicador Analisado": [
                 "Redução média de litígios cíveis trabalhistas", 

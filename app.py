@@ -1,663 +1,562 @@
 import streamlit as st
-import streamlit.components.v1 as components
-import random
-import html
-from statistics import mean
 
-# ==============================================================================
-# 1. CONFIGURAÇÃO DE INTERFACE E DESIGN SYSTEM PREMIUM (UI/UX)
-# ==============================================================================
 st.set_page_config(
-    page_title="NR-1 Compliance Enterprise Ultimate Boardgame",
+    page_title="War Room",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Injeção de CSS Executivo Avançado para Componentes Estruturais e Relatório A4
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
-html, body, [data-testid="stAppViewContainer"] {
-    font-family: 'Inter', sans-serif;
-    background-color: #F8FAFC;
-    color: #1E293B;
-}
-
 .block-container {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-    max-width: 1600px;
+    padding-top: 1.5rem !important;
+    padding-bottom: 0.5rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    max-width: 100% !important;
 }
 
-.main-title {
-    font-size: 2.6rem;
-    font-weight: 800;
-    color: #0F172A;
-    letter-spacing: -0.04em;
-    margin-bottom: 0.2rem;
+div[data-testid="stVerticalBlock"] {
+    gap: 0.3rem !important;
 }
 
-.subtitle {
-    font-size: 1.1rem;
-    color: #64748B;
-    margin-bottom: 1.8rem;
-    font-weight: 400;
+[data-testid="stSidebarUserContent"] {
+    padding-top: 1rem !important;
 }
 
-/* --- LEADERBOARD & SIDEBAR CARDS --- */
-.avatar-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    background: #FFFFFF;
-    border-radius: 10px;
-    margin-bottom: 8px;
-    border: 1px solid #E2E8F0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+h3, p, div {
+    margin-top: 0rem !important;
+    margin-bottom: 0rem !important;
 }
 
-.avatar-img {
-    font-size: 26px;
-    background: #F1F5F9;
-    padding: 6px;
-    border-radius: 50%;
-    width: 42px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+div[data-testid="stMetric"] {
+    background-color: #f8f9fa;
+    padding: 6px !important;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+    text-align: center;
 }
 
-/* --- CONSOLE LOGS --- */
-.logs-box {
-    background-color: #0F172A;
-    color: #94A3B8;
-    font-family: 'Courier New', Courier, monospace;
-    padding: 14px;
-    border-radius: 10px;
-    max-height: 220px;
-    overflow-y: auto;
-    font-size: 11.5px;
-    border-left: 4px solid #3B82F6;
+.response-box {
+    background-color: #e8f8f5;
+    border-left: 4px solid #18bc9c;
+    padding: 10px !important;
+    border-radius: 4px;
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
 }
 
-.log-entry {
-    margin-bottom: 5px;
-    border-bottom: 1px solid #1E293B;
-    padding-bottom: 4px;
+/* Correção do seletor para garantir aplicação no botão nativo do Streamlit */
+div.trigger-btn > div[data-testid="stButton"] > button {
+    width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 11px !important;
+    padding: 0.2rem 0.4rem !important;
+    height: 28px !important;
+    margin-bottom: 4px !important;
 }
 
-/* --- TABS --- */
-.stTabs [data-baseweb="tab-list"] {
-    gap: 10px;
-    background-color: #E2E8F0;
-    padding: 6px;
-    border-radius: 10px;
-}
-
-.stTabs [data-baseweb="tab"] {
-    background-color: transparent;
-    border-radius: 6px;
-    padding: 10px 20px;
-    font-weight: 600;
-    color: #475569;
-}
-
-.stTabs [data-baseweb="tab"][aria-selected="true"] {
-    background-color: #FFFFFF;
-    color: #0F172A !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+.category-header {
+    font-size: 11px !important;
+    font-weight: bold !important;
+    color: #2c3e50;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 2px;
+    margin-top: 0.1rem !important;
+    margin-bottom: 0.4rem !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ==============================================================================
-# 2. COMPOSIÇÃO DO TABULEIRO (18 CENÁRIOS E MARCOS REGULATÓRIOS DA NR-1)
-# ==============================================================================
-CASAS_TABULEIRO = {
-    0: {"titulo": "Marco Zero: Planejamento GRO", "tipo": "normal", "icon": "🚀"},
-    1: {"titulo": "Identificação Primária de Perigos", "tipo": "normal", "icon": "🔍"},
-    2: {"titulo": "Mapeamento de Fontes Geradoras", "tipo": "normal", "icon": "🏭"},
-    3: {"titulo": "Fiscalização Surpresa MTE!", "tipo": "especial", "icon": "🚨"},
-    4: {"titulo": "Matriz de Severidade Ocupacional", "tipo": "normal", "icon": "📊"},
-    5: {"titulo": "Cálculo de Probabilidade de Danos", "tipo": "normal", "icon": "🎲"},
-    6: {"titulo": "Hierarquia de Controles (Item 1.5.5.1)", "tipo": "normal", "icon": "🛡️"},
-    7: {"titulo": "Auditoria de Isolamento Coletivo (EPC)", "tipo": "normal", "icon": "🏗️"},
-    8: {"titulo": "Direito de Recusa Ativado", "tipo": "especial", "icon": "🛑"},
-    9: {"titulo": "Integração PGR com Plano PCMSO", "tipo": "normal", "icon": "👩‍⚕️"},
-    10: {"titulo": "Validação de Custos (FinOps)", "tipo": "normal", "icon": "💰"},
-    11: {"titulo": "Avaliação Ergonômica (NR-17)", "tipo": "normal", "icon": "🪑"},
-    12: {"titulo": "Simulado de Emergências", "tipo": "normal", "icon": "🧯"},
-    13: {"titulo": "Trabalho Terceirizado (Subitem 1.5.8)", "tipo": "especial", "icon": "🤝"},
-    14: {"titulo": "Treinamento de Onboarding", "tipo": "normal", "icon": "📚"},
-    15: {"titulo": "Aproveitamento de Grade", "tipo": "normal", "icon": "🔄"},
-    16: {"titulo": "Defesa de Indicador FAP/RAT", "tipo": "especial", "icon": "⚖️"},
-    17: {"titulo": "Auditoria de Certificação ISO 45001", "tipo": "normal", "icon": "🏆"},
+
+# 20 Strategic Framework Database Items - Adaptado para o cenário de Analista de Dados Sênior (IURD)
+DATA_MAPPING = {
+    1: {
+        "category": "WHAT - Capabilities & Profile",
+        "title": "Fale sobre você (Senioridade)",
+        "tag": "PERFIL",
+        "bridge": "Sou Engenheiro de Produção com MBA pela FGV e mais de 7 anos de experiência sólida na área de dados, especializado em transformar grandes volumes de dados brutos e dispersos em pipelines de ETL altamente performáticos e fontes de verdade unificadas.",
+        "followup": "Minha trajetória une o raciocínio lógico da engenharia com a visão de governança corporativa. Sou especialista em otimização de queries complexas em SQL, automação de fluxos com Python e sustentação de ecossistemas híbridos envolvendo desde bancos tradicionais como Oracle e PostgreSQL até NoSQL como MongoDB.",
+        "match": "Estabelece autoridade sênior imediata, alinhando-se exatamente aos requisitos de +7 anos e formação técnica da vaga.",
+        "growth": "A contratante precisa de alguém com perfil resolutivo para assumir sistemas legados e apoiar as áreas de negócio com indicadores precisos desde o primeiro dia.",
+        "case": "Engenharia + MBA + Liderança Técnica de Dados (*Heineken*, *Itaú*, *ASICS*, *NTT DATA*).",
+        "bullets": [
+            "Lidero a arquitetura e otimização de dados em ambientes corporativos de alta complexidade regulatória e volumetria (*Itaú*, *Heineken*).",
+            "Tenho facilidade para navegar entre o desenvolvimento de código robusto (Python/SQL) e a entrega visual para a diretoria (Dashboards).",
+            "Atuo ativamente com foco em governança de dados, documentação técnica estruturada e garantia de qualidade (Data Quality)."
+        ],
+        "qa_responses": [
+            {"q": "Qual é o diferencial do seu perfil para uma posição sênior?", "a": "Eu não sou apenas um construtor de queries. Eu entendo o impacto do dado no negócio. Garanto que o dado na ponta — seja no Apache Superset ou no Power BI — seja idêntico ao payload bruto do banco, desenhando arquiteturas que não geram gargalos de infraestrutura."},
+            {"q": "Como você lida com ambientes dinâmicos e pilhas tecnológicas variadas?", "a": "Com flexibilidade e mentalidade investigativa. Para mim, a tecnologia é um meio. Se o fluxo exige extrair dados de uma API REST via Python, tratar no banco Oracle via PL/SQL e disponibilizar no MongoDB, eu estruturo a esteira focando sempre em performance e manutenibilidade."},
+            {"q": "Você tem experiência apoiando equipes e áreas de negócio?", "a": "Sim. Minha função sênior sempre incluiu traduzir requisitos de negócio vagos in especificações técnicas de dados, além de orientar e apoiar tecnicamente os membros mais juniores da equipe para garantir boas práticas de desenvolvimento."}
+        ]
+    },
+    2: {
+        "category": "WHY - Intent & Fit",
+        "title": "Por que a IURD?",
+        "tag": "ESTRATÉGIA",
+        "bridge": "Uma instituição desse porte gerencia diariamente um volume massivo e heterogêneo de dados operacionais, financeiros e de sistemas institucionais, o que exige uma governança de dados impecável.",
+        "followup": "Quero aplicar meu toolkit de engenharia de dados e otimização de infraestrutura exatamente onde o dado dita o ritmo da eficiência das operações internas e do atendimento às áreas finalísticas.",
+        "match": "Prova que compreende a escala gigantesca e a necessidade de governança rigorosa da instituição.",
+        "growth": "A operação não busca um analista júnior de relatórios; precisa de um especialista focado em sustentação, performance tuning e migração de tecnologia.",
+        "case": "Cenários de Alta Volumetria e Ecossistemas Híbridos.",
+        "bullets": [
+            "Identifico-me com culturas que valorizam o sentimento de dono, a resiliência e a busca por melhoria contínua.",
+            "O desafio de atuar com múltiplos bancos de dados (Oracle, Postgres, MariaDB, Mongo) e ferramentas de BI variadas me motiva intelectualmente.",
+            "Vejo uma oportunidade clara de gerar impacto imediato na otimização de fluxos legados e na eficiência do processamento de dados."
+        ],
+        "qa_responses": [
+            {"q": "O que mais te atrai nesta oportunidade?", "a": "A oportunidade de atuar de ponta a ponta: desde a extração via APIs ou Apache NiFi, passando pela transformação pesada em banco com PL/SQL, até a camada final de entrega no Oracle Fusion Cloud e Superset. É o cenário perfeito para um profissional sênior."},
+            {"q": "Como sua experiência corporativa se conecta com os nossos desafios?", "a": "Passei por grandes corporações como Itaú e Heineken. Sei o que significa trabalhar em ambientes onde uma falha na carga ou uma query mal otimizada impacta decisões executivas. Trago essa bagagem de responsabilidade e resiliência."},
+            {"q": "Você está confortável em trabalhar no modelo PJ / Híbrido?", "a": "Totalmente. Meu setup e minha rotina profissional são altamente organizados. O modelo híbrido permite o melhor dos dois mundos: foco absoluto na entrega técnica no remoto e alinhamento estratégico presencial com o time."}
+        ]
+    },
+    3: {
+        "category": "WHY - Intent & Fit",
+        "title": "Visão sobre ETL e Migrações",
+        "tag": "ARQUITETURA",
+        "bridge": "Enxergo os processos de ETL/ELT como a espinha dorsal de qualquer tomada de decision corporativa; eles precisam ser invisíveis, rápidos e fáceis de manter.",
+        "followup": "Sustentar fluxos existentes (como no Apache NiFi) exige respeito ao legado, mas migrar gradualmente para pipelines em Python é o caminho ideal para garantir escalabilidade e testes automatizados.",
+        "match": "Posiciona o candidato como o executor perfeito para o plano de migração explícito na vaga.",
+        "growth": "A transição de ferramentas visuais de ETL para código (Python/pandas/sqlalchemy) reduz custos de infraestrutura e aumenta o controle sobre o dado.",
+        "case": "Migração e Automação de Pipelines (Case Afinz/Stalse).",
+        "bullets": [
+            "Tenho experiência prática na reengenharia de processos manuais ou legados para rotinas automatizadas em Python.",
+            "Utilizo bibliotecas consagradas como pandas, sqlalchemy, requests (APIs) e openpyxl para construir conexões seguras e limpas.",
+            "Meu foco em ETL é garantir a integridade total do dado (traceabilidade) antes que ele atinja as camadas de visualização."
+        ],
+        "qa_responses": [
+            {"q": "Qual o seu plano para apoiar nossa migração de ETL para Python?", "a": "O primeiro passo é documentar e auditar os fluxos atuais no Apache NiFi para mapear dependências. Em seguida, traduzo as transformações lógicas para scripts Python modulares e performáticos, utilizando sqlalchemy para a escrita eficiente nos bancos de destino, garantindo zero downtime."},
+            {"q": "Como você garante que uma migração de pipeline não corrompa os dados históricos?", "a": "Implementando validações em paralelo. Durante um período, o fluxo antigo e o novo rodam juntos. Utilizo scripts de reconciliação de dados para checar se os hashes e somatórios batem em 100% antes de desligar o legado."},
+            {"q": "Como gerenciar múltiplos conectores (APIs, Arquivos, Bancos Relacionais)?", "a": "Centralizando e padronizando as credenciais via variáveis de ambiente seguras e criando classes utilitárias em Python para reaproveitamento de código na extração de APIs REST ou leitura de arquivos textuais e planilhas."}
+        ]
+    },
+    4: {
+        "category": "WHAT - Capabilities & Profile",
+        "title": "Sua Proposta de Valor",
+        "tag": "VALOR",
+        "bridge": "Ofereço o domínio técnico avançado em SQL/Python necessário para resolver gargalos de performance e a maturidade analítica para dialogar diretamente com as áreas de negócio.",
+        "followup": "Elimino o abismo que costuma existir entre o que a equipe de TI desenvolve e o que os diretores e usuários de negócio realmente precisam enxergar nos relatórios.",
+        "match": "Alinea-se à exigência de criar visões de dados claras utilizando ferramentas modernas (Apache Superset) e corporativas (Oracle Fusion).",
+        "growth": "A capacidade investigativa de ponta a ponta poupa horas de reuniões de crise quando acontecem falhas de integração.",
+        "case": "FinOps, Performance Tuning e Governança de Dados.",
+        "bullets": [
+            "Consolido dados dispersos para gerar relatórios corporativos com precisão matemática centesimal.",
+            "Otimizo consultas SQL lentas através de análise de planos de execução (Performance Tuning), reduzindo consumo de memória e CPU.",
+            "Entrego documentação técnica clara de dados e processos, mitigando o risco de perda de conhecimento."
+        ],
+        "qa_responses": [
+            {"q": "O que você consegue entregar nos primeiros 30 dias se for contratado?", "a": "Focar na imersão dos ambientes Oracle e PostgreSQL, assumir a sustentação das cargas diárias do Apache NiFi e mapear as principais dores dos usuários nos relatórios do OTBI / BI Publisher, garantindo estabilidade imediata na operação."},
+            {"q": "Qual é a sua abordagem em relação à padronização e governança de dados?", "a": "O dado só tem valor se for confiável e documentado. Sigo padrões rígidos de nomenclatura, mapeamento de metadados e linhagem do dado, alinhado com as diretrizes da LGPD para garantir que informações sensíveis sejam tratadas com as permissões corretas."},
+            {"q": "Como você lida com a pressão de relatórios executivos urgentes?", "a": "Com organização e foco em solução. Entendo que relatórios corporativos para tomada de decisão não podem esperar. Minha senioridade me permite focar na extração rápida da métrica correta, sem perder a qualidade técnica na query."}
+        ]
+    },
+    5: {
+        "category": "WHY - Intent & Fit",
+        "title": "Expectativa Salarial / Contrato",
+        "tag": "ANCORAGEM",
+        "bridge": "Minha pretensão salarial está fundamentada na minha senioridade de mais de 7 anos e no valor imediato que posso gerar na otimização da infraestrutura de dados e relatórios da instituição.",
+        "followup": "Busco uma remuneração justa para um Especialista que atua no modelo Prestador de Serviços (PJ) com total autonomia e prontidão técnica.",
+        "match": "Demonstra clareza profissional, maturidade de negociação e posicionamento como especialista de mercado.",
+        "growth": "O custo de um especialista sênior se paga rapidamente através do ganho de eficiência em processos de dados e no tuning de infraestrutura que reduz o desperdício de nuvem/servidores.",
+        "case": "Contratação PJ Especialista - Período Integral.",
+        "bullets": [
+            "Minha pretensão salarial para o formato de prestação de serviços (PJ) está na faixa de 12.000 a 15.000 Reais mensais, dependendo da complexidade exata e benefícios.",
+            "Estou totalmente pronto para iniciar o modelo híbrido em São Paulo - SP com total disponibilidade de horários.",
+            "Possuo empresa aberta (CNPJ) regularizada com emissão de nota fiscal imediata para processos de faturamento sem burocracia."
+        ],
+        "qa_responses": [
+            {"q": "Este valor é negociável?", "a": "Estou aberto a entender o pacote completo oferecido pela instituição, os desafios de longo prazo e as possibilidades de evolução dentro do ecossistema técnico. Havendo sinergia, o valor pode ser ajustado de forma justa para ambos."},
+            {"q": "Por que deveríamos investir esse orçamento no seu perfil?", "a": "Porque trago autonomia completa. Não preciso de treinamento para escrever PL/SQL avançado, corrigir fluxos em NiFi ou criar dashboards no Superset. Minha contratação minimiza o tempo de onboarding e elimina os erros comuns cometidos por profissionais menos experientes."},
+            {"q": "Você tem flexibilidade para atuar com diferentes tecnologias de bancos?", "a": "Sim, essa flexibilidade é uma das minhas forças. Minha experiência me permite transitar de um tuning de query em Oracle para uma agregação complexa em MongoDB (NoSQL) sem atritos, garantindo soluções homogêneas."}
+        ]
+    },
+    6: {
+        "category": "WHAT - Capabilities & Profile",
+        "title": "Vivência com Oracle Fusion Cloud",
+        "tag": "ORACLE-FUSION",
+        "bridge": "Considero o ecossistema Oracle Fusion Cloud, especificamente OTBI e BI Publisher, uma camada estratégica vital, onde o SQL robusto é a chave para destravar relatórios corporativos complexos.",
+        "followup": "Muitos analistas focam apenas em ferramentas de visualização modernas, mas eu domino a extração nativa dentro do ambiente corporativo Oracle, manipulando data models complexos e views customizadas.",
+        "match": "Atende diretamente o requisito desejável da vaga, transformando-o em um diferencial competitivo matador.",
+        "growth": "A contratante utiliza o Oracle Fusion para sua gestão corporativa; ter um profissional focado em ajustar e manter esses relatórios sem dependência de consultorias externas é um enorme ganho de agilidade.",
+        "case": "Criação, Ajuste e Manutenção de Relatórios OTBI / BI Publisher.",
+        "bullets": [
+            "Compreendo a estrutura de dados interna dos módulos Oracle ERP/Fusion para localizar tabelas e campos rapidamente.",
+            "Utilizo SQL avançado para customizar os Data Models que alimentam os layouts do BI Publisher.",
+            "Sei apoiar as áreas de negócio na criação de análises em tempo real utilizando as áreas de assunto (Subject Areas) do OTBI."
+        ],
+        "qa_responses": [
+            {"q": "Como você avalia sua experiência com OTBI and BI Publisher?", "a": "Minha experiência foca em resolver o que as interfaces padrões não entregam. Utilizo o OTBI para relatórios analíticos rápidos e arrastáveis para o usuário, e recorro ao BI Publisher quando a diretoria exige relatórios altamente formatados, com layouts complexos, alimentados por queries SQL customizadas."},
+            {"q": "O que você faz quando um relatório do BI Publisher apresenta lentidão?", "a": "O problema quase sempre está no Data Model subjacente. Extraio a query SQL contida nele, analiso o plano de execução dentro do ambiente Oracle, verifico se há joins desnecessários ou falta de índices adequados e faço o refactoring da consulta."},
+            {"q": "Você sabe integrar os dados do Oracle Fusion com outras bases (como Postgres)?", "a": "Sim. Podemos construir rotinas em Python que consomem as APIs REST nativas do Oracle Fusion ou extraem relatórios agendados do BI Publisher em formatos estruturados (CSV/XML) para alimentar um DW centralizado ou tabelas no PostgreSQL/MongoDB."}
+        ]
+    },
+    7: {
+        "category": "WHAT - Capabilities & Profile",
+        "title": "Domínio Avançado de SQL / PL-SQL",
+        "tag": "SQL-TUNING",
+        "bridge": "Para mim, SQL não é apenas escrever SELECTs básicos; é dominar joins complexos, CTEs, subqueries correlacionadas e funções analíticas para processar dados com máxima performance.",
+        "followup": "Em ambientes com grande volume de dados, o design da query dita o custo e a velocidade da entrega. Escrevo códigos limpos, estruturados e fáceis de auditar.",
+        "match": "Preenche perfeitamente o principal pilar técnico da vaga (Domínio avançado em SQL e PL/SQL).",
+        "growth": "Garante que os sistemas gerenciados no Oracle, PostgreSQL e MariaDB rodem de forma otimizada, evitando travamentos em bancos de produção.",
+        "case": "Performance Tuning e Otimização de Consultas Complexas.",
+        "bullets": [
+            "Utilizo CTEs (Common Table Expressions) extensivamente para modularizar queries longas e torná-las legíveis.",
+            "Domino funções analíticas (ROW_NUMBER, RANK, LEAD, LAG, SUM OVER) para evitar subqueries pesadas e desnecessárias.",
+            "Possuo conhecimento em PL/SQL para criar triggers, procedures e funções que automatizam lógicas de tratamento direto no banco de dados Oracle."
+        ],
+        "qa_responses": [
+            {"q": "Como você abordagem o refactoring de uma query SQL de 500 linhas que está travando o banco?", "a": "Com método. Primeiro isolo as partes utilizando CTEs para entender o fluxo de dados. Analiso o Explain Plan para identificar Table Scans desnecessários. Verifico se os Joins estão usando chaves indexadas e se há filtros que podem ser antecipados para diminuir a volumetria processada logo no início da consulta."},
+            {"q": "Qual a sua experiência com bancos NoSQL como MongoDB?", "a": "Utilizo o MongoDB para cenários onde a estrutura do dado é altamente fluida ou semiestruturada (JSONs). Sei trabalhar com o framework de agregação (Aggregation Pipeline) do Mongo e utilizo Python para ler esses documentos e normalizá-los caso precisem ser inseridos em bancos relacionais."},
+            {"q": "O que você prioriza na criação de uma View?", "a": "Priorizo a consistência lógica e o impacto na performance. Se a view for consultada com muita frequência sobre milhões de linhas, avalio junto ao DBA a criação de visões materializadas ou a persistência dos dados tratados em tabelas intermediárias via processos de ETL noturnos."}
+        ]
+    },
+    8: {
+        "category": "WHY - Intent & Fit",
+        "title": "Você é superqualificado?",
+        "tag": "RETENÇÃO",
+        "bridge": "Acredito que o termo correto não é superqualificado, mas sim plenamente preparado para os desafios de alta complexidade técnica que a instituição possui.",
+        "followup": "Um profissional sênior não busca apenas tarefas complexas; busca estabilidade, processos organizados e a oportunidade de construir pipelines eficientes que resolvam problemas reais.",
+        "match": "Elimina o receio do recrutador de que o profissional ache o trabalho monótono ou saia rapidamente.",
+        "growth": "A escala de dados da contratante exige alguém experiente para evitar retrabalho estrutural e débitos técnicos nas rotinas de dados.",
+        "case": "Maturidade Profissional e Foco em Soluções Duradouras.",
+        "bullets": [
+            "Tenho real motivação em atuar na sustentação técnica e melhoria contínua de ecossistemas maduros.",
+            "Para mim, o desafio intelectual está em otimizar rotinas que hoje demoram horas para rodar em poucos minutos.",
+            "Busco um vínculo de longo prazo onde minha senioridade técnica possa apoiar o crescimento da equipe de dados."
+        ],
+        "qa_responses": [
+            {"q": "Sendo sênior, você aceitaria realizar tarefas mais operacionais ou suporte a relatórios?", "a": "Com certeza. Minha senioridade me dá a maturidade de entender que o suporte a relatórios corporativos existentes é fundamental para a governança da instituição. Se a área de negócio precisa de um ajuste rápido em um relatório do Power BI ou OTBI, encaro isso com o mesmo senso de dono de quando estou projetando um pipeline do zero."},
+            {"q": "O que te mantém motivado e engajado em um projeto?", "a": "A autonomia para propor melhorias de performance e a oportunidade de sanar inconsistências de dados ponta a ponta. Ver um fluxo de ETL migrado para Python rodando de forma lisa e sem erros é o que me traz satisfação profissional."},
+            {"q": "Como sua senioridade ajuda a economizar recursos da empresa?", "a": "Evitando o retrabalho. Um desenvolvedor menos experiente pode criar soluções paliativas em planilhas que quebram no mês seguinte. Eu desenho pipelines estruturados, documentados em ferramentas corporativas, que suportam o crescimento do volume de transações por anos sem necessidade de reengenharia."}
+        ]
+    },
+    9: {
+        "category": "WHAT - Capabilities & Profile",
+        "title": "Explicação sobre Ciclos Curtos",
+        "tag": "PROJETOS",
+        "bridge": "Minhas passagens recentes por empresas como Stalse (atendendo ASICS) e NTT DATA (atendendo Itaú) foram alocações estratégicas focadas em projetos com escopo fechado e entregas de tiro curto.",
+        "followup": "Atuei como um acelerador de soluções, resolvendo gargalos de arquitetura específicos e realizando migrações críticas que demandavam força técnica sênior imediata.",
+        "match": "Transforma uma possível objeção de instabilidade em uma prova de agilidade, adaptabilidade e entrega rápida de resultados.",
+        "growth": "Demonstra que o candidato tem facilidade de onboarding instantâneo e consegue gerar valor desde a primeira semana.",
+        "case": "Sprints Ágeis e Consultoria Técnica de Dados.",
+        "bullets": [
+            "Na *Stalse*, unifiquei dados financeiros internacionais da *ASICS* e apliquei conceitos de FinOps para reduzir o consumo de nuvem.",
+            "Na *NTT DATA*, trabalhei imerso no ambiente AWS Cloud do *Itaú*, lidando com volumetria massiva através de queries complexas em Amazon Athena.",
+            "Agora, meu objetivo estratégico é fixar minhas habilidades em uma posição estável de longo prazo."
+        ],
+        "qa_responses": [
+            {"q": "Por que seus últimos contratos duraram cerca de 4 meses?", "a": "Ambos foram contratos de consultoria por escopo. No Itaú (NTT DATA), o objetivo era estruturar transformações de views complexas sob metodologia ágil em um período determinado. Na ASICS (Stalse), a meta era otimizar o consumo de dados de Gigabytes para Megabytes. Finalizadas as entregas com sucesso e a documentação concluída, o ciclo do projeto encerrou naturalmente."},
+            {"q": "Como você se adapta tão rápido a novas culturas de equipe?", "a": "Minha bagagem de mais de 2.000 análises estruturadas desenvolvidas ao longo da carreira me deu uma adaptabilidade técnica e comportamental fora da curva. Eu entro no projeto focado em ouvir as dores do time, entender o mapeamento das tabelas e começar a codificar as soluções sem gerar ruído."},
+            {"q": "Você está buscando estabilidade no momento?", "a": "Sim, exatamente. Escolhi participar deste processo seletivo porque vejo na IURD um ambiente robusto, com um fluxo de dados contínuo e volumoso, ideal para eu me consolidar como um pilar técnico de dados por muitos anos."}
+        ]
+    },
+    10: {
+        "category": "WHY - Intent & Fit",
+        "title": "Evolução Profissional e Engenharia",
+        "tag": "EVOLUÇÃO",
+        "bridge": "Minha transição da análise de gestão de negócios tradicional para a engenharia e análise avançada de dados reflete o movimento natural do mercado corporativo moderno.",
+        "followup": "Minha formação em Engenharia de Produção me deu a mentalidade de processos e eficiência, enquanto o MBA na FGV consolidou a visão executiva de indicadores. Unir isso ao desenvolvimento em Python e SQL foi o passo lógico para me tornar um profissional completo.",
+        "match": "Posiciona o candidato como um perfil híbrido raro: possui a casca técnica de codificação e a maturidade de negócios para conversar com diretores.",
+        "growth": "A vaga pede alguém que ajude as áreas de negócio na definição e evolução de indicadores. Técnicos puros costumam falhar nessa comunicação.",
+        "case": "Combinação de Gestão Estruturada com Hard Skills de TI.",
+        "bullets": [
+            "Minha formação pelo CREA-SP garante meu foco em métodos ágeis, eliminação de desperdícios e otimização de fluxos.",
+            "Desenvolvi a capacidade investigativa ponta a ponta através de anos auditando processos corporativos e registros complexos.",
+            "Enxergo os dashboards no Apache Superset ou Power BI como ferramentas de gestão, e não apenas visuais bonitos."
+        ],
+        "qa_responses": [
+            {"q": "Como sua formação em Engenharia de Produção agrega valor no dia a dia de dados?", "a": "A engenharia foca em gargalos. Quando olho para um pipeline de ETL que demora para rodar, ou uma integração de API que cai constantemente, não vejo só um erro de código; vejo um desperdício de processo que atrasa a tomada de decisão. Aplico conceitos de fluxo contínuo e qualidade total na esteira de dados."},
+            {"q": "Por que focar em ferramentas como Apache Superset?", "a": "O Apache Superset é uma ferramenta fantástica, open-source, extremamente performática para grandes volumes e que consome dados direto via SQL de forma muito limpa. Tenho facilidade em plugá-lo sobre bancos PostgreSQL ou de Data Warehouse para democratizar o acesso aos dados sem custos abusivos de licenciamento comercial."},
+            {"q": "Qual a sua visão sobre a LGPD no tratamento de dados?", "a": "A conformidade com a LGPD é inegociável. Um Analista Sênior deve garantir que dados sensíveis de usuários ou clientes sejam devidamente mascarados ou criptografados nas camadas de banco e que o acesso aos dashboards do Superset/Power BI respeite estritamente os perfis e permissões de cada cargo."}
+        ]
+    },
+    11: {
+        "category": "HOW - Case Methodology (STAR)",
+        "title": "Case ASICS (Otimização e FinOps)",
+        "tag": "CASE-ETL",
+        "bridge": "Na Stalse, liderei a reengenharia de uma arquitetura de dados financeiros e operacionais para a operação Latam da ASICS (Brasil, Chile e Colômbia), focando em performance de queries e redução drástica de custos.",
+        "followup": "O cenário era de fragmentação de dados e consultas extremamente pesadas que geravam um consumo financeiro excessivo nas plataformas de nuvem (BigQuery).",
+        "match": "Prova capacidade real de lidar com volumetria e aplicar otimização de queries (performance tuning), um dos diferenciais pedidos pela vaga.",
+        "growth": "Demonstra proatividade e senso de dono ao tratar os recursos computacionais da contratante como se fossem seus.",
+        "case": "Redução de Custos e Unificação de Dados Financeiros.",
+        "bullets": [
+            "Situação: Queries ineficientes consumiam Gigabytes de processamento desnecessário, gerando lentidão nos painéis de indicadores e custos elevados.",
+            "Action: Refatorei as consultas SQL aplicando boas práticas de particionamento, CTEs e eliminando joins redundantes.",
+            "Result: Slashed o consumo de dados de escala de Gigabytes para Megabytes, otimizando o tempo de resposta das visões gerenciais."
+        ],
+        "qa_responses": [
+            {"q": "Como você aplicou a otimização de dados na prática para a ASICS?", "a": "Identifiquei que muitas subqueries eram executadas repetidamente dentro de loops lógicos. Substituí essa estrutura por tabelas temporárias bem indexadas e queries utilizando funções analíticas. Isso reduziu o volume de dados escaneados e acelerou a atualização dos relatórios."},
+            {"q": "Esse projeto envolveu dados de múltiplos países. Como lidou com as diferenças de regras?", "a": "Criamos uma camada de staging em Python que padronizava os tipos de dados e os formatos de entrada antes de consolidá-los na base relacional principal. Isso garantiu que as regras de negócio específicas de cada região fossem aplicadas uniformemente."},
+            {"q": "Como você documentou essa nova estrutura?", "a": "Criei um dicionário de dados detalhado e um diagrama de linhagem (data lineage). Assim, qualquer novo analista que entrasse no time conseguiria entender exatamente de qual tabela original saía cada métrica do dashboard."}
+        ]
+    },
+    12: {
+        "category": "HOW - Case Methodology (STAR)",
+        "title": "Case Itaú / NTT DATA (Volumetria AWS)",
+        "tag": "CASE-SCALE",
+        "bridge": "Alocado na NTT DATA para atender o Itaú, atuei imerso em ambiente de computação em nuvem (AWS), construindo visões SQL complexas e robustas sobre tabelas com bilhões de registros.",
+        "followup": "O projeto exigia precisão absoluta e velocidade de processamento para atender métricas de desempenho corporativo consultadas por mais de 5.000 executivos e gestores.",
+        "match": "Valida a experiência em ambientes com alto volume de dados, queries complexas e arquitetura moderna.",
+        "growth": "A IURD exige experiência sólida em SQL e capacidade de rodar transformações eficientes. Esse case elimina qualquer dúvida sobre a capacidade técnica do candidato.",
+        "case": "Construção de Views Complexas em Amazon Athena e AWS S3.",
+        "bullets": [
+            "Situação: Havia a necessidade de calcular métricas gerenciais complexas cruzando tabelas gigantescas de logs e dados cadastrais que mudavam constantemente.",
+            "Action: Desenvolvi visões SQL estruturadas utilizando Amazon Athena, aplicando estratégias de filtros eficientes e parametrização dinâmica.",
+            "Result: Entreguei painéis automatizados estáveis, garantindo consistência total do dado e tempo de carregamento otimizado."
+        ],
+        "qa_responses": [
+            {"q": "Como manter as queries rápidas trabalhando com bilhões de linhas no Itaú?", "a": "A chave foi trabalhar em sintonia com a estrutura de particionamento dos dados no S3. Garantindo que as cláusulas WHERE da query SQL fizessem o 'partition pruning' correto, o Athena lia apenas a fração necessária de arquivos, reduzindo o tempo de execução de minutos para segundos."},
+            {"q": "Como você lidava com as mudanças constantes nas regras de negócio desse projeto?", "a": "Evitava hardcodar regras diretamente nas queries principais. Criava tabelas de parametrização de indicadores. Quando uma regra de negócio mudava, apenas atualizávamos o registro de configuração no banco e a view SQL interpretava a nova regra dinamicamente, sem necessidade de deploy de código."},
+            {"q": "Qual foi a importância da metodologia ágil nesse ambiente?", "a": "Essencial. Trabalhávamos em sprints curtas com entregas semanais. Isso garantia alinhamento total com as unidades de negócio do banco e permitia corrigir desvios de escopo de forma imediata."}
+        ]
+    },
+    14: {
+        "category": "HOW - Case Methodology (STAR)",
+        "title": "Case Afinz (Automação de ETL 1h30 para 15m)",
+        "tag": "CASE-AUTOMATION",
+        "bridge": "Como Analista de MIS na Afinz/Sorocred, identifiquei um fluxo crítico de relatórios diários que era executado de forma manual, gerando atrasos crônicos na disponibilização de dados operacionais.",
+        "followup": "A rotina dependia de operadores compilando dados manualmente em Excel e disparando queries fragmentadas, o que aumentava drasticamente o risco de erros humanos.",
+        "match": "Atende perfeitamente o requisito da vaga de 'desenvolver, manter e otimizar processos de transformação de dados e rotinas em Python'.",
+        "growth": "Prova capacidade de automação de processos, liberando tempo técnico da equipe para análises mais profundas e estratégicas.",
+        "case": "Redução do Tempo de Processamento de ETL de 1h30 para 15 minutos.",
+        "bullets": [
+            "Situação: Rotinas manuais consumiam 1 hora e meia diária da equipe técnica e atrasavam o início das análises de negócio gerenciais.",
+            "Action: Desenvolvi pipelines de ETL automatizados de ponta a ponta utilizando Python, integrando o agendamento de scripts com consultas SQL diretas no banco.",
+            "Result: Reduzi o tempo total de execução para apenas 15 minutos, fortalecendo a governança e eliminando as inconsistências das cargas."
+        ],
+        "qa_responses": [
+            {"q": "Qual foi o principal desafio na automação do processo na Afinz?", "a": "O principal desafio foi mapear todas as exceções e 'gambiarras' que os operadores faziam manualmente nas planilhas e traduzir isso em regras lógicas condicionais dentro do código Python usando a biblioteca pandas. Uma vez mapeado, o script passou a tratar os dados de forma idêntica e sem falhas."},
+            {"q": "Como você estruturou a governança de dados nesse projeto?", "a": "Aproveitei a automação para criar uma tabela de log de execução no banco via AWS Glue/S3. Cada vez que o script rodava, ele registrava a hora de início, fim, quantidade de linhas inseridas e se houve algum aviso de erro. Isso deu total transparência para auditorias internas."},
+            {"q": "Como essa mentalidade se aplica à migração de fluxos do Apache NiFi que a nossa vaga pede?", "a": "A lógica é análoga. No NiFi, você tem os processadores visuais. Para migrar para Python de forma performática, eu analiso o que cada processador faz (um SplitText, um EvaluateJsonPath, um PutSQL), reescrevo isso de forma nativa e otimizada em um script Python modular e garanto que o consumo de memória do servidor seja o menor possível."}
+        ]
+    },
+    13: {
+        "category": "HOW - Case Methodology (STAR)",
+        "title": "Case Heineken (Normalização de Dados)",
+        "tag": "CASE-BI",
+        "bridge": "Na Heineken, atuando na divisão digital de e-commerce e eRetail, fui responsável por consolidar e normalizar grandes conjuntos de dados provenientes de múltiplos clientes e parceiros externos.",
+        "followup": "Os dados chegavam em formatos totalmente heterogêneos (APIs variadas, arquivos de texto, planilhas bagunçadas), o que impedia um acompanhamento unificado das campanhas comerciais.",
+        "match": "Demonstra domínio prático na extração de dados de diversas fontes e modelagem estruturada (DW / Star Schema).",
+        "growth": "A IURD busca alguém capaz de unificar múltiplas origens de dados. Esse case comprova essa aptidão de alto nível corporativo.",
+        "case": "Modelagem Star Schema e Integration de Múltiplas Fontes de Clientes.",
+        "bullets": [
+            "Situação: A falta de padronização nas fontes externas gerava falhas de integração frequentes e dados duplicados nos relatórios gerenciais.",
+            "Action: Desenhei um modelo relacional robusto no padrão Star Schema (Fatos e Dimensões) e apliquei rotinas estritas de validação de qualidade de dados.",
+            "Result: Montei painéis corporativos estáveis no Power BI que batiam com os indicadores financeiros até a última casa decimal."
+        ],
+        "qa_responses": [
+            {"q": "Como você lidou com dados bagunçados de terceiros na Heineken?", "a": "Criei uma camada rígida de higienização de dados antes de inseri-los nas tabelas de dimensão. Se um parceiro enviava um nome de produto incorreto ou um ID fora do padrão, o script Python isolava essa linha em uma tabela de quarentena e notificava o time, impedindo a poluição do Data Warehouse principal."},
+            {"q": "Qual a vantagem de usar a modelagem Star Schema nesse cenário?", "a": "O Star Schema simplifica os Joins na hora de construir os dashboards. Ao separar os dados de transações (Fato) dos dados cadastrais (Dimensões), as queries SQL rodam infinitamente mais rápido, seja no Power BI ou no Apache Superset, melhorando a experiência do usuário final."},
+            {"q": "Você tem experiência com ferramentas open-source de BI como Apache Superset?", "a": "Sim. O Superset brilha justamente quando o backend está bem modelado em Star Schema. Como ele faz consultas diretas e eficientes no banco SQL, ter tabelas de dimensões limpas permite que os gestores montem seus próprios gráficos via drag-and-drop sem pesar a infraestrutura."}
+        ]
+    },
+    15: {
+        "category": "HOW - Case Methodology (STAR)",
+        "title": "Case Burity (Capacidade Investigativa Legal)",
+        "tag": "CASE-AUDIT",
+        "bridge": "Durante minha longa e sólida trajetória na Burity Empresarial, atuei na gestão de ativos e conformidade regulatória como Procurador Legal, desenvolvendo uma capacidade investigativa ponta a ponta e um olhar cirúrgico para mitigação de riscos operacionais.",
+        "followup": "Fui responsável por auditar processos administrativos complexos, contratos corporativos de alto valor e plantas técnicas de engenharia, retificando erros históricos e eliminando passivos com órgãos governamentais.",
+        "match": "Evidencia as competências comportamentais críticas descritas no perfil: capacidade investigativa ponta a ponta, atenção a detalhes, ética e resiliência.",
+        "growth": "A governança de dados e o respeito a normas internas e à LGPD exigem a mentalidade de auditor rígido que esse histórico comprova.",
+        "case": "Retificação de Registros, Auditoria de Processos e Risco Zero.",
+        "bullets": [
+            "Situação: Divergências descritivas em cadastros históricos geravam riscos de multas severas e travavam a expansão de ativos de grande escala.",
+            "Action: Liderei auditorias documentais profundas, cruzei dados técnicos e coordenei times multidisciplinares para sanar erros de registro.",
+            "Result: Garanti a conformidade jurídica e patrimonial dos ativos de forma 100% administrativa, com zero litígios ou penalidades."
+        ],
+        "qa_responses": [
+            {"q": "Como essa experiência jurídica e de gestão se aplica a uma vaga estritamente de dados?", "a": "A essência da auditoria é rigorosamente a mesma. Investigar uma inconsistência em um registro imobiliário na Burity exige o mesmo nível de atenção, ceticismo e busca por evidências que investigar uma falha de carga em uma tabela Oracle ou uma inconsistência de dados entre o OTBI e a base PostgreSQL. Eu não desisto até encontrar a causa raiz do problema."},
+            {"q": "Você se considera uma pessoa resiliente para lidar com sistemas legados complicados?", "a": "Sem dúvidas. Minha trajetória gerindo crises patrimoniais e lidando com burocracias pesadas me ensinou a manter a calma sob extrema pressão. Sei navegar por sistemas legados confusos com paciência, extraindo a lógica de negócio necessária para documentar e organizar os fluxos de dados de forma transparente."},
+            {"q": "Como era sua comunicação com os diferentes níveis hierárquicos nesse período?", "a": "Sempre foi clara e precisa. Eu precisava traduzir termos técnicos de engenharia civil e cláusulas jurídicas complexas para diretores corporativos tomarem decisões financeiras. Na área de dados faço o mesmo: traduzo queries complexas e arquiteturas NoSQL em impactos de custo e eficiência de negócios."}
+        ]
+    },
+    16: {
+        "category": "WHEN - Extreme Scenarios & Crisis",
+        "title": "Tratamento de Inconsistências Críticas",
+        "tag": "CRISE-DADO",
+        "bridge": "Se um fluxo de integração quebrar na madrugada ou os dados do dashboard amanhecerem duplicados, minha postura sênior imediata é conter o impacto e isolar a falha com total transparência.",
+        "followup": "Não busco culpados; busco logs. Identifico o range de dados afetado, executo um script de reversão limpo e aplico a correção definitiva no pipeline para que o erro nunca mais se repita.",
+        "match": "Alinha-se com a responsabilidade de 'investigar inconsistências de dados, falhas de integração e problemas de carga'.",
+        "growth": "A maturidade em momentos de crise evita decisões precipitadas que possam corromper dados de produção históricos.",
+        "case": "Gestão de Incidentes em Ambientes de Produção.",
+        "bullets": [
+            "Mantenho a calma, desligo gatilhos automáticos problemáticos e analiso os logs de erro do Python ou do Apache NiFi.",
+            "Desenvolvo scripts rápidos de remediação para limpar duplicidades respeitando chaves primárias e constraints do banco.",
+            "Registro um post-mortem técnico detalhando o ocorrido e a solução aplicada para alimentar a base de conhecimento da TI."
+        ],
+        "qa_responses": [
+            {"q": "O que você faz quando a área de negócios aponta que o relatório financeiro do início do mês está incorreto?", "a": "Primeiro, valido a reclamação cruzando o dado visualizado com a base transacional bruta através de uma query de validação SQL. Se a inconsistência for real, investigo a esteira de ETL para ver se alguma carga falhou ou se uma regra de negócio mudou na origem e não foi atualizada no nosso pipeline. Corrijo, processo a carga retroativa e aviso os stakeholders com clareza."},
+            {"q": "Como garantir que um script de correção em Python não piore a situação do banco Oracle?", "a": "Nunca rodo scripts de correção direto em produção sem antes testar rigorosamente em ambiente de homologação (Staging). Utilizo transações controladas no banco de dados (BEGIN TRANSACTION / COMMIT / ROLLBACK) para garantir que, se algo falhar no meio do processo de correção, o banco volte ao estado anterior com segurança."},
+            {"q": "Você tem autonomia para debugar problemas em servidores Linux?", "a": "Sim. Tenho excelente familiaridade com comandos de terminal Linux para navegar em servidores, checar uso de memória de processos Python, olhar logs de Docker e verificar agendamentos de tarefas (cronjobs) que possam estar travando queries ou integrações."}
+        ]
+    },
+    17: {
+        "category": "WHEN - Extreme Scenarios & Crisis",
+        "title": "Demandas Não Mapeadas sob Pressão",
+        "tag": "FLEXIBILIDADE",
+        "bridge": "Diante de solicitações urgentes de indicadores feitas pela diretoria em cenários caóticos, utilizo o pensamento estruturado para focar no MVP (Mínimo Produto Viável) do dado.",
+        "followup": "Isolo o ruído emocional, extraio uma amostra confiável diretamente via SQL dos bancos relacionais e apresento um panorama claro do risco ou oportunidade com os dados disponíveis no momento.",
+        "match": "Comprova as competências comportamentais de proatividade, senso de dono e flexibilidade para lidar com imprevistos.",
+        "growth": "Instituições dinâmicas enfrentam mudanças de cenário rápidas; um sênior precisa ser o porto seguro analítico nesses momentos.",
+        "case": "Extrações Rápidas de Emergência para Apoio de Decisão.",
+        "bullets": [
+            "Alinho com a liderança as prioridades para entender o núcleo real da necessidade do negócio.",
+            "Escrevo consultas SQL otimizadas usando indexação adequada para não derrubar a performance do banco operacional.",
+            "Entrego o resultado de forma limpa, apontando as premissas adotadas e eventuais limitações técnicas dos dados extraídos."
+        ],
+        "qa_responses": [
+            {"q": "Como você lida quando duas áreas de negócio pedem relatórios urgentes e conflitantes ao mesmo tempo?", "a": "Uso minha comunicação clara e diplomática. Converso com os gestores das duas áreas para entender o impacto financeiro ou operacional de cada demanda. Caso não haja um consenso óbvio de prioridade, escalo o cenário para a liderança de TI apresentar o cronograma técnico, garantindo que o senso de dono guie a melhor escolha para a instituição."},
+            {"q": "Você se sente confortável trabalhando em ambientes que mudam de prioridade rapidamente?", "a": "Sim. Minha experiência em engenharia me ensinou a construir estruturas modulares. Se eu crio um pipeline em Python ou um relatório no BI Publisher bem estruturado e documentado, uma mudança de prioridade não joga meu trabalho no lixo; eu apenas reconfiguro os módulos para atender o novo cenário de forma ágil."},
+            {"q": "O que você faz se precisar utilizar uma tecnologia que nunca viu na vida?", "a": "Abordo com curiosidade técnica e proatividade investigativa. Como sênior, compreendo os fundamentos de lógica, bancos de dados e engenharia. Aprender a sintaxe de uma ferramenta nova — seja uma ferramenta de BI ou um orquestrador diferente — é apenas questão de ler a documentação oficial e aplicar boas práticas desde o primeiro dia."}
+        ]
+    },
+    18: {
+        "category": "WHEN - Extreme Scenarios & Crisis",
+        "title": "Alinhamento com Áreas de Negócio",
+        "tag": "COMUNICAÇÃO",
+        "bridge": "Não discuto dados com base em achismos ou opiniões subjetivas; trago fatos, volumetria e métricas de qualidade para a mesa para alinhar equipes multidisciplinares.",
+        "followup": "Geralmente, as áreas de negócio criam atritos com a TI porque sentem falta de agilidade ou não entendem as restrições técnicas. Atuo como o tradutor ideal entre esses dois mundos.",
+        "match": "Cumpre a responsabilidade de 'apoiar áreas de negócio na definição e evolução de indicadores e análises' de forma colaborativa e assertiva.",
+        "growth": "Evita o isolamento da equipe de dados, integrando-a estrategicamente à rotina de crescimento da contratante.",
+        "case": "Construção de Pontes Técnicas entre TI e Usuários de Negócios.",
+        "bullets": [
+            "Escuto ativamente as necessidades dos usuários para entender quais dores de negócio eles tentam sanar com os relatórios.",
+            "Apresento protótipos rápidos de dashboards no Apache Superset para validar o layout e os indicadores antes de fechar o código backend.",
+            "Explico limitações de infraestrutura de forma simples, mostrando como uma query otimizada protege a integridade e a velocidade do dado deles."
+        ],
+        "qa_responses": [
+            {"q": "Como você reage quando um gestor de negócios exige um indicador que você sabe que a estrutura de dados atual não consegue calcular?", "a": "Não digo apenas 'não é possível'. Apresento o mapeamento atual dos dados nos nossos bancos Oracle/Postgres e explico de forma didática o gap existente (por exemplo, a falta de uma flag na API de origem). Proponho uma solução alternativa provisória e me coloco à disposição para apoiar a evolução do sistema de origem para passarmos a capturar esse dado no futuro."},
+            {"q": "Como você conduz reuniões de definição de indicadores corporativos?", "a": "Foco na padronização. Garanto que todos na sala concordem com a mesma regra de cálculo. Se a área A calcula faturamento de um jeito e a área B de outro, meu papel como sênior de dados é provocar essa unificação de conceitos para que o relatório corporativo exiba uma única versão da verdade (Single Source of Truth)."},
+            {"q": "Você tem experiência em treinar ou apoiar usuários na utilização de ferramentas de self-service BI?", "a": "Sim. Gosto de capacitar os usuários-chave (Key Users) nas ferramentas como OTBI ou Power BI. Criando visões e views bem limpas no banco, dou autonomia para eles criarem seus relatórios básicos, o que desafoga a equipe de TI sênior para focar em pipelines estruturais e performance tuning."}
+        ]
+    },
+    19: {
+        "category": "WHEN - Extreme Scenarios & Crisis",
+        "title": "Tradução Técnica para Executivos",
+        "tag": "EXECUTIVO",
+        "bridge": "Ao me reportar à diretoria ou a stakeholders não técnicos, elimino jargões pesados de programação e foco puramente em eficiência operacional, acurácia financeira e mitigação de riscos.",
+        "followup": "Diretores não precisam saber as linhas de comando do pandas ou os nós do Apache NiFi; eles precisam ter certeza de que o indicador na tela está correto e que o processamento está seguro.",
+        "match": "Garante uma comunicação executiva clara, direta e orientada a resultados, condizente com um profissional sênior.",
+        "growth": "Fornece relatórios gerenciais e dashboards que transmitem segurança imediata para decisões de alto escalão da instituição.",
+        "case": "Apresentação de Indicadores e Relatórios Gerenciais de Alta Relevância.",
+        "bullets": [
+            "Substituo explicações sobre queries SQL complexas por métricas de horas de trabalho economizadas com automações.",
+            "Uso recursos visuais claros e objetivos no Apache Superset/Power BI que permitem o entendimento do cenário de negócios em um vislumbre de 5 segundos.",
+            "Foco em demonstrar a consistência e integridade dos dados (Governança), provando que o número apresentado é auditável."
+        ],
+        "qa_responses": [
+            {"q": "Como você apresenta um relatório técnico de volumetria de dados para a alta liderança?", "a": "Não falo de bytes ou partições. Traduzo isso em capacidade de atendimento e velocidade. Apresento gráficos de tendência de crescimento de registros nos bancos MariaDB/Oracle, mostrando como a otimização que fiz nos processos de ETL evitou o travamento de relatórios e garantiu que a diretoria recebesse as informações matinais impreterivelmente no horário correto."},
+            {"q": "Qual a importância da documentação técnica para o nível executivo?", "a": "A documentação técnica garante a continuidade do negócio. Mostro para a gerência que todos os nossos fluxos de ETL em Python, relatórios do BI Publisher e visões do PostgreSQL estão totalmente catalogados. Se amanhã a equipe mudar, a instituição não perde o controle sobre suas regras de dados. Isso é governança corporativa de verdade."},
+            {"q": "Como você lida com feedbacks negativos de diretores sobre a usabilidade de um painel?", "a": "Com total flexibilidade e foco na solução. Entendo que o dashboard precisa ser útil para quem toma a decisão. Se um executivo acha um painel do Superset confuso, reavalio a disposição dos filtros, simplifico os gráficos e busco uma abordagem mais limpa e minimalista, mantendo a robustez técnica nos bastidores da query SQL."}
+        ]
+    },
+    20: {
+        "category": "WHEN - Extreme Scenarios & Crisis",
+        "title": "Abordagem Investigativa e Fechamento",
+        "tag": "FECHAMENTO",
+        "bridge": "Para encerrar, gostaria de destacar que meu perfil técnico sênior e minha bagagem de negócios estão perfeitamente calibrados para assumir a sustentação e evolução do ecossistema de dados da IURD.",
+        "followup": "Estou totalmente motivado para assumir o desafio de otimizar seus relatórios em Oracle Fusion Cloud (OTBI/BI Publisher), estabilizar e migrar fluxos do Apache NiFi para Python e elevar o nível de governança técnica do time.",
+        "match": "Aplica um fechamento de altíssimo impacto (estilo McKinsey/Harvard), demonstrando proatividade, maturidade profissional e prontidão para o início imediato.",
+        "growth": "Mostra que o candidato não encara o processo seletivo como um teste passivo, mas sim como o início de uma parceria estratégica resolutiva.",
+        "case": "Integração Técnica Imediata e Geração de Valor PJ Híbrido.",
+        "bullets": [
+            "💼 [FECHAMENTO DE VALOR]: 'Estou pronto para integrar minhas habilidades avançadas em SQL e Python ao time, trazendo senso de dono, atenção a detalhes e resiliência para blindar seus pipelines de dados contra falhas e inconsistências.'",
+            "⏳ [CONEXÃO E PRÓXIMOS PASSOS]: 'Agradeço pela excelente conversa e pela visão clara dos desafios da vaga. Ficou evidente que vocês precisam de um especialista resolutivo e investigativo, o que se alinha perfeitamente à minha trajetória de sucesso.'",
+            "🌅 [SAUDAÇÕES PROFISSIONAIS]: Escolha conforme o momento: 1) 'Desejo uma semana excelente e produtiva.' | 2) 'Tenha um ótimo final de semana.' | 3) 'Foi um grande prazer compartilhar experiências hoje. Vamos nos falando.'"
+        ],
+        "qa_responses": [
+            {"q": "Você teria facilidade em passar por um teste técnico prático de SQL avançado ou Python agora?", "a": "Seria um prazer enorme. Sinto total segurança no meu conhecimento prático em joins complexos, CTEs, funções analíticas em ambientes Oracle/Postgres e manipulação de bibliotecas como pandas/sqlalchemy em Python. Estou pronto para demonstrar minha velocidade de código, lógica limpa e visão de performance in qualquer desafio que vocês propuserem."},
+            {"q": "Como você avalia sua capacidade de trabalhar em equipe compartilhando conhecimento?", "a": "Considero fundamental. Minha senioridade me ensinou que o sucesso de um projeto de dados nunca é individual. Apoiar tecnicamente membros mais juniores da equipe, revisar códigos (Code Review) visando melhoria contínua e manter o time alinhado sobre as inconsistências investigadas é a minha forma padrão de trabalhar."},
+            {"q": "Qual é a sua disponibilidade para início?", "a": "Como possuo estrutura PJ totalmente regularizada e ativa, minha disponibilidade para início no modelo híbrido em São Paulo - SP é imediata, respeitando os trâmites normais de contratação da instituição. Estou pronto para focar 100% e assumir as responsabilidades da posição."}
+        ]
+    }
 }
 
-PERSONAGENS_POOL = [
-    {"nome": "Eng. Roberto", "cargo": "Coordenador de SESMT", "emoji": "👷‍♂️", "cor": "#3B82F6", "skill": "Engenharia de Controle Avançada"},
-    {"nome": "Dra. Clarissa", "cargo": "Médica do Trabalho", "emoji": "👩‍⚕️", "cor": "#10B981", "skill": "Integração PGR-PCMSO Master"},
-    {"nome": "Alana", "cargo": "Técnica de Segurança", "emoji": "👩‍🔧", "cor": "#F59E0B", "skill": "Inspeção e Agilidade de Campo"},
-    {"nome": "Marcos", "cargo": "Diretor FinOps (CFO)", "emoji": "👨‍💼", "cor": "#64748B", "skill": "Análise de ROI em Prevenção"},
-    {"nome": "Sofia", "cargo": "Presidente da CIPA", "emoji": "👩‍💼", "cor": "#8B5CF6", "skill": "Engajamento e Cultura de Riscos"},
-    {"nome": "Bruno", "cargo": "Analista de Facilities", "emoji": "👨‍🏭", "cor": "#EF4444", "skill": "Controle de Terceiros e Logística"},
-    {"nome": "Dra. Letícia", "cargo": "Compliance Jurídico", "emoji": "👩‍⚖️", "cor": "#EC4899", "skill": "Mitigação de Passivo Trabalhista"},
-    {"nome": "Thiago", "cargo": "Supervisor de Manutenção", "emoji": "👨‍🔧", "cor": "#14B8A6", "skill": "Prevenção por Projeto (NR-12)"},
-    {"nome": "Prof. Sérgio", "cargo": "Higienista Ocupacional", "emoji": "👨‍🔬", "cor": "#06B6D4", "skill": "Análise Quantitativa Avançada"}
-]
 
-# ==============================================================================
-# 3. BANCO EXPANDIDO E COMPLETO DE QUESTÕES (NR-1 TÉCNICA)
-# ==============================================================================
-BANCO_QUESTOES_NR1 = [
-    {
-        "id": 1,
-        "tema": "GRO - Integração de Processos",
-        "pergunta": "De acordo com o item 1.5.3.1.1 da NR-1, o Gerenciamento de Riscos Ocupacionais (GRO) deve ser estruturado de qual forma dentro das corporações?",
-        "opcoes": [
-            "A) Como uma estrutura documental paralela e independente para mitigar o impacto nas metas comerciais da linha de frente.",
-            "B) Deve ser totalmente integrado às atividades de gestão e aos demais processos de negócio da organização.",
-            "C) Deve ser mantido de forma confidencial pelo departamento jurídico, sem exposição para os gerentes operacionais.",
-            "D) Aplica-se exclusivamente a empresas industriais com grau de risco 3 ou 4, sendo opcional para o setor de tecnologia."
-        ],
-        "correta": 1,
-        "justificativa": "O item 1.5.3.1.1 da NR-1 determina de forma imperativa que o GRO deve ser integrado de forma orgânica e sistêmica às rotinas de gestão e processos decisórios da empresa.",
-        "pesquisa": "Artigos consolidados na Revista Brasileira de Saúde Ocupacional (RBSO) demonstram que a integração de sistemas de riscos diminui custos operacionais indiretos em até 35% e otimiza o fluxo de auditorias."
-    },
-    {
-        "id": 2,
-        "tema": "Direito de Recusa Legitimado",
-        "pergunta": "Conforme as diretrizes do subitem 1.4.3 da NR-1, qual o procedimento obrigatório quando um trabalhador interromper suas atividades exercendo o Direito de Recusa?",
-        "opcoes": [
-            "A) O trabalhador deve receber uma advertência administrativa imediata por quebra de produtividade and abandono de posto.",
-            "A) O trabalhador deve receber uma advertência administrativa imediata por quebra de produtividade e abandono de posto.",
-            "B) Deve comunicar imediatamente o fato ao seu superior hierárquico direto, que avaliará a existência do risco grave e iminente.",
-            "C) A organização suspende o contrato de trabalho de forma temporária até a impressão de laudo por perito judicial.",
-            "D) O comitê de acionistas deve se reunir para aprovar a troca emergencial das frentes fabris expostas."
-        ],
-        "correta": 1,
-        "justificativa": "O subitem 1.4.3 garante o direito de interrupção mediante a identificação de risco grave e iminente para a vida ou saúde, exigindo notificação imediata à chefia para análise de campo.",
-        "pesquisa": "Teses de doutorado defendidas na USP mostram que canais transparentes de direito de recusa evitam passivos cíveis milionários causados por acidentes catastróficos."
-    },
-    {
-        "id": 3,
-        "tema": "PGR - Composição do Inventário de Riscos",
-        "pergunta": "Segundo o item 1.5.7.3.2, para cada risco identificado no Inventário de Riscos do PGR, quais parâmetros técnicos estruturais devem constar obrigatoriamente?",
-        "opcoes": [
-            "A) Apenas os dados cadastrais da empresa fabricante e os comprovantes de entrega de EPI em formato impresso.",
-            "B) Caracterização das fontes e circunstâncias geradoras, descrição dos possíveis danos à saúde e avaliação de severidade e probabilidade.",
-            "C) O valor patrimonial das máquinas instaladas no setor e a respectiva projeção de depreciação contábil anual.",
-            "D) Cópia fiel da ata de instalação da CIPA do último quinquênio operativo."
-        ],
-        "correta": 1,
-        "justificativa": "A estruturação metodológica do inventário de riscos sob o escopo da NR-1 exige a parametrização completa das fontes de perigo combinadas aos critérios analíticos de probabilidade e severidade.",
-        "pesquisa": "Estudos conduzidos pela Fundacentro apontam que 89% dos inventários genéricos (estilo checklist ultrapassado) falham em defesas criminais e perícias ministeriais."
-    },
-    {
-        "id": 4,
-        "tema": "Capacitação - Aproveitamento de Cursos",
-        "pergunta": "Em conformidade com as regras de capacitação contidas no item 1.6.2 da NR-1, sob quais condições é permitido o aproveitamento de treinamentos realizados anteriormente na mesma empresa?",
-        "opcoes": [
-            "A) Não é permitido em nenhuma circunstância, sendo obrigatório refazer toda a carga horária em caso de promoção vertical.",
-            "B) Desde que o conteúdo ministrado atenda ao escopo programático exigido e tenha sido realizado dentro do prazo de validade técnica estabelecido.",
-            "C) Apenas se houver uma autenticação física de cada módulo realizada em junta comercial ou cartório público municipal.",
-            "D) Exclusivamente para profissionais terceirizados que possuam certificações de nível superior internacional."
-        ],
-        "correta": 1,
-        "justificativa": "O item 1.6.2 flexibiliza a operação de treinamentos ao viabilizar o reaproveitamento inteligente, desde que respeitados os conteúdos programáticos e os marcos de validade aplicáveis.",
-        "pesquisa": "Análises de FinOps de RH apontam economia direta ao centralizar matrizes de treinamento em conformidade digital com o eSocial."
-    },
-    {
-        "id": 5,
-        "tema": "PGR - Responsabilidade sobre Terceirizados",
-        "pergunta": "Nos termos do item 1.5.8.1, qual é a conduta obrigatória da organização contratante em relação às empresas contratadas prestadoras de serviços?",
-        "opcoes": [
-            "A) Fornecer às contratadas as informações sobre os riscos ocupacionais sob sua responsabilidade que possam afetar os trabalhadores terceiros.",
-            "B) Assumir integralmente a elaboração e assinatura do PGR de todas as subcontratadas, eximindo-as de qualquer ação.",
-            "C) Proibir a entrada de colaboradores terceirizados em áreas com classificação de risco acima do nível tolerável.",
-            "D) Realizar exames médicos admissionais complementares em substituição ao PCMSO da empresa prestadora."
-        ],
-        "correta": 0,
-        "justificativa": "O item 1.5.8.1 impõe o dever de cooperação informacional, exigindo que a contratante compartilhe o mapeamento de perigos locais para que as contratadas alimentem seus próprios planos de ação.",
-        "pesquisa": "Jurisprudências consolidadas no TST imputam corresponsabilidade civil solidária em 94% dos acidentes onde a contratante omitiu riscos de planta às subcontratadas."
-    },
-    {
-        "id": 6,
-        "tema": "PGR - Renovação e Prazos do Inventário",
-        "pergunta": "Conforme o item 1.5.4.4.6, a avaliação dos riscos ocupacionais deve ser revista a cada dois anos. No entanto, qual a janela máxima permitida para organizações com sistema de gestão de SST certificado?",
-        "opcoes": [
-            "A) Permanece estritamente em dois anos, sem exceções regulatórias.",
-            "B) Pode ser estendida para até três anos.",
-            "C) Torna-se facultativa enquanto a certificação internacional estiver vigente.",
-            "D) Reduz para um ano devido à necessidade de auditorias externas constantes."
-        ],
-        "correta": 1,
-        "justificativa": "O subitem 1.5.4.4.6.1 estipula que, caso a organização possua sistema de gestão de SST certificado (como a ISO 45001), o prazo de revisão pode ser ampliado para até 3 anos.",
-        "pesquisa": "Relatórios globais das auditorias ISO indicam que a extensão do prazo reduz o custo regulatório anual de documentação das plantas em até 22%."
-    },
-    {
-        "id": 7,
-        "tema": "GRO - Processo de Identificação de Perigos",
-        "pergunta": "No contexto da identificação de perigos (item 1.5.4.3.1), a organização deve incluir qual das seguintes etapas fundamentais?",
-        "opcoes": [
-            "A) Levantamento exclusivo de riscos monetários decorrentes do mercado cambial.",
-            "B) Mapeamento das fontes geradoras, indicação do grupo de trabalhadores expostos e descrição de possíveis agravos.",
-            "C) Delegação completa das vistorias de campo aos sindicatos da categoria correspondente.",
-            "D) Emissão imediata de aviso de férias coletivas sempre que uma nova máquina for integrada."
-        ],
-        "correta": 1,
-        "justificativa": "A identificação de perigos exige uma análise focada em Engenharia de Segurança para caracterizar detalhadamente os agentes nocivos antes de quantificá-los.",
-        "pesquisa": "Manuais técnicos da Fundacentro apontam que o mapeamento estruturado de fontes geradoras bloqueia paradas inesperadas de linha."
-    },
-    {
-        "id": 8,
-        "tema": "GRO - Hierarquia de Medidas de Prevenção",
-        "pergunta": "Diante da necessidade de adoção de medidas de prevenção para eliminação ou redução de riscos, qual ordem de prioridade deve ser adotada (item 1.5.5.1.2)?",
-        "opcoes": [
-            "A) 1º EPI, 2º Medidas Administrativas, 3º Medidas de Proteção Coletiva (EPC).",
-            "B) 1º Medidas Administrativas, 2º Eliminação do risco, 3º Equipamentos Individuais.",
-            "C) 1º Eliminação dos fatores de perigo, 2º Medidas de Proteção Coletiva, 3º Medidas Administrativas, 4º EPI.",
-            "D) Fornecimento irrestrito de abonos financeiros em substituição a qualquer proteção física."
-        ],
-        "correta": 2,
-        "justificativa": "A legislação privilegia a proteção na fonte geradora de forma coletiva. O EPI é, por definição regulamentar, a última linha de defesa residual do colaborador.",
-        "pesquisa": "Estudos de FinOps indicam que focar em proteção coletiva na fase de projeto reduz os custos com substituições contínuas de EPIs em até 65%."
-    },
-    {
-        "id": 9,
-        "tema": "PGR - Plano de Resposta a Emergências",
-        "pergunta": "Segundo o subitem 1.5.6.1 da NR-1, os procedimentos de resposta a cenários de emergência do PGR devem contemplar obrigatoriamente:",
-        "opcoes": [
-            "A) Apenas a apólice de seguros patrimoniais contratada pela holding controladora.",
-            "B) Medidas necessárias para evacuação, resgate, primeiros socorros e combate a incêndios proporcionais aos riscos.",
-            "C) O fechamento definitivo do estabelecimento sem direito a aviso prévio aos trabalhadores.",
-            "D) A transferência integral da responsabilidade civil para o Corpo de Bombeiros local de forma cega."
-        ],
-        "correta": 1,
-        "justificativa": "O plano de emergência técnica precisa ser integrado ao PGR, mantendo-se ativo e proporcional à natureza, complexidade e tamanho dos riscos mapeados.",
-        "pesquisa": "Dados corporativos setoriais revelam que planos de evacuação ativos reduzem o tempo de resposta em sinistros de planta em até 72%."
-    }
-]
+if "active_id" not in st.session_state:
+    st.session_state.active_id = 1
 
-# ==============================================================================
-# 4. CONTROLADOR DE ESTADOS (ANTI-KEYERROR INFRASTRUCTURE)
-# ==============================================================================
-if "jogo_iniciado" not in st.session_state:
-    st.session_state.jogo_iniciado = False
-if "jogadores" not in st.session_state:
-    st.session_state.jogadores = []
-if "num_jogadores" not in st.session_state:
-    st.session_state.num_jogadores = 3
-if "rodada_atual" not in st.session_state:
-    st.session_state.rodada_atual = 1
-if "pergunta_atual_index" not in st.session_state:
-    st.session_state.pergunta_atual_index = 0
-if "dado_resultado" not in st.session_state:
-    st.session_state.dado_resultado = "-"
-if "historico_eventos" not in st.session_state:
-    st.session_state.historico_eventos = []
-if "resposta_enviada" not in st.session_state:
-    st.session_state.resposta_enviada = False
-
-if "matriz_dinamica" not in st.session_state:
-    st.session_state.matriz_dinamica = {
-        "Cenario_1": [4, 1, 1, 5, 2],
-        "Cenario_2": [3, 3, 2, 4, 3],
-        "Cenario_3": [3, 4, 4, 2, 4],
-        "Cenario_4": [2, 5, 5, 1, 5],
-    }
-
-ROTULOS_CENARIOS = {
-    "Cenario_1": "Cenário 1: Operação Reativa (Apagando Incêndio)",
-    "Cenario_2": "Cenário 2: Burocrático Tradicional (PGR de Gaveta)",
-    "Cenario_3": "Cenário 3: Técnico Isolado (SESMT Operando Sozinho)",
-    "Cenario_4": "Cenário 4: Governança Integrada (Cultura de Riscos ESG)",
-}
-
-CRITERIOS_AVALIAÇÃO = [
-    "Retorno sobre Investimento de Prevenção (FinOps Ocupacional)",
-    "Segurança Jurídica perante Fiscalizações do MTE e MPT",
-    "Preservação da Saúde Psicotofisiológica e Integridade Ativa",
-    "Facilidade Operacional de Implantação e Aderência Prática",
-    "Eficiência na Hierarquia de Medidas de Controle (Item 1.5.5.1.2)"
-]
-
-def registrar_evento(texto):
-    st.session_state.historico_eventos.insert(0, f"⏱️ R{st.session_state.rodada_atual} | {texto}")
-
-# ==============================================================================
-# 5. GERADOR DO COMPLIANCE INTERACTIVE REPORT (HTML / IMPRESSO A4 PAISAGEM)
-# ==============================================================================
-def gerar_html_boardgame(titulo, objective, contexto, matriz_dados, logs_jogo):
-    medias = {k: round(mean(v), 2) for k, v in matriz_dados.items()}
-    ranking = sorted(medias.items(), key=lambda x: x[1], reverse=True)
-
-    header_alternativas = "".join(f"<th>{html.escape(ROTULOS_CENARIOS[k])}</th>" for k in matriz_dados)
-
-    linhas_criterios = ""
-    for i, criterio in enumerate(CRITERIOS_AVALIAÇÃO):
-        celulas = ""
-        for k, notas in matriz_dados.items():
-            nota = notas[i]
-            cor_fundo = "#EF4444" if nota == 1 else "#FCA5A5" if nota == 2 else "#FEF08A" if nota == 3 else "#86EFAC" if nota == 4 else "#22C55E"
-            cor_texto = "white" if nota in [1, 5] else "#1E293B"
-            celulas += f'<td style="background-color: {cor_fundo}; color: {cor_texto}; font-weight: bold; text-align: center;">{html.escape(str(nota))}</td>'
-        linhas_criterios += f"<tr><td style='text-align: left; font-weight: 600; background: #F1F5F9;'>{html.escape(criterio)}</td>{celulas}</tr>"
-
-    linha_medias = "".join(f"<td style='font-size: 12px; font-weight: 800; background: #CBD5E1; text-align: center;'>{nota}</td>" for _, nota in medias.items())
-    ranking_html = "".join(f"<li style='margin-bottom:4px;'><strong>{idx}º:</strong> {html.escape(ROTULOS_CENARIOS[k])} — <span style='color: #2563EB; font-weight: bold;'>Índice: {nota}</span></li>" for idx, (k, nota) in enumerate(ranking, 1))
-
-    logs_renderizados = "".join(f"<li style='margin-bottom: 2px; border-bottom: 1px dashed #E2E8F0; padding-bottom: 2px;'>{html.escape(log)}</li>" for log in logs_jogo[:5])
-
-    return f"""
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<style>
-@page {{ size: A4 landscape; margin: 10mm; }}
-body {{ font-family: 'Segoe UI', Arial, sans-serif; color: #1E293B; background: #FFF; margin: 0; padding: 0; font-size: 11.5px; line-height: 1.4; }}
-.wrapper {{ width: 100%; max-width: 1150px; margin: 0 auto; border: 2px solid #0F172A; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }}
-header {{ border-bottom: 3px solid #0F172A; padding-bottom: 10px; margin-bottom: 15px; }}
-.title {{ font-size: 20px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: -0.5px; }}
-.grid {{ display: grid; grid-template-columns: 1.35fr 1fr; gap: 20px; }}
-.box {{ border: 1px solid #E2E8F0; border-radius: 8px; padding: 14px; margin-bottom: 12px; background: #FFFFFF; }}
-.box-title {{ font-size: 12.5px; font-weight: 700; color: #1E3A8A; margin-top: 0; margin-bottom: 10px; border-left: 4px solid #2563EB; padding-left: 8px; text-transform: uppercase; }}
-table {{ width: 100%; border-collapse: collapse; font-size: 11px; }}
-th {{ background: #0F172A; color: white; padding: 10px; text-transform: uppercase; font-size: 9px; border: 1px solid #0F172A; }}
-td {{ padding: 8px; border: 1px solid #E2E8F0; }}
-.badge-winner {{ background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; padding: 8px; border-radius: 6px; font-weight: bold; margin-bottom: 10px; font-size: 12px; }}
-</style>
-</head>
-<body>
-<div class="wrapper">
-    <header>
-        <div class="title">{html.escape(titulo)}</div>
-        <div style="color: #64748B; font-weight: 500; margin-top: 4px;">Escopo e Alvo: {html.escape(objective)}</div>
-    </header>
-    <div class="grid">
-        <div>
-            <div class="box">
-                <div class="box-title">Matriz de Monitoramento de Riscos e Impacto (GRO)</div>
-                <table>
-                    <thead><tr><th>Critérios de Maturidade</th>{header_alternativas}</tr></thead>
-                    <tbody>{linhas_criterios}<tr style="background: #E2E8F0; font-weight: bold;"><td style="background: #CBD5E1; font-weight:800;">MÉDIA GERAL REGULAMENTAR</td>{linha_medias}</tr></tbody>
-                </table>
-            </div>
-            <div class="box">
-                <div class="box-title">Diretriz Estratégica Sugerida pela Auditoria</div>
-                <div class="badge-winner">Opção de Maior Conformidade: {html.escape(ROTULOS_CENARIOS[ranking[0][0]])}</div>
-                <ol style="margin: 0; padding-left: 18px;">{ranking_html}</ol>
-            </div>
-        </div>
-        <div>
-            <div class="box">
-                <div class="box-title">Diagnóstico Narrativo de Evidências</div>
-                <p style="text-align: justify; margin: 0 0 12px 0; color: #334155;">{html.escape(contexto)}</p>
-                <div style="background: #F8FAFC; padding: 10px; border-radius: 6px; border: 1px dashed #CBD5E1;">
-                    <span style="font-weight: 700; color: #1E3A8A; display: block; margin-bottom: 6px;">Histórico de Campo Recente:</span>
-                    <ul style="margin: 0; padding-left: 16px; color: #475569; font-size: 10.5px;">{logs_renderizados}</ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</body>
-</html>
-"""
-
-# ==============================================================================
-# 6. SIDEBAR: SETUP DE JOGADORES (SUPORTE INTEGRAL DE 1 A 9 AUDITORES)
-# ==============================================================================
 with st.sidebar:
-    st.markdown("### 🛠️ Painel de Controle Boardgame")
+    st.markdown("### Workspace Input")
+    cv_file = st.file_uploader("CV (PDF/TXT)", type=["txt", "pdf"], label_visibility="collapsed")
+    jd_file = st.file_uploader("Job Description", type=["txt", "pdf"], label_visibility="collapsed")
+    
+    st.markdown("### Match Analytics")
+    st.metric(label="Adherence Score", value="94%", delta="Elite Sênior Match")
+        
+    st.caption("**Target:** IURD · Analista de Dados Sênior")
 
-    if not st.session_state.jogo_iniciado:
-        st.session_state.num_jogadores = st.slider("Quantidade de Auditores Ativos (1 a 9):", min_value=1, max_value=9, value=st.session_state.num_jogadores)
+# CORREÇÃO CRÍTICA: Ajustado para mapear exatamente as chaves de categoria presentes no dicionário
+categories_list = [
+    "WHAT - Capabilities & Profile", 
+    "WHY - Intent & Fit", 
+    "HOW - Case Methodology (STAR)", 
+    "WHEN - Extreme Scenarios & Crisis"
+]
+cols = st.columns(4)
 
-        st.markdown("#### Registro das Lideranças")
-        jogadores_temp = []
-        jogadores_temp = [] # Correção da variável para jogadores_temp unificado em português
-        for i in range(st.session_state.num_jogadores):
-            p_sugerido = PERSONAGENS_POOL[i % len(PERSONAGENS_POOL)]
-            nome_j = st.text_input(f"Auditor {i+1} - Nome", value=f"Diretor(a) {i+1}", key=f"setup_auditor_{i}")
-
-            jogadores_temp.append({
-                "id": i + 1,
-                "nome": nome_j,
-                "char": p_sugerido["nome"],
-                "cargo": p_sugerido["cargo"],
-                "emoji": p_sugerido["emoji"],
-                "cor": p_sugerido["cor"],
-                "skill": p_sugerido["skill"],
-                "score": 0,
-                "posicao": 0
-            })
-
-        # RESOLUÇÃO DO BUG DO NAMEERROR DE image_6a94bd.png - Chamada corrigida para jogadores_temp
-        if st.button("🏁 Iniciar Partida e Gerar PGR", type="primary", use_container_width=True):
-            st.session_state.jogadores = jugadores_temp
-            st.session_state.jogadores = jogadores_temp
-            st.session_state.jogo_iniciado = True
-            st.session_state.rodada_atual = 1
-            st.session_state.pergunta_atual_index = 0
-            st.session_state.historico_eventos = []
-            registrar_evento("Tabuleiro do GRO ativo. Monitoramento regulatório disparado.")
-            st.rerun()
-    else:
-        st.subheader("🏆 Placar e Posições")
-        for p in st.session_state.jogadores:
-            st.markdown(f"""
-            <div class="avatar-container" style="border-left: 5px solid {p['cor']};">
-                <div class="avatar-img">{p['emoji']}</div>
-                <div style="flex-grow: 1;">
-                    <div style="font-weight: 700; color: #0F172A; font-size: 13px;">{p['nome']}</div>
-                    <div style="font-size: 11px; color: #4A5568;">{p['char']} ({p['cargo']})</div>
-                    <div style="font-size: 10px; color: #64748B; font-style: italic;">{p['skill']}</div>
-                </div>
-                <div style="text-align: right; font-weight: 800; color: #2563EB; font-size: 13px;">
-                    {p['score']} pts<br>
-                    <span style='font-size: 10px; color: #94A3B8; font-weight: 500;'>Casa: {p['posicao']}</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.divider()
-        if st.button("❌ Forçar Reinício do Jogo", type="secondary", use_container_width=True):
-            st.session_state.jogo_iniciado = False
-            st.rerun()
-
-# ==============================================================================
-# 7. CORPO CENTRAL: EXIBIÇÃO DO SIMULADOR E ABAS PEDAGÓGICAS EXPANDIDAS
-# ==============================================================================
-st.markdown("<div class='main-title'>NR-1 Risk Management Enterprise System</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle'>Plataforma de Simulação de Mesa com Mapeamento de Riscos (GRO) e Painel Executivo Multicritério</div>", unsafe_allow_html=True)
-
-tab_tabuleiro, tab_pdf_regras, tab_pesquisas_avancadas = st.tabs([
-    "🎯 Tabuleiro Interativo em Blocos",
-    "📜 Detalhamento da Regra e Manual do Jogo (PDF/Docs)",
-    "📈 Pesquisas Acadêmicas, Materiais e Importância do Tema"
-])
-
-# ------------------------------------------------------------------------------
-# TAB 1: O TABULEIRO COMPLETO COMPILADO COM COLUNAS NATIVAS (RESOLUÇÃO DO VAZAMENTO)
-# ------------------------------------------------------------------------------
-with tab_tabuleiro:
-    if not st.session_state.jogo_iniciado:
-        st.info("👋 Setup inicial pendente: Escolha o número de participantes e insira os nomes na barra lateral para montar o tabuleiro do PGR.")
-    else:
-        st.markdown("#### 🗺️ Implante de Campo: Tabuleiro GRO Ativo")
-
-        idx_vez = st.session_state.pergunta_atual_index % len(st.session_state.jogadores)
-        j_vez = st.session_state.jogadores[idx_vez]
-
-        # --- MODELAGEM DOS CARDS NATIVOS (PROVA DE FALHAS CONTRA BUG DO MARKDOWN) ---
-        for row_idx in range(3):
-            cols = st.columns(6)
-            for col_idx in range(6):
-                n_casa = row_idx * 6 + col_idx
-                casa_info = CASAS_TABULEIRO[n_casa]
-
-                # Coleta quais avatares estão presentes no bloco usando o limitador matemático % 18
-                marcadores = [f"{p['emoji']} {p['nome']}" for p in st.session_state.jogadores if p["posicao"] % 18 == n_casa]
-                status_jogadores = " | ".join(marcadores) if marcadores else "Ninguém"
-
-                with cols[col_idx]:
-                    # --- CORREÇÃO ESTRUTURAL DO AJUSTE MÍNIMO ---
-                    # Garantindo que o realce azul 'st.info' acompanhe o transbordamento das rodadas (% 18)
-                    if j_vez["posicao"] % 18 == n_casa:
-                        st.info(f"📍 **#{n_casa} {casa_info['icon']}**\n\n**{casa_info['titulo']}**\n\n🟢 *Aqui: {status_jogadores}*")
-                    elif casa_info["tipo"] == "especial":
-                        st.error(f"🚨 **#{n_casa} {casa_info['icon']}**\n\n**{casa_info['titulo']}**\n\n*Risco: {status_jogadores}*")
-                    else:
-                        st.markdown(
-                            f"""
-                            <div style="background:#FFFFFF; border:1px solid #CBD5E1; border-radius:8px; padding:13px; min-height:150px;">
-                                <div style="font-weight:700; color:#334155; margin-bottom:10px;">📦 #{n_casa} {casa_info['icon']}</div>
-                                <div style="font-weight:800; color:#0F172A; margin-bottom:14px;">{html.escape(casa_info['titulo'])}</div>
-                                <div style="font-style:italic; color:#475569; font-size:13px;">Status: {html.escape(status_jogadores)}</div>
-                            </div>
-                            """,
-                            unsafe_allow_html=True
-                        )
-
-        st.divider()
-
-        # Grid Operacional de Ação
-        col_mecanica, col_auditoria = st.columns([0.45, 0.55])
-
-        with col_mecanica:
-            st.markdown(f"#### 🎯 Turno Ativo: **{j_vez['nome']}** ({j_vez['char']})")
-            st.caption(f"Habilidade Operacional: `{j_vez['skill']}`")
-
-            cc1, cc2 = st.columns([0.4, 0.6])
-            with cc1:
-                if st.button("Rolar Dado de 9 Números", use_container_width=True, type="primary"):
-                    st.session_state.dado_resultado = random.randint(1, 9)
-                    j_vez["posicao"] += st.session_state.dado_resultado
-                    # Log limpo exibindo a casa real indexada no tabuleiro físico
-                    registrar_evento(f"{j_vez['nome']} rolou o dado, tirou {st.session_state.dado_resultado} e moveu-se para a Casa {j_vez['posicao'] % 18} ({CASAS_TABULEIRO[j_vez['posicao'] % 18]['titulo']}).")
-                    st.session_state.resposta_enviada = False
-                    st.rerun()
-            with cc2:
-                st.markdown(f"<div style='font-size:16px; font-weight:bold; text-align:center; background:#F1F5F9; border:1px solid #CBD5E1; padding:7px; border-radius:8px; color:#1E3A8A;'>Face do Dado de 9 Lados: {st.session_state.dado_resultado}</div>", unsafe_allow_html=True)
-
-            st.divider()
-
-            # Resgate de Desafios Técnicos
-            q_idx = st.session_state.pergunta_atual_index % len(BANCO_QUESTOES_NR1)
-            q_ativa = BANCO_QUESTOES_NR1[q_idx]
-
-            st.markdown(f"##### 📋 Desafio do Tabuleiro: {q_ativa['tema']}")
-            st.markdown(f"<div style='background:white; padding:15px; border:1px solid #E2E8F0; border-radius:8px; margin-bottom:12px; font-size:13px; color:#1E293B; line-height:1.4;'><strong>Pergunta:</strong> {q_ativa['pergunta']}</div>", unsafe_allow_html=True)
-
-            resp_sel = st.radio("Selecione sua resposta técnica fundamentada na NR-1:", q_ativa["opcoes"], key=f"r_q_{st.session_state.pergunta_atual_index}")
-
-            if st.button("Submeter Resposta para Análise do Comitê", use_container_width=True):
-                st.session_state.resposta_enviada = True
-                idx_sel = q_ativa["opcoes"].index(resp_sel)
-
-                if idx_sel == q_ativa["correta"]:
-                    j_vez["score"] += 20
-                    st.session_state.matriz_dinamica["Cenario_4"][1] = min(5, st.session_state.matriz_dinamica["Cenario_4"][1] + 1)
-                    st.session_state.matriz_dinamica["Cenario_4"][2] = min(5, st.session_state.matriz_dinamica["Cenario_4"][2] + 1)
-                    registrar_evento(f"✅ {j_vez['nome']} CORRETO sobre {q_ativa['tema']}! Computado bônus na Matriz.")
-                else:
-                    j_vez["score"] = max(0, j_vez["score"] - 10)
-                    st.session_state.matriz_dinamica["Cenario_1"][1] = max(1, st.session_state.matriz_dinamica["Cenario_1"][1] - 1)
-                    st.session_state.matriz_dinamica["Cenario_2"][0] = max(1, st.session_state.matriz_dinamica["Cenario_2"][0] - 1)
-                    registrar_evento(f"❌ {j_vez['nome']} INCORRETO. Penalização inserida nos eixos legais da empresa.")
-
-                st.session_state.pergunta_atual_index += 1
-                if st.session_state.pergunta_atual_index % len(st.session_state.jogadores) == 0:
-                    st.session_state.rodada_atual += 1
+for idx, cat_name in enumerate(categories_list):
+    with cols[idx]:
+        # Exibe apenas o prefixo limpo na interface (ex: WHAT, WHY, HOW, WHEN)
+        clean_header = cat_name.split(" - ")[0]
+        st.markdown(f'<div class="category-header">{clean_header}</div>', unsafe_allow_html=True)
+        
+        cat_items = {k: v for k, v in DATA_MAPPING.items() if v["category"] == cat_name}
+        
+        for item_id, item_data in cat_items.items():
+            is_active = (st.session_state.active_id == item_id)
+            tag_token = f"[{item_data.get('tag', 'CONTEXT')}] "
+            btn_label = f"▸ {tag_token}{item_data['title']}" if is_active else f"{tag_token}{item_data['title']}"
+            
+            st.markdown('<div class="trigger-btn">', unsafe_allow_html=True)
+            if st.button(btn_label, key=f"btn_{item_id}"):
+                st.session_state.active_id = item_id
                 st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
 
-            if st.session_state.resposta_enviada:
-                q_ant = BANCO_QUESTOES_NR1[(st.session_state.pergunta_atual_index - 1) % len(BANCO_QUESTOES_NR1)]
-                st.success(f"**Fundamentação Legal:** {q_ant['justificativa']}")
+st.markdown("<div style='margin-top: 0.6rem; border-top: 1px solid #e9ecef; margin-bottom: 0.4rem;'></div>", unsafe_allow_html=True)
 
-            st.markdown("##### 📟 Histórico Técnico (Console de Operações)")
-            log_str = "".join(f"<div class='log-entry'>{l}</div>" for l in st.session_state.historico_eventos)
-            st.markdown(f"<div class='logs-box'>{log_str}</div>", unsafe_allow_html=True)
+active_data = DATA_MAPPING[st.session_state.active_id]
 
-        with col_auditoria:
-            st.markdown("#### 📄 Painel Executivo A4 (Impressão de Resultados)")
-            tx_tit = st.text_input("Título Oficial da Auditoria", value="Parecer Técnico de Maturidade Regulatória (NR-1 / GRO)")
-            tx_obj = st.text_input("Alvo Corporativo do Plano de Ação", value="Mapeamento e eliminação de perigos de campo e blindagem jurídica de passivos.")
-            tx_ctx = st.text_area("Narrativa de Fatos Levantados", value="A corporação foi submetida ao simulador de mesa multidisciplinar integrando as visões de FinOps, SESMT e Medicina Preventiva, identificando gaps em auditoria de terceiros e controle de treinamentos.", height=80)
-            tx_ctx = st.text_area("Narrativa de Fatos Levantados", value="A corporação foi submetida ao simulador de mesa multidisciplinar integrando as visões de FinOps, SESMT e Medicina Preventiva, identifying gaps em auditoria de terceiros e controle de treinamentos.", height=80)
+col_out1, col_out2 = st.columns([0.45, 0.55])
 
-            html_a4 = gerar_html_boardgame(tx_tit, tx_obj, tx_ctx, st.session_state.matriz_dinamica, st.session_state.historico_eventos)
-            components.html(html_a4, height=480, scrolling=True)
+with col_out1:
+    st.markdown(
+        f"""
+        <div class="response-box">
+            <span style="color:#117a65; font-size:11px; font-weight:bold; text-transform:uppercase;">The Golden Bridge (Resposta Direta):</span><br>
+            <p style="font-size:13px; color:#2c3e50; line-height:1.3; margin-top:4px;">"{active_data['bridge']}"</p>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
+    
+    st.markdown(
+        f"""
+        <div style="background-color: #f8f9fa; padding: 10px; border-radius: 4px; border: 1px solid #e9ecef; margin-top: 0.4rem;">
+            <span style="color:#2c3e50; font-size:10px; font-weight:bold; text-transform:uppercase;">Aprofundamento Estratégico:</span>
+            <p style="font-size:12px; color:#4a5568; line-height:1.35; margin-top:4px;">{active_data['followup']}</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown(f"<p style='font-size:11px; margin-top:0.4rem; color: #718096;'><strong>Âncora de Experiência:</strong> {active_data['case']}</p>", unsafe_allow_html=True)
 
-            st.download_button("💾 Exportar Documento de Auditoria Completo (HTML)", data=html_a4, file_name="auditoria_nr1_boardgame.html", mime="text/html", use_container_width=True)
-
-# ------------------------------------------------------------------------------
-# TAB 2: DETALHAMENTO DA REGRA E MANUAL DO JOGO (CAMPOS DE PDF / REGULAMENTOS)
-# ------------------------------------------------------------------------------
-with tab_pdf_regras:
-    st.subheader("📜 Detalhamento de Regras, Diretrizes e Links Oficiais da Legislação")
-    st.markdown("""
-    Esta seção funciona como a central de documentação e fundamentação jurídica da **NR-1**. 
-    Consulte as portarias federais e os canais ativos da inspeção do trabalho para balizar os debates técnicos das rodadas.
-    """)
-
-    cl1, cl2 = st.columns(2)
-    with cl1:
-        st.markdown("""
-        #### 🏛️ Textos Oficiais e Portarias Governamentais
-        * **[Texto Integral da NR-1 (Ministério do Trabalho e Emprego)](https://www.gov.br/trabalho-e-emplego/pt-br/assuntos/inspecao-do-trabalho/seguranca-e-saude-no-trabalho/sst-portarias/normas-regulamentadoras/nr-01-atualizada-2022.pdf)**
-            *Acesso ao normativo completo emitido pela União contendo as regras estruturais para o GRO/PGR.*
-        * **[Guia Prático Oficial de Implementação do PGR - SIT](https://www.gov.br/trabalho-e-emplego/pt-br/assuntos/inspecao-do-trabalho/seguranca-e-saude-no-trabalho/pgr/guia_pratico_pgr.pdf)**
-            *Manual técnico com as diretrizes da Secretaria de Inspeção do Trabalho sobre avaliação de probabilidade e severidade.*
-        * **[Consolidação das Leis do Trabalho (CLT) - Capítulo V](http://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm)**
-            *Artigos 154 a 201 da CLT que fornecem a sustentação legislativa máxima às Normas Regulamentadoras.*
-        """)
-    with cl2:
-        st.markdown("""
-        #### 🛠️ Portais de Envio e Sistemas Federais
-        * **[Portal de Eventos de SST do eSocial](https://www.gov.br/esocial/pt-br)**
-            *Plataforma de transmissão obrigatória dos layouts governamentais S-2210 (CAT), S-2220 (Aso) e S-2240 (Riscos).*
-        * **[Escola Nacional da Inspeção do Trabalho (ENIT)](https://enit.trabalho.gov.br/)**
-            *Acervo público de capacitações gratuitas, notas técnicas oficiais e pareceres dos auditores fiscais.*
-        * **[Consulta de Certificado de Aprovação de EPI (MTE)](https://sit.trabalho.gov.br/ca_epi/)**
-            *Mecanismo federal para consulta de conformidade e validade jurídica de equipamentos de proteção individual.*
-        """)
-
-# ------------------------------------------------------------------------------
-# TAB 3: PESQUISAS AVANÇADAS, MATERIAIS COMPLEMENTARES E IMPORTÂNCIA DO TEMA
-# ------------------------------------------------------------------------------
-with tab_pesquisas_avancadas:
-    st.subheader("📈 Acervo de Evidências Científicas, Teses e Impacto Financeiro (FinOps/SST)")
-    st.markdown("""
-    Use os dados e links científicos consolidados abaixo para comprovar à diretoria executiva e aos stakeholders da empresa o retorno financeiro real de manter uma cultura integrada de gerenciamento de riscos ocupacionais.
-    """)
-
-    ct1, ct2 = st.columns(2)
-    with ct1:
-        st.markdown("""
-        #### 🔬 Revistas Científicas Revisadas por Pares (Peer-Reviewed)
-        * **[Revista Brasileira de Saúde Ocupacional (RBSO) - SciELO](https://www.scielo.br/j/rbso/)**
-            *Periódico de maior relevância nacional dedicado a estudos epidemiológicos, cargas de trabalho e medicina ocupacional.*
-        * **[Biblioteca Digital de Teses e Dissertações da USP](https://teses.usp.br/)**
-            *Pesquisas acadêmicas demonstrando a forte correlação estatística entre ergonomia fabril e o aumento real do faturamento por turno.*
-        * **[Portal de Publicações Técnicas da Fundacentro](https://www.fundacentro.gov.br/)**
-            *Estudos avançados sobre dispersão de contaminantes de ar, limites de tolerância física e atenuação acústica de ruídos industriais.*
-        """)
-    with ct2:
-        st.markdown("#### 📊 Retorno sobre Investimento (ROI) e Métricas de Mercado")
-        st.markdown("#### 📊 Retorno sobre Investimento (ROI) e Metrics de Mercado")
-        st.table({
-            "Indicador Analisado": [
-                "Redução média de litígios cíveis trabalhistas", 
-                "Retorno financeiro estimado (ROI) para cada R$ 1,00 em ergonomia", 
-                "Diminuição média da alíquota do Fator Acidentário Previdenciário (FAP)",
-                "Consumo médio de acidentes de trabalho no PIB global anual"
-            ],
-            "Métrica Estatística": ["46% de queda nas ações", "Retorno de R$ 2,50 a R$ 4,00", "Até 50% de economia de RAT", "Aproximadamente 4% do PIB"],
-            "Fonte Científica / Corporativa": ["Estudo FGV / CNI", "Organização Internacional do Trabalho (OIT)", "Ministério da Previdência", "Dados Macroeconômicos OIT"]
-        })
+with col_out2:
+    st.markdown("<p style='font-weight:bold; font-size:12px; color:#1a202c; margin-bottom:0.4rem;'>Argumentos de Suporte (Lógica Base):</p>", unsafe_allow_html=True)
+    for bullet in active_data["bullets"]:
+        st.markdown(f"<p style='font-size:12px; margin-bottom:6px !important; color: #2d3748;'>• {bullet}</p>", unsafe_allow_html=True)
+        
+    st.markdown("<div style='margin-top:0.8rem; border-top: 1px dashed #e2e8f0; padding-top:0.4rem;'></div>", unsafe_allow_html=True)
+    st.markdown("<p style='font-weight:bold; font-size:11px; color:#2b6cb0; margin-bottom:0.4rem; text-transform:uppercase;'>⚡ Simulação de Q&A Crítico de TI:</p>", unsafe_allow_html=True)
+    
+    for qa in active_data["qa_responses"]:
+        st.markdown(f"""
+        <div style="margin-bottom: 6px;">
+            <strong style="font-size:11.5px; color:#2c5282; display:block;">Q: {qa['q']}</strong>
+            <span style="font-size:11.5px; color:#4a5568; display:block; margin-top:1px;"><strong>A:</strong> {qa['a']}</span>
+        </div>
+        """, unsafe_allow_html=True)

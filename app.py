@@ -186,7 +186,7 @@ div.stButton > button {
 </style>
 """, unsafe_allow_html=True)
 
-# 20 Strategic Framework Database Items - Adapted for Ambev C-Level Alignment
+# 20 Strategic Framework Database Items - Fully Reviewed & Corrected
 DATA_MAPPING = {
     1: {
         "category": "WHAT - Capabilities & Profile",
@@ -206,7 +206,7 @@ DATA_MAPPING = {
         "qa_responses": [
             {"q": "Como sua formação apoia a interface entre negócio e tecnologia?", "a": "A Engenharia de Produção e o MBA me dão a visão de processo e P&L necessários para entender as dores dos diretores de negócio da Ambev, enquanto meu domínio técnico em SQL e arquiteturas cloud me permite traduzir essas necessidades em especificações exatas para os engenheiros de dados."},
             {"q": "Qual o seu diferencial para atuar em um ambiente global como a Ambev?", "a": "Tenho vivência internacional no Reino Unido, França e Espanha, e inglês avançado testado corporativamente. Estou acostumado a interagir com stakeholders de diferentes culturas e alinhar requisitos complexos de forma clara e concisa."},
-            {"q": "Como você lida com dados caóticos e descentralizados?", "a": "Na Heineken, unifiquei bases onde o mesmo produto tinha mais de 10 mil denominações. Trato a bagunça de dados não como um problema intransponível, mas como uma oportunidade de implementar Data Quality e criar uma 'single source of truth' auditável."}
+            {"q": "Como você lida com dados caóticos e descentizados?", "a": "Na Heineken, unifiquei bases onde o mesmo produto tinha mais de 10 mil denominações. Trato a bagunça de dados não como um problema intransponível, mas como uma oportunidade de implementar Data Quality e criar uma 'single source of truth' auditável."}
         ]
     },
     2: {
@@ -463,7 +463,7 @@ DATA_MAPPING = {
             "Result: Delivered the brand's first stable one-page performance dashboard, matching commercial indicators to the exact penny."
         ],
         "qa_responses": [
-            {"q": "How did you solve the problem of 10,000 different names for the same beer product?", "a": "I engineered a data normalization mapping layer. By building an automated relational database structure, the system mapped every chaotic client variation back to a master product hierarchy, eliminating reporting duplicates instantly."},
+            {"q": "Looking back at your Heineken tenure, how do you see the scalability of digital distribution?", "a": "FMCG data products require a solid relational mapping layer. In a fast-moving market, you cannot have key accounts or regional distributors naming products under localized guidelines. Normalization ensures that commercial indicators scale cleanly as transaction logs increase."},
             {"q": "What specific FMCG metrics did you master during this tenure?", "a": "I worked closely with stock ruptures, promotional campaign conversions, client segments, eRetail channel growth, and multi-brand market share correlations."},
             {"q": "Why is this Heineken experience a massive advantage for Ambev?", "a": "Because I already speak your industry's language. I understand the tension between commercial campaigns and digital channel stock availability. I can step into Ambev's data environment and generate impact from week one without needing industry training."}
         ]
@@ -540,7 +540,7 @@ DATA_MAPPING = {
         "bullets": [
             "I start by practicing active listening to truly understand the stakeholder's operational or commercial fear.",
             "I present clear, comparative data performance options, mapping the exact impact of each requirement path.",
-            "Once the transactional numbers and Data Quality realities are visual, teams naturally converge on the same logical execution."
+            "Once the transitional numbers and Data Quality realities are visual, teams naturally converge on the same logical execution."
         ],
         "qa_responses": [
             {"q": "How do you handle a sales manager who demands a dashboard metric that you know is mathematically incorrect?", "a": "I don't just refuse. I schedule a quick sync, pull up the raw database query lineage, and demonstrate visually how that specific formula logic will distort their eventual campaign calculation, showing them the correct path that secures their bonus accuracy."},
@@ -570,22 +570,23 @@ DATA_MAPPING = {
     },
     20: {
         "category": "WHEN - Extreme Scenarios & Crisis",
-        "title": "Investigative Close & Case Test",
-        "tag": "OWNER-CLOSE",
-        "bridge": "To wrap up, I would love to align my next steps with an assessment of your squad’s immediate data product challenges.",
-        "followup": "What is the primary operational area your squad is optimizing right now? Based on that, I am fully prepared to deliver immediate code and requirement-gathering value.",
-        "match": "Applies a high-level strategic ending, transforming the interview from a basic test into a peer-to-peer business alignment.",
-        "growth": "Showcases a true plug-and-play owner asset who seeks immediate execution impact from the final seconds of contact.",
-        "case": "Strategic Technical Integration & Business Impact Close.",
+        "title": "Cultural Fit, Travels & Closing",
+        "tag": "GLOBAL-STORY",
+        "bridge": "To wrap up, a global company like Ambev requires more than technical lines; it requires cultural adaptability, a keen eye for details, and a high capacity for learning from diverse environments.",
+        "followup": "My advanced English and international perspective were built during nearly 6 months in England. I treat discovering new places with the same investigative mindset I use to audit database anomalies.",
+        "match": "Demonstrates an elite profile with global mindset, rich life experiences, sports discipline, and local accountability in São Paulo.",
+        "growth": "Perfect interpersonal alignment for senior stakeholder interaction, showcasing an open, disciplined, and highly curious professional.",
+        "case": "International Adaptation (UK, France, Spain) + Multi-Sport Discipline + SP Local Execution.",
         "bullets": [
-            "💼 [VALUE CONTRIBUTION]: 'I am fully prepared to deploy my complete engineering, MBA, and FMCG data stack inside Ambev to turn chaotic multi-channel inputs into structured, highly optimized data products.'",
-            "⏳ [CONDITIONAL ROADMAP]: 'Thank you for this deep overview. It is clear that your squad sits at the absolute center of Ambev's digital evolution, which fits my data governance and requirement optimization framework perfectly.'",
-            "🌅 [POLISHED WRAP-UP]: 'It was an absolute pleasure aligning strategies with you today. Have an excellent and highly productive week ahead. Let's definitely stay in touch.'"
+            "During my 6 months in London, I deep-dived into structural details—from exploring iconic spots like Baker Street and the British Museum to auditing history inside the library of the Royal Institution of Chartered Surveyors (RICS) and attending professional congresses at the Merchant House.",
+            "I leverage dynamic solutions in daily life: buying a folding bicycle allowed me to explore every corner of Hyde Park and Trafalgar Square with agility, a practice of efficiency that maps directly to how I build plug-and-play code structures.",
+            "My travel adaptability stretches across high-velocity shifts: navigating Paris during an intense, piercing winter after arriving on the high-speed bullet train, analyzing engineering details like rubber-tired subway networks, or exploring architecture and logistics like the massive moving walkways at Madrid Airport.",
+            "I maintain strong personal discipline through sports like capoeira (which I've played in historical grounds like Salvador's Mercado Modelo) and swimming, combined with an active weekend routine walking along Avenida Paulista, exploring Parque Villa-Lobos and Ibirapuera with my wife, and traveling throughout Brazil (from the engineering marvel of Itaipu in Foz do Iguaçu to locations like Belém do Pará, Búzios, Ilhabela, and the Mantiqueira mountains)."
         ],
         "qa_responses": [
-            {"q": "Do you have a practical data challenge or case test I can solve for Ambev?", "a": "I would highly welcome it. If you can provide a masked extraction of a messy transactional log or a raw business scenario, I am fully prepared to write the SQL transformation script and build the requirement documentation to prove my code speed and risk vision firsthand."},
-            {"q": "How do you feel about working with cross-border global teams in English?", "a": "Completely natural. I possess advanced English skills backed by international academic experience in London. Interfacing with global teams and translating complex technical inputs into clear English documentation is part of my professional capability."},
-            {"q": "What is your final message for our hiring team?", "a": "I bring the precise mix Ambev needs for this position: I have the technical depth to query and optimize cloud data platforms, the FMCG experience to understand your distribution channels, and the owner mindset to ensure data always drives profit."}
+            {"q": "How do your travel experiences and cultural background help you as a Data Business Analyst?", "a": "Traveling teaches you pattern recognition and adaptability. For instance, notice how I spotted the unique design of rubber-tired trains in Paris, or the engineering scale of the walkways in Madrid and the turbines at Itaipu. I apply that exact same intense curiosity to analyze data architecture boundaries and catch operational gaps before they impact business results."},
+            {"q": "We noticed you visited the RICS library in London. What drove you there?", "a": "I am deeply curious about institutional structures, standards, and regulatory frameworks. Stepping inside a century-old symbol of governance like the Merchant House or studying at RICS highlights my appreciation for established compliance, data quality, and documentation benchmarks."},
+            {"q": "How do your sports background and personal routine relate to Ambev's owner mindset?", "a": "Esporte como a capoeira exige flexibilidade, respeito à tradição e reflexo rápido; a natação exige consistência e fôlego de longo prazo. Em São Paulo, onde moro há três anos com minha esposa, mantenho essa rotina ativa explorando parques e teatros. Eu trago essa mesma energia e disciplina para os projetos da Ambev, encarando desafios complexos com resiliência e foco absoluto em entregar resultados consistentes para o time."}
         ]
     }
 }
@@ -630,7 +631,7 @@ if st.session_state.view_mode == "CV Doc":
     </div>
     <div class="doc-subtitle">Professional Summary</div>
     <div class="doc-section">
-        Analista de Dados e Business Intelligence com formação em Engenharia, MBA e inglês avançado. Ampla experiência em Analytics, Modelagem de Dados, Governança de Dados, FinOps e Cloud Analytics, entregando soluções de dados de alto impacto para grandes empresas como Heineken, Itaú, ASICS Latam, Gerdau, Sabesp, Fretebras, Afinz e outras. Experiência na construção de pipelines de dados, modelagem analítica, automação de processos, consolidação de KPIs e desenvolvimento de dashboards executivos. Foco na transformação de dados em insights acionáveis que suportam tomadas de decisão de alto nível, otimização operacional e redução de custos. Traz vivência internacional (Reino Unido, França e Espanha) e perspectiva global para equipes multidisciplinares.
+        Analista de Dados e Business Intelligence com formação em Engenharia, MBA e inglês avançado. Ampla experiência em Analytics, Modelagem de Dados, Governança de Dados, FinOps e Cloud Analytics, entregando soluções de dados de alto impacto para grandes empresas como Heineken, Itaú, ASICS Latam, Gerdau, Sabesp, Fretebras, Afinz e outras. Experiência na construção de pipelines de dados, modelagem analítica, automação de processos, consolidação de KPIs e desenvolvimento de dashboards executivos. Foco na transformação de dados in insights acionáveis que suportam tomadas de decisão de alto nível, otimização operacional e redução de custos. Traz vivência internacional (Reino Unido, França e Espanha) e perspectiva global para equipes multidisciplinares.
     </div>
     <div class="doc-subtitle">Professional Experience</div>
     <div class="doc-section">
@@ -645,13 +646,13 @@ if st.session_state.view_mode == "CV Doc":
         • Participação ativa em squads ágeis para entrega contínua de soluções orientadas a dados e tradução de regras de negócio em visões analíticas complexas.
     </div>
     <div class="doc-section">
-        <strong>Analista de Business Intelligence :: Sxpel / Heineken | Nov 2023 - Oct 2024</strong><br>
+        <strong>Analista de Business Intelligence :: Sxpel / Heineken | Nov 2023 - Out 2024</strong><br>
         • Alocado na área digital da Heineken (eCommerce, eRetail), consolidando e modelando múltiplas bases de dados complexas de diversos clientes.<br>
         • Estruturação de modelo dimensional (Star Schema) para unificar cenários em que o mesmo produto possuía mais de 10 mil denominações distintas entre clientes e sistemas, garantindo Data Quality e rastreabilidade.
     </div>
     <div class="doc-section">
         <strong>MIS Analyst :: Afinz | Sep 2022 - Jun 2023</strong><br>
-        • Otimização de rotinas de atualização de relatórios, reduzindo o tempo de processamento de 1h30 para apenas 15 minutos via automação ETL com Python e SQL.<br>
+        • Otimização de rotinas de atualização de relatórios, reduzindo o tempo de processamento de 1h30 para apenas 15 minutes via automação ETL com Python e SQL.<br>
         • Estruturação de repositórios de metadados e implementação de práticas sólidas de Data Governance e Data Quality (Confluence).
     </div>
     <div class="doc-subtitle">Education & Certifications</div>

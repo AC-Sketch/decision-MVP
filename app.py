@@ -186,7 +186,7 @@ div.stButton > button {
 </style>
 """, unsafe_allow_html=True)
 
-# 20 Strategic Framework Database Items - Fully Reviewed & Corrected
+# 20 Strategic Framework Database Items - Syntactically Audited & Corrected
 DATA_MAPPING = {
     1: {
         "category": "WHAT - Capabilities & Profile",
@@ -199,14 +199,14 @@ DATA_MAPPING = {
         "case": "Engenharia de Produção + MBA + Heineken, Itaú, ASICS Latam.",
         "bullets": [
             "Automação de processos analíticos e fluxos de atualização de relatórios, reduzindo em mais de 80% o esforço operacional. Diminuição do tempo de atualização de dashboards de 1h30 para 15 minutos por meio da implementação de pipelines de dados estruturados, automações e padronização de processos.",
-            "Consolidação e modelagem de múltiplas bases de dados complexas para grandes operações de varejo e bens de consumo, incluindo cenários em que um único produto possuía mais de 10 mil denominações distintas entre clientes, canais e sistemas. Estruturação de modelos analíticos capazes de unificar e correlacionar informações dispersas para geração de indicadores confiáveis e suporte à tomada de decisão.",
+            "Consolidação e modelagem de múltiplas bases de dados complexas para grandes operações de varejo e bens de consumo, incluindo cenários em que um único produto possuía mais de 10 mil denominações distintas entre clientes, canais e sistemas. Estruturação de modelos analíticos capazes de unificar e correlacionar informações dispersas para generation de indicadores confiáveis e suporte à tomada de decisão.",
             "Reestruturação de arquiteturas analíticas em ambiente cloud, redesenhando múltiplas tabelas e views para uma arquitetura escalável e otimizada. Implementação de particionamento, processamento incremental e práticas de FinOps, reduzindo o consumo de processamento de dados de GB/TB para MB.",
             "Desenvolvimento de dashboards executivos e soluções de Analytics para monitoramento de indicadores comerciais, financeiros, operacionais, marketing, eCommerce e eRetail, incluindo operações LATAM (Brasil, Chile e Colômbia). Aplicação de Machine Learning e Analytics Avançado para projeção de receita e identificação de padrões de negócio utilizando modelos como ARIMA+ e K-Means."
         ],
         "qa_responses": [
             {"q": "Como sua formação apoia a interface entre negócio e tecnologia?", "a": "A Engenharia de Produção e o MBA me dão a visão de processo e P&L necessários para entender as dores dos diretores de negócio da Ambev, enquanto meu domínio técnico em SQL e arquiteturas cloud me permite traduzir essas necessidades em especificações exatas para os engenheiros de dados."},
             {"q": "Qual o seu diferencial para atuar em um ambiente global como a Ambev?", "a": "Tenho vivência internacional no Reino Unido, França e Espanha, e inglês avançado testado corporativamente. Estou acostumado a interagir com stakeholders de diferentes culturas e alinhar requisitos complexos de forma clara e concisa."},
-            {"q": "Como você lida com dados caóticos e descentizados?", "a": "Na Heineken, unifiquei bases onde o mesmo produto tinha mais de 10 mil denominações. Trato a bagunça de dados não como um problema intransponível, mas como uma oportunidade de implementar Data Quality e criar uma 'single source of truth' auditável."}
+            {"q": "Como você lida com dados caóticos e descentralizados?", "a": "Na Heineken, unifiquei bases onde o mesmo produto tinha mais de 10 mil denominações. Trato a bagunça de dados não como um problema intransponível, mas como uma oportunidade de implementar Data Quality e criar uma 'single source of truth' auditável."}
         ]
     },
     2: {
@@ -581,12 +581,13 @@ DATA_MAPPING = {
             "During my 6 months in London, I deep-dived into structural details—from exploring iconic spots like Baker Street and the British Museum to auditing history inside the library of the Royal Institution of Chartered Surveyors (RICS) and attending professional congresses at the Merchant House.",
             "I leverage dynamic solutions in daily life: buying a folding bicycle allowed me to explore every corner of Hyde Park and Trafalgar Square with agility, a practice of efficiency that maps directly to how I build plug-and-play code structures.",
             "My travel adaptability stretches across high-velocity shifts: navigating Paris during an intense, piercing winter after arriving on the high-speed bullet train, analyzing engineering details like rubber-tired subway networks, or exploring architecture and logistics like the massive moving walkways at Madrid Airport.",
-            "I maintain strong personal discipline through sports like capoeira (which I've played in historical grounds like Salvador's Mercado Modelo) and swimming, combined with an active weekend routine walking along Avenida Paulista, exploring Parque Villa-Lobos and Ibirapuera with my wife, and traveling throughout Brazil (from the engineering marvel of Itaipu in Foz do Iguaçu to locations like Belém do Pará, Búzios, Ilhabela, and the Mantiqueira mountains)."
+            "I maintain strong personal discipline through sports like capoeira (which I've played in historical grounds like Salvador's Mercado Modelo) and swimming, combined with an active weekend routine walking along Avenida Paulista, exploring Parque Vila-Lobos e Ibirapuera com minha esposa (que é concursada e com quem divido a rotina em SP há 3 anos), além de viagens por destinos como a engenharia de Itaipu em Foz do Iguaçu, Belém do Pará, Búzios, Ilhabela e a Serra da Mantiqueira.",
+            "Tenho um filho de 15 anos que está em plena fase de adolescência, compartilha do meu gosto por esportes e andar de bike, e está se preparando ativamente para um intercâmbio internacional—um passo natural em nossa família, dado que ele tem uma irmã mais velha por parte de mãe que é casada e reside nos EUA há mais de 10 anos."
         ],
         "qa_responses": [
-            {"q": "How do your travel experiences and cultural background help you as a Data Business Analyst?", "a": "Traveling teaches you pattern recognition and adaptability. For instance, notice how I spotted the unique design of rubber-tired trains in Paris, or the engineering scale of the walkways in Madrid and the turbines at Itaipu. I apply that exact same intense curiosity to analyze data architecture boundaries and catch operational gaps before they impact business results."},
+            {"q": "How do your travel experiences and family background help you as a Data Business Analyst?", "a": "Traveling teaches you pattern recognition and adaptability. For instance, notice how I spotted the unique design of rubber-tired trains in Paris, or the engineering scale of the walkways in Madrid and the turbines at Itaipu. Furthermore, guiding my 15-year-old son through his international exchange preparation while tracking family roots in the US shows the strategic planning and long-term vision I apply to life and data products."},
             {"q": "We noticed you visited the RICS library in London. What drove you there?", "a": "I am deeply curious about institutional structures, standards, and regulatory frameworks. Stepping inside a century-old symbol of governance like the Merchant House or studying at RICS highlights my appreciation for established compliance, data quality, and documentation benchmarks."},
-            {"q": "How do your sports background and personal routine relate to Ambev's owner mindset?", "a": "Esporte como a capoeira exige flexibilidade, respeito à tradição e reflexo rápido; a natação exige consistência e fôlego de longo prazo. Em São Paulo, onde moro há três anos com minha esposa, mantenho essa rotina ativa explorando parques e teatros. Eu trago essa mesma energia e disciplina para os projetos da Ambev, encarando desafios complexos com resiliência e foco absoluto em entregar resultados consistentes para o time."}
+            {"q": "How do your sports background and personal routine relate to Ambev's owner mindset?", "a": "Esporte como a capoeira exige flexibilidade, respeito à tradição e reflexo rápido; a natação exige consistência e fôlego de longo prazo. Em São Paulo, onde moro há três anos com minha esposa, mantive essa rotina ativa explorando parques e teatros. Eu trago essa mesma energia e disciplina para os projetos da Ambev, encarando desafios complexos com resiliência e foco absoluto em entregar resultados consistentes para o time."}
         ]
     }
 }
@@ -631,7 +632,7 @@ if st.session_state.view_mode == "CV Doc":
     </div>
     <div class="doc-subtitle">Professional Summary</div>
     <div class="doc-section">
-        Analista de Dados e Business Intelligence com formação em Engenharia, MBA e inglês avançado. Ampla experiência em Analytics, Modelagem de Dados, Governança de Dados, FinOps e Cloud Analytics, entregando soluções de dados de alto impacto para grandes empresas como Heineken, Itaú, ASICS Latam, Gerdau, Sabesp, Fretebras, Afinz e outras. Experiência na construção de pipelines de dados, modelagem analítica, automação de processos, consolidação de KPIs e desenvolvimento de dashboards executivos. Foco na transformação de dados in insights acionáveis que suportam tomadas de decisão de alto nível, otimização operacional e redução de custos. Traz vivência internacional (Reino Unido, França e Espanha) e perspectiva global para equipes multidisciplinares.
+        Analista de Dados e Business Intelligence com formação em Engenharia, MBA e inglês avançado. Ampla experiência em Analytics, Modelagem de Dados, Governança de Dados, FinOps e Cloud Analytics, entregando soluções de dados de alto impacto para grandes empresas como Heineken, Itaú, ASICS Latam, Gerdau, Sabesp, Fretebras, Afinz e outras. Experiência na construção de pipelines de dados, modelagem analítica, automação de processos, consolidação de KPIs e desenvolvimento de dashboards executivos. Foco na transformação de dados em insights acionáveis que suportam tomadas de decisão de alto nível, otimização operacional e redução de custos. Traz vivência internacional (Reino Unido, França e Espanha) e perspectiva global para equipes multidisciplinares.
     </div>
     <div class="doc-subtitle">Professional Experience</div>
     <div class="doc-section">
@@ -652,7 +653,7 @@ if st.session_state.view_mode == "CV Doc":
     </div>
     <div class="doc-section">
         <strong>MIS Analyst :: Afinz | Sep 2022 - Jun 2023</strong><br>
-        • Otimização de rotinas de atualização de relatórios, reduzindo o tempo de processamento de 1h30 para apenas 15 minutes via automação ETL com Python e SQL.<br>
+        • Otimização de rotinas de atualização de relatórios, reduzindo o tempo de processamento de 1h30 para apenas 15 minutos via automação ETL com Python e SQL.<br>
         • Estruturação de repositórios de metadados e implementação de práticas sólidas de Data Governance e Data Quality (Confluence).
     </div>
     <div class="doc-subtitle">Education & Certifications</div>
@@ -796,4 +797,3 @@ else:
             """,
             unsafe_allow_html=True
         )
-}

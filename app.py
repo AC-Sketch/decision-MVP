@@ -6,187 +6,98 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Fluid & Non-Overlapping UX Injection
+# --- ADVANCED EXECUTIVE UX INJECTION ---
 st.markdown("""
 <style>
-/* Reset main padding limits to prevent overlapping headers */
+/* Reset main padding limits for cleaner structural proportions */
 .block-container {
-    padding-top: 1.0rem !important;
-    padding-bottom: 0.1rem !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.0rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
     max-width: 100% !important;
 }
 
-/* Global scrollbar behavior control for clean hardware feel */
+/* Custom Scrollbar and Clean CSS Reset */
 ::-webkit-scrollbar {
-    display: none !important;
+    width: 6px;
+    height: 6px;
 }
-
-div[data-testid="stVerticalBlock"] {
-    gap: 0.15rem !important;
-}
-
-[data-testid="stSidebarUserContent"] {
-    padding-top: 1rem !important;
-}
-
-h3, p, div {
-    margin-top: 0rem !important;
-    margin-bottom: 0rem !important;
-}
-
-div[data-testid="stMetric"] {
-    background-color: #f8f9fa;
-    padding: 6px !important;
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
     border-radius: 4px;
-    border: 1px solid #e9ecef;
-    text-align: center;
 }
 
-/* Force column button wrappers to have exact uniform heights */
-div.stButton > button {
-    width: 100% !important;
-    height: 44px !important; 
-    white-space: normal !important; 
-    word-break: keep-all !important;
-    overflow: hidden !important;
-    font-size: 10px !important;
-    line-height: 1.15 !important;
-    padding: 0.3rem 0.3rem !important;
-    text-align: center !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 5px !important;
-    margin-bottom: 4px !important;
-}
-
-.category-header {
-    font-size: 11px !important;
-    font-weight: bold !important;
-    color: #2c3e50;
-    border-bottom: 2px solid #e9ecef;
-    padding-bottom: 3px;
-    margin-bottom: 0.4rem !important;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-}
-
-/* Output Display Blocks - Compressed & Symmetrical heights */
+/* Strategic Presentation Container Boxes */
 .response-box {
-    background-color: #e8f8f5;
-    border-left: 4px solid #18bc9c;
-    padding: 6px 10px !important;
-    border-radius: 4px;
-    margin-bottom: 0.3rem;
-    min-height: 48px;
+    background-color: #f0fdf4;
+    border-left: 5px solid #16a34a;
+    padding: 12px 16px !important;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
 }
 
 .followup-box {
-    background-color: #f4f6f7;
-    border-left: 4px solid #34495e;
-    padding: 6px 10px !important;
-    border-radius: 4px;
-    margin-bottom: 0.3rem;
-    min-height: 48px;
+    background-color: #f8fafc;
+    border-left: 5px solid #475569;
+    padding: 12px 16px !important;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
 }
 
 .growth-box {
-    background-color: #fef9e7;
-    border-left: 4px solid #f39c12;
-    padding: 5px 10px !important;
-    border-radius: 4px;
-    margin-bottom: 0.3rem;
-    min-height: 40px;
+    background-color: #fffbeb;
+    border-left: 5px solid #d97706;
+    padding: 12px 16px !important;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
 }
 
 .match-box {
-    background-color: #ebf5fb;
-    border-left: 4px solid #3498db;
-    padding: 5px 10px !important;
-    border-radius: 4px;
-    margin-bottom: 0.3rem;
-    min-height: 40px;
+    background-color: #f0f9ff;
+    border-left: 5px solid #0284c7;
+    padding: 12px 16px !important;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
 }
 
 .bullet-container-box {
     background-color: #ffffff;
-    border: 1px solid #e9ecef;
-    border-radius: 4px;
-    padding: 6px 10px !important;
-    min-height: 120px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 14px 18px !important;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
 .qa-container-box {
-    background-color: #f2f4f4;
-    border: 1px solid #d5dbdb;
-    border-left: 4px solid #1b4f72;
-    border-radius: 4px;
-    padding: 6px 10px !important;
-    margin-top: 3px;
-    min-height: 180px;
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-left: 5px solid #0f172a;
+    border-radius: 6px;
+    padding: 14px 18px !important;
 }
 
 .qa-item {
-    margin-bottom: 4px !important;
-    padding-bottom: 3px;
-    border-bottom: 1px dashed #d5dbdb;
+    margin-bottom: 8px !important;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed #cbd5e1;
 }
 .qa-item:last-child {
     border-bottom: none;
     margin-bottom: 0px !important;
+    padding-bottom: 0px;
 }
 
-/* Embedded Document Viewer Styles with Header Protection Gap */
-.doc-container {
-    background-color: #ffffff;
-    border: 1px solid #d5dbdb;
-    border-radius: 6px;
-    padding: 24px !important;
-    padding-top: 25px !important;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-    max-height: 78vh;
-    overflow-y: auto !important;
-}
-.doc-title {
-    color: #1b4f72;
-    font-size: 18px;
-    font-weight: bold;
-    border-bottom: 3px solid #1b4f72;
-    padding-bottom: 8px;
-    margin-bottom: 18px !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.doc-section {
-    font-size: 13px;
-    color: #2c3e50;
-    margin-bottom: 12px !important;
-    line-height: 1.5;
-}
-.doc-subtitle {
-    font-size: 14px;
-    color: #154360;
-    font-weight: bold;
-    margin-top: 16px !important;
-    margin-bottom: 6px !important;
-    border-bottom: 1px solid #eaeded;
-    padding-bottom: 2px;
-}
-.commentary-box {
-    background-color: #ebf5fb;
-    border-left: 4px solid #2980b9;
-    padding: 10px !important;
-    margin-top: 6px !important;
-    margin-bottom: 12px !important;
-    border-radius: 4px;
-    font-size: 12.5px;
+/* Sidebar Custom Look */
+[data-testid="stSidebarUserContent"] {
+    padding-top: 1.5rem !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# 20 Strategic Framework Database Items - Fully Tailored for micro1 AI Data Scientist Role
+
+# --- 20 STRATEGIC FRAMEWORK ITEMS FOR MICRO1 AI DATA SCIENCE ---
 DATA_MAPPING = {
     1: {
         "category": "WHAT - Capabilities & Profile",
@@ -196,7 +107,7 @@ DATA_MAPPING = {
         "followup": "Proven track record in strategic data projects for market-leading corporations like Heineken, Itaú, ASICS Latam, Gerdau, Sabesp, Fretebras, Afinz, and others, supporting high-level decision-making by transforming raw data into actionable insights and business indicators.",
         "match": "Expertise in data modeling, developing ETL/ELT pipelines, process automation, KPI consolidation, executive dashboards, and cloud analytics environment optimization.",
         "growth": "Fully prepared to apply my engineering and mathematical rigor to train and evaluate next-generation LLMs and AI agents inside the micro1 ecosystem.",
-        "case": "Production Engineering + MBA + Advanced Python & SQL Modeling (*Heineken*, *Itaú*, *ASICS*).",
+        "case": "Production Engineering + MBA + Advanced Python & SQL Modeling (Heineken, Itaú, ASICS).",
         "bullets": [
             "Automation of analytical processes and report update workflows, reducing operational effort by over 80%. Slashed dashboard refresh times from 1h30m to just 15 minutes by implementing structured data pipelines, automations, and process standardization.",
             "Consolidation and modeling of multiple complex databases for major retail and consumer goods operations, including scenarios where a single product had over 10,000 distinct denominations across different clients, channels, and systems. Structured analytical models capable of unifying and correlating dispersed data to generate reliable indicators and support strategic decision-making.",
@@ -206,7 +117,7 @@ DATA_MAPPING = {
         "qa_responses": [
             {"q": "How does your engineering background enhance your data science execution?", "a": "Production Engineering focuses on systemic efficiency and optimization. Combined with an MBA, I don't just build statistical models; I design robust data validation, cleaning, and transformation processes that ensure real-world parameters map flawlessly into analytical frameworks."},
             {"q": "What is your experience with statistical and predictive modeling?", "a": "I routinely deploy advanced statistical analysis, time-series forecasting (such as ARIMA+), and clustering algorithms (like K-Means) to isolate business patterns, predict revenues, and segment massive multi-country datasets."},
-            {"q": "How do you ensure data quality across highly fragmented pipelines?", "a": "At *Heineken*, I normalized datasets containing over 10,000 conflicting naming variations into a single cohesive Star Schema. I apply strict Data Quality and governance checks at every stage—ingestion, cleaning, and modeling—ensuring the outputs are 100% reliable."}
+            {"q": "How do you ensure data quality across highly fragmented pipelines?", "a": "At Heineken, I normalized datasets containing over 10,000 conflicting naming variations into a single cohesive Star Schema. I apply strict Data Quality and governance checks at every stage—ingestion, cleaning, and modeling—ensuring the outputs are 100% reliable."}
         ]
     },
     2: {
@@ -217,16 +128,15 @@ DATA_MAPPING = {
         "followup": "Your mission to enable 1 billion people to do meaningful work by applying their expertise to AI resonates with my background. Having optimized workflows across banking, retail, and FMCG, I understand how to turn complex, domain-specific logic into clean, structured data inputs.",
         "match": "Highlights a senior professional who understands that the primary bottleneck in frontier AI is no longer just compute, but the absolute meticulous quality of training and evaluation data.",
         "growth": "Aligns your corporate scaling experience with micro1’s massive global expert network expansion.",
-        "case": "Data Quality Scaling (*Heineken*) + Cloud Pipeline Automation (*Afinz* / *ASICS*).",
+        "case": "Data Quality Scaling (Heineken) + Cloud Pipeline Automation (Afinz / ASICS).",
         "bullets": [
             "Frontier models require gold-standard data inputs to prevent hallucinations and ensure logical reasoning.",
-            "My experience in highly regulated and complex fields (*Itaú*, *Heineken*) allows me to act as an elite domain expert and data evaluator.",
+            "My experience in highly regulated and complex fields (Itaú, Heineken) allows me to act as an elite domain expert and data evaluator.",
             "I am highly driven by micro1's remote, global-first laboratory model where data engineering meets AI alignment."
         ],
         "qa_responses": [
             {"q": "Why apply to an AI training lab instead of a traditional corporate data role?", "a": "Traditional corporate roles focus on visualizing the past. micro1 focuses on building the future of intelligence. Applying my data science and engineering rigor to benchmark, clean, and evaluate datasets for LLMs is the highest-leverage application of my skills."},
-            {"q": "How do you view micro1's role in the market?", "a": "As models scale, raw internet scraping is exhausted. The winner of the AI race will be the company that curates the best specialized human feedback and agent evaluation pipelines. micro1 is exactly that layer."},
-            {"q": "Are you comfortable working as a remote contractor in a global ecosystem?", "a": "Completely. I have advanced English skills, international academic experience in London, and a personal setup optimized for agile, cross-functional delivery across global timezones."}
+            {"q": "How do you view micro1's role in the market?", "a": "As models scale, raw internet scraping is exhausted. The winner of the AI race will be the company that curates the best specialized human feedback and agent evaluation pipelines. micro1 is exactly that layer."}
         ]
     },
     3: {
@@ -237,16 +147,14 @@ DATA_MAPPING = {
         "followup": "Whether preparing features for a machine learning model or structuring feedback datasets for an AI agent, data readiness requires rigorous pre-processing, schema validation, and outlier isolation.",
         "match": "Directly hits micro1's core need for specialists who can guarantee data integrity for frontier AI training.",
         "growth": "Positions you as an analyst who avoids shortcuts, ensuring that every token or data row meets high-quality benchmarks.",
-        "case": "Meticulous Pre-processing and Metadata Repositories (*Afinz* / *Burity*).",
+        "case": "Meticulous Pre-processing and Metadata Repositories (Afinz / Burity).",
         "bullets": [
             "I am accustomed to auditing complex, unstructured records to rectify anomalies before they hit production environments.",
-            "At *Afinz*, I built metadata frameworks that secured data consistency while speeding up processing lines by 80%.",
+            "At Afinz, I built metadata frameworks that secured data consistency while speeding up processing lines by 80%.",
             "I treat data quality as an algorithmic discipline, setting up automated validation gates to catch drift instantly."
         ],
         "qa_responses": [
-            {"q": "What does 'meticulous attention to detail' mean to you in a data context?", "a": "It means validating assumptions at the lowest granularity. It means checking null behavior, analyzing feature distributions, ensuring balance in datasets, and documenting every step so that the pipeline is completely auditable and reproducible."},
-            {"q": "How would you evaluate if an expert's input dataset is ready for AI model training?", "a": "I would check for three core dimensions: statistical consistency, lack of demographic or formatting bias, and strict adherence to the target instruction schema. Any deviation must be isolated at the ingestion stage."},
-            {"q": "How do you handle messy data when under a tight deadline?", "a": "You automate the cleaning logic but never automate the validation. I write Python scripts to handle the heavy pre-processing, but I always run rigorous descriptive audits on the output sample to guarantee its structural health."}
+            {"q": "What does 'meticulous attention to detail' mean to you in a data context?", "a": "It means validating assumptions at the lowest granularity. It means checking null behavior, analyzing feature distributions, ensuring balance in datasets, and documenting every step so that the pipeline is completely auditable and reproducible."}
         ]
     },
     4: {
@@ -257,16 +165,32 @@ DATA_MAPPING = {
         "followup": "I bridge the gap between high-level conceptual questions and hard cloud data engineering pipelines, allowing micro1 to scale its evaluation and data pipelines cleanly.",
         "match": "Showcases a self-sufficient Data Scientist who can handle end-to-end projects from ideation to delivery.",
         "growth": "Slashes technical debt and manual pipeline bottlenecks, accelerating the feedback cycle for AI model training.",
-        "case": "End-to-End Data Science Lifecycle (*ASICS* / *Itaú* / *Heineken*).",
+        "case": "End-to-End Data Science Lifecycle (ASICS / Itaú / Heineken).",
         "bullets": [
             "I write optimized, clean Python and SQL code that scales smoothly across AWS and GCP cloud infrastructures.",
             "I translate chaotic, disparate client formats into rigid, standardized data assets.",
             "I communicate complex statistical findings with absolute clarity to both technical and C-level stakeholders."
         ],
         "qa_responses": [
-            {"q": "What is your immediate 30-day value add?", "a": "I will audit your existing data curation or agent evaluation pipelines, identify manual extraction lags, and implement automated Python/SQL scripts to optimize processing times and data quality verification gates."},
-            {"q": "How do you communicate data science models to non-technical teams?", "a": "By using clear data storytelling. I never showcase raw code lines or deep mathematical proofs to business units. I present the model's reliability boundaries, its business impact, and its visual trends through intuitive dashboards."},
-            {"q": "What distinguishes your approach to programming?", "a": "I design code for production. I prioritize modularity, efficient indexing, proper partitioning, and thorough documentation (using GitHub and repositories) to ensure that any developer can scale my scripts."}
+            {"q": "How do you communicate data science models to non-technical teams?", "a": "By using clear data storytelling. I never showcase raw code lines or deep mathematical proofs to business units. I present the model's reliability boundaries, its business impact, and its visual trends through intuitive dashboards."}
+        ]
+    },
+    5: {
+        "category": "WHY - Intent & Fit",
+        "title": "Salary Expectations",
+        "tag": "ANCHOR",
+        "bridge": "My salary expectations are aligned with the international market standard for a senior data professional operating in a high-leverage contractor capacity.",
+        "followup": "I am open to micro1's standardized contract framework, taking into account the long-term impact metrics and growth roadmap of the ecosystem.",
+        "match": "Maintains absolute professional transparency while establishing deep corporate seniority.",
+        "growth": "Demonstrates an owner mindset, grounding the rate discussion strictly on delivered efficiency.",
+        "case": "Standard Remote Contractor Range Alignment.",
+        "bullets": [
+            "I target standard senior developer/data scientist benchmarks for global remote talent allocation.",
+            "I am completely comfortable with B2B international contractor arrangements.",
+            "My infrastructure optimizations naturally offset resource overhead from day one."
+        ],
+        "qa_responses": [
+            {"q": "Are you flexible regarding the contract structure?", "a": "Yes, I am fully open to discussing the overall alignment package, especially considering the project's complexity and remote collaboration framework."}
         ]
     },
     6: {
@@ -274,7 +198,7 @@ DATA_MAPPING = {
         "title": "Data Manipulation Stack",
         "tag": "TECH-STACK",
         "bridge": "I treat Python and SQL as native languages to manipulate, clean, and model complex, high-volume datasets.",
-        "followup": "My cloud experience spans AWS Athena, Glue, and S3 (*Itaú*) and Google BigQuery (*ASICS*), giving me complete fluidity to execute exploratory data analysis across distributed environments.",
+        "followup": "My cloud experience spans AWS Athena, Glue, and S3 (Itaú) and Google BigQuery (ASICS), giving me complete fluidity to execute exploratory data analysis across distributed environments.",
         "match": "Directly satisfies the technical requirement for programming, data cleaning, and data visualization tools.",
         "growth": "Ensures that you can jump into micro1’s platform and interface with any cloud structure with zero onboarding lag.",
         "case": "High-Volume Query Optimization + Streamlit Application Building.",
@@ -284,9 +208,79 @@ DATA_MAPPING = {
             "I apply FinOps to data engineering, refactoring views to slash resource consumption from Terabytes to Megabytes."
         ],
         "qa_responses": [
-            {"q": "Are you comfortable working outside a standard SQL environment?", "a": "Yes. My Python foundation allows me to manipulate unstructured data, parse JSON log payloads from user-agent interactions, and handle diverse API outputs natively."},
-            {"q": "How do you approach visualizing multidimensional data?", "a": "I start with clear dimensional reduction or aggregation depending on the goal, then utilize high-performance visual tools like Power BI, Looker, or Python visualization libraries to deliver clean, highly scannable insights."},
-            {"q": "How fast can you adapt to a custom proprietary data tool?", "a": "Instantly. Because I master the underlying data primitives—relational algebra, script automation, and schema configurations—adapting to a new interface is just a matter of hours."}
+            {"q": "Are you comfortable working outside a standard SQL environment?", "a": "Yes. My Python foundation allows me to manipulate unstructured data, parse JSON log payloads from user-agent interactions, and handle diverse API outputs natively."}
+        ]
+    },
+    7: {
+        "category": "WHAT - Capabilities & Profile",
+        "title": "Agile & Product Delivery",
+        "tag": "AGILE",
+        "bridge": "I execute within modern agile framework rules, guaranteeing that data workflows are treated as evolving products with clear feature scoping.",
+        "followup": "My background in squads ensures I maintain fluid communication lines with product managers, developers, and data engineers synchronously.",
+        "match": "Confirms your absolute adaptability to modern, fast-paced startup workflows.",
+        "growth": "Eliminates operational latency when collaborating across distributed tech engineering lines.",
+        "case": "Agile Squad Interaction (NTT Data / Itaú).",
+        "bullets": [
+            "I run data projects from ideation to delivery using clear user stories and definition criteria.",
+            "I keep documentation up-to-date in Confluence, preventing code or process ambiguity.",
+            "I focus on delivering stable MVPs to maintain organizational delivery momentum."
+        ],
+        "qa_responses": [
+            {"q": "How do you handle scope changes mid-sprint?", "a": "By applying structured prioritization. I evaluate the data dependency of the new feature and assess if it threats data quality boundaries before adapting the workflow."}
+        ]
+    },
+    8: {
+        "category": "WHY - Intent & Fit",
+        "title": "Short Tenures (Stalse/NTT)",
+        "tag": "AGILITY-SPRINT",
+        "bridge": "These roles were structured, high-intensity contract projects brought in as tactical consulting sprints to solve specific engineering blocks.",
+        "followup": "At Stalse, my mission was to unify Latin American revenue models for ASICS. At NTT Data, I optimized complex Athena views for Itaú. Once the pipelines were automated, the goals were met.",
+        "match": "Frames short tenures as high-impact, intentional consulting deliveries rather than professional instability.",
+        "growth": "Proves that you have an extreme learning curve and can deliver immediate value without onboarding friction.",
+        "case": "High-Impact Temporary Sprints (2025 - 2026).",
+        "bullets": [
+            "I entered complex corporate cloud environments and delivered automated tools in less than 4 months.",
+            "Every project I touch is left fully documented, ensuring zero technical debt for the internal squads.",
+            "Now, I am looking to invest this cross-industry cloud arsenal into micro1's long-term AI scaling."
+        ],
+        "qa_responses": [
+            {"q": "How did you manage to deliver results so fast at ASICS and Itaú?", "a": "By utilizing structured thinking and a plug-and-play technical mindset. I immediately analyzed the database schemas, identified the bottlenecks, and started writing optimization code from week two."}
+        ]
+    },
+    9: {
+        "category": "WHAT - Capabilities & Profile",
+        "title": "Product Analytics Focus",
+        "tag": "PRODUCT-ANALYTICS",
+        "bridge": "I connect backend dataset metrics to front-end user behavior logs cleanly, treating data as an interactive asset.",
+        "followup": "My profile explicitly highlights my technical skills in Product Analytics frameworks (Pendo, Gainsight PX, WalkMe), ensuring I know how to track user digital adoption.",
+        "match": "Perfect alignment for micro1's evaluation of AI agents and user-agent interaction tracking.",
+        "growth": "Ensures that data solutions developed for micro1 act as intuitive tools that drive user adoption.",
+        "case": "Product Analytics Stack Mastery + Digital Channel tracking.",
+        "bullets": [
+            "I help engineering squads understand user drop-offs using hard database log evidence.",
+            "I design data validation criteria that measure active usage, data reliability, and script behavior.",
+            "At Integral, I conducted over 2,000 structured analyses focused on human learning and engagement gaps."
+        ],
+        "qa_responses": [
+            {"q": "What is the difference between a traditional report and a Data Product?", "a": "A traditional report is a static look at past data. A Data Product is an interactive, scalable, and documented asset engineered to solve a continuous operational problem, built with user adoption metrics and strict SLA tracking."}
+        ]
+    },
+    10: {
+        "category": "WHY - Intent & Fit",
+        "title": "AI Frontier Alignment",
+        "tag": "AI-VISION",
+        "bridge": "The absolute limit of AI model scaling is no longer just processing power, but the acquisition of pristine data repositories curated by human experts.",
+        "followup": "I am shifting my senior analytical drive to micro1 because your data laboratory sits exactly at the center of this paradigm change.",
+        "match": "Positions you as a forward-thinking technologist who understands the macroeconomic realities of generative AI.",
+        "growth": "Secures micro1's data advantage by embedding a rigorous engineer into its alignment pipelines.",
+        "case": "Transition from Analytics to AI Training Ecosystems.",
+        "bullets": [
+            "I want to apply my cloud data arsenal to clean and optimize the data flows that train foundation models.",
+            "My background allows me to spot statistical flaws in large text/log extractions rapidly.",
+            "I thrive in environments where data engineering meets advanced cognitive reasoning models."
+        ],
+        "qa_responses": [
+            {"q": "How do you see the evolution of data data science inside AI training loops?", "a": "We are moving away from brute-force scraping. The future depends on high-fidelity, syntactically perfect evaluation datasets—exactly what micro1 scales globally."}
         ]
     },
     11: {
@@ -329,26 +323,6 @@ DATA_MAPPING = {
             {"q": "Why is your AWS cloud experience valuable for micro1?", "a": "Because modern AI development happens on the cloud. Knowing how to efficiently read, partition, and transform raw logs stored in object storage (like S3) means I can easily build and optimize micro1's data readiness layers."}
         ]
     },
-    14: {
-        "category": "HOW - Case Methodology (STAR)",
-        "title": "Afinz (2022 - 2023)",
-        "tag": "AUTOMATION-ETL",
-        "bridge": "I applied process engineering and Python automation to eliminate over 80% of manual reporting lag, strengthening our data governance layer.",
-        "followup": "By auditing manual, brittle routines and rewriting them into structured pipelines, we turned human-dependent tasks into governed data assets.",
-        "match": "Solid proof of capability to enhance analytical methodologies and optimize end-to-end data workflows.",
-        "growth": "Directly supports micro1's goal of processing high-quality expert contributions at a massive scale without manual bottlenecks.",
-        "case": "MIS Analyst at *Afinz* / *Sorocred*.",
-        "bullets": [
-            "Situation: Daily data aggregation and verification workflows were entirely manual, taking 1.5 hours every morning and creating operational lag.",
-            "Action: Developed automated ETL data pipelines utilizing Python, SQL scripts, and AWS infrastructure (Glue, S3).",
-            "Result: Drastically reduced processing time down to just 15 minutes, while establishing rigorous metadata organization in Confluence."
-        ],
-        "qa_responses": [
-            {"q": "Why was documenting metadata in Confluence just as important as writing the Python code?", "a": "Because an undocumented pipeline is a black box. Mapping the metadata ensured full data governance, allowing any team member to audit the data lineage and verify metric definitions independently."},
-            {"q": "How did you approach data cleaning during this automation?", "a": "I programmed automated validation checks into the script. If incoming source payloads had missing variables or schema drift, the system isolated the record and flagged an alert, securing data quality before the analytics layer."},
-            {"q": "How will you apply this automation focus at micro1?", "a": "I will systematically identify any repetitive manual validation or file formatting routines in your AI training data loops and replace them with automated Python workflows, giving hours of analysis time back to the squad."}
-        ]
-    },
     13: {
         "category": "HOW - Case Methodology (STAR)",
         "title": "Heineken (2023 - 2024)",
@@ -367,6 +341,26 @@ DATA_MAPPING = {
             {"q": "How did you statistically align 10,000 text variations to a single master list?", "a": "By mapping out a clear relational mapping index and deploying Python-based text cleaning routines to strip noise, forcing all incoming disparate source data into a standardized relational architecture."},
             {"q": "What does 'matching indicators to the exact penny' mean for data quality?", "a": "It means achieving absolute auditability. If a data pipeline allows micro-discrepancies to slip through, it corrupts the downstream model's trust. I build verification loops that ensure 100% data fidelity."},
             {"q": "How does this experience help you prepare data for frontier AI models?", "a": "AI models learn from consistency. The exact same discipline required to align chaotic commercial product names is what is needed to clean, parse, and structure multi-domain human expert feedback into high-quality training tokens."}
+        ]
+    },
+    14: {
+        "category": "HOW - Case Methodology (STAR)",
+        "title": "Afinz (2022 - 2023)",
+        "tag": "AUTOMATION-ETL",
+        "bridge": "I applied process engineering and Python automation to eliminate over 80% of manual reporting lag, strengthening our data governance layer.",
+        "followup": "By auditing manual, brittle routines and rewriting them into structured pipelines, we turned human-dependent tasks into governed data assets.",
+        "match": "Solid proof of capability to enhance analytical methodologies and optimize end-to-end data workflows.",
+        "growth": "Directly supports micro1's goal of processing high-quality expert contributions at a massive scale without manual bottlenecks.",
+        "case": "MIS Analyst at *Afinz* / *Sorocred*.",
+        "bullets": [
+            "Situation: Daily data aggregation and verification workflows were entirely manual, taking 1.5 hours every morning and creating operational lag.",
+            "Action: Developed automated ETL data pipelines utilizing Python, SQL scripts, and AWS infrastructure (Glue, S3).",
+            "Result: Drastically reduced processing time down to just 15 minutes, while establishing rigorous metadata organization in Confluence."
+        ],
+        "qa_responses": [
+            {"q": "Why was documenting metadata in Confluence just as important as writing the Python code?", "a": "Because an undocumented pipeline is a black box. Mapping the metadata ensured full data governance, allowing any team member to audit the data lineage and verify metric definitions independently."},
+            {"q": "How did you approach data cleaning during this automation?", "a": "I programmed automated validation checks into the script. If incoming source payloads had missing variables or schema drift, the system isolated the record and flagged an alert, securing data quality before the analytics layer."},
+            {"q": "How will you apply this automation focus at micro1?", "a": "I will systematically identify any manual validation or file formatting routines in your AI training data loops and replace them with automated Python workflows, giving hours of analysis time back to the squad."}
         ]
     },
     15: {
@@ -409,6 +403,60 @@ DATA_MAPPING = {
             {"q": "How do you ensure data corrections do not corrupt historical training logs?", "a": "By enforcing strict append-only database frameworks. Any corrective dataset adjustment is processed as a separate, documented ledger entry with clear metadata traceability, keeping the master historical layers fully auditable."}
         ]
     },
+    17: {
+        "category": "WHEN - Extreme Scenarios & Crisis",
+        "title": "High-Pressure Pivot",
+        "tag": "CRISIS-PIVOT",
+        "bridge": "When sudden model evaluation blockers or system drift occur, I anchor my strategy around empirical database tracking rather than emotional guessing.",
+        "followup": "I isolate the baseline features, run rapid exploratory analysis, and deploy robust validation patches safely.",
+        "match": "Confirms an organized, highly stable analytical lens during unpredictable execution sprints.",
+        "growth": "Protects micro1's project schedules when tracking dynamic model training events globally.",
+        "case": "Exploratory Data Scripting & Quick Diagnostics.",
+        "bullets": [
+            "I instantly isolate the metrics to evaluate what specific data silo is failing.",
+            "I query our backend clusters to extract a reliable validation baseline sample.",
+            "I build a clean MVP verification query to monitor pipeline parameters in real-time."
+        ],
+        "qa_responses": [
+            {"q": "How do you handle urgent, undefined data requests?", "a": "I apply structured thinking. I treat the problem as an engineering system: mapping out the required inputs, the extraction limits, and the absolute mathematical logic needed to back the business choice."}
+        ]
+    },
+    18: {
+        "category": "WHEN - Extreme Scenarios & Crisis",
+        "title": "Conflict with Stakeholders",
+        "tag": "STAKEHOLDERS",
+        "bridge": "I remove personal biases and subjective disagreements from the conversation by laying hard statistical proof on the table.",
+        "followup": "Teams usually argue because of underlying friction regarding target delivery alignment. Once the data lineage is visual, convergence happens naturally.",
+        "match": "Validates advanced communication, client-facing experience, and stakeholder prioritization.",
+        "growth": "Ensures seamless bridges between micro1’s platform managers and external domain specialists.",
+        "case": "Data-Driven Consensus Frameworks.",
+        "bullets": [
+            "I start by practicing active listening to truly map the stakeholder's technical or operational bottleneck.",
+            "I present clear, comparative data options, detailing the specific technical tradeoff of each selection.",
+            "I let database evidence and model accuracy metrics drive the team's engineering resolution."
+        ],
+        "qa_responses": [
+            {"q": "How do you handle a team member who insists on using a biased dataset?", "a": "I don't just point out the mistake. I compile a descriptive baseline report showing how the data skew will explicitly damage downstream model accuracy, mapping a transparent optimization path."}
+        ]
+    },
+    19: {
+        "category": "WHEN - Extreme Scenarios & Crisis",
+        "title": "Technical Storytelling",
+        "tag": "DATA-STORY",
+        "bridge": "I translate complex database queries and statistical algorithms into clear commercial impact metrics and operational cost savings.",
+        "followup": "Non-technical cross-functional leaders do not need to hear about database execution plans or syntax formatting; they need to know if the asset is stable.",
+        "match": "Fulfills the requirement for excellent verbal and written communication with an emphasis on clarity.",
+        "growth": "Empowers micro1's management team with intuitive, highly actionable summaries.",
+        "case": "Executive Analytical Syntheses & Operational hour tracking.",
+        "bullets": [
+            "I focus on presenting time saved, cost reductions (FinOps), or data accuracy guarantees instead of raw logic syntax.",
+            "I leverage clean dashboards to make validation and dataset health statuses instantly visual.",
+            "I write crisp documentation summaries, making sure technical definitions are accessible to anyone."
+        ],
+        "qa_responses": [
+            {"q": "How do you structure an analytical presentation for non-technical teams?", "a": "I use a top-down model: starting with the absolute core takeaway and business trajectory, followed by the supporting statistical data, and ending with a clear, automated log framework."}
+        ]
+    },
     20: {
         "category": "WHEN - Extreme Scenarios & Crisis",
         "title": "Cultural Fit, Travels & Closing",
@@ -433,207 +481,148 @@ DATA_MAPPING = {
     }
 }
 
-# Navigation State Initialization
+
+# --- WORKSPACE APP ROUTING ---
 if "view_mode" not in st.session_state:
     st.session_state.view_mode = "Main Interview Board"
-if "active_id" not in st.session_state:
-    st.session_state.active_id = 1
 
+# Sidebar Architecture
 with st.sidebar:
-    st.markdown("### Select Workspace View")
-    # Native Streamlit navigation buttons inside the sidebar to toggle views seamlessly
+    st.markdown("### Workspace Mode")
     if st.button("📊 Main Interview Board", use_container_width=True):
         st.session_state.view_mode = "Main Interview Board"
         st.rerun()
-        
-    if st.button("📄 View: André Carvalho ENG_2.pdf", use_container_width=True):
+    if st.button("📄 View: André Carvalho Resume", use_container_width=True):
         st.session_state.view_mode = "CV Doc"
         st.rerun()
-        
-    if st.button("📘 View: micro1 Target Requirements.pdf", use_container_width=True):
+    if st.button("📘 View: micro1 Target Matrix", use_container_width=True):
         st.session_state.view_mode = "Guide Doc"
         st.rerun()
-    
+        
     st.markdown("---")
     st.markdown("### Strategic Framework")
-    st.info("**WHY:** Motivation & Fit\n\n**WHAT:** Scope & Profile\n\n**HOW:** STAR Actions\n\n**WHEN:** Crisis & Investigative Closing")
+    st.info("**WHY:** Intent & Fit\n\n**WHAT:** Core Profile\n\n**HOW:** STAR Deliveries\n\n**WHEN:** Crisis Containment")
     
-    st.markdown("### Match Analytics")
-    st.metric(label="micro1 Adherence Score", value="98%", delta="Elite AI Lab Match")
-    st.caption("**Target:** micro1 · Data Scientist")
+    st.markdown("### Alignment Analytics")
+    st.metric(label="micro1 Job Fit Match", value="98%", delta="Elite AI Stack Match")
+    st.caption("**Target:** micro1 · Data Scientist (Remote)")
 
-# --- VIEW ROUTING ENGINE ---
+# --- RENDERER ENGINE ---
 
 if st.session_state.view_mode == "CV Doc":
-    st.markdown('<div class="doc-container"><div class="doc-title">Document View: André Carvalho — Resume</div>', unsafe_allow_html=True)
+    st.markdown('<div class="doc-container"><div class="doc-title">Document View: André Carvalho — English Resume</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class="doc-section">
         <strong>ENG. ANDRÉ CARVALHO, MBA</strong><br>
-        Senior Data Analyst | Data Analytics | Business Intelligence | SQL | Python
+        Senior Data Scientist | Advanced Analytics | Distributed Cloud Frameworks | SQL & Python Expert
     </div>
     <div class="doc-subtitle">Professional Summary</div>
     <div class="doc-section">
-        Analista de Dados e Business Intelligence com formação em Engenharia, MBA e inglês avançado. Ampla experiência em Analytics, Modelagem de Dados, Governança de Dados, FinOps e Cloud Analytics, entregando soluções de dados de alto impacto para grandes empresas como Heineken, Itaú, ASICS Latam, Gerdau, Sabesp, Fretebras, Afinz e outras. Experiência na construção de pipelines de dados, modelagem analítica, automação de processos, consolidação de KPIs e desenvolvimento de dashboards executivos. Foco na transformação de dados em insights acionáveis que suportam tomadas de decisão de alto nível, otimização operacional e redução de custos. Traz vivência internacional (Reino Unido, França e Espanha) e perspectiva global para equipes multidisciplinares.
+        Highly analytical Senior Data professional combining a Production Engineering background with an FGV MBA. 
+        Extensive execution history in Data Manipulation, Cloud Architecture Optimization, FinOps, Data Governance, and Machine Learning models. 
+        Proven capability to clean, model, and automate end-to-end distributed pipelines for high-volume market leaders including Heineken, Itaú, ASICS Latam, Gerdau, Sabesp, Fretebras, and Afinz. 
+        Deeply detail-oriented and optimized for high-velocity remote frameworks across international ecosystems.
     </div>
-    <div class="doc-subtitle">Professional Experience</div>
+    <div class="doc-subtitle">Core Corporate Milestones</div>
     <div class="doc-section">
-        <strong>Analista de Business Intelligence :: Stalse | Jan 2026 - Apr 2026</strong><br>
-        • Atuação em projetos estratégicos para ASICS Latam, Fretebras e outras empresas com foco em Analytics, Revenue e Business Intelligence.<br>
-        • Redesenho de mais de 16 tabelas e views para uma arquitetura escalável e otimizada, reduzindo o volume de processamento de dados de escala de GB/TB para MB por meio de particionamento, cargas incrementais e boas práticas de modelagem (FinOps).<br>
-        • Criação de visão de receita unificada para operações Latam (Brasil, Chile e Colômbia) com conversão cambial integrada.
-    </div>
-    <div class="doc-section">
-        <strong>Data Analyst :: NTT DATA / Itaú | Feb 2025 - May 2025</strong><br>
-        • Desenvolvimento e manutenção de views SQL complexas utilizando Amazon Athena em ambiente cloud da AWS para o Itaú.<br>
-        • Participação ativa em squads ágeis para entrega contínua de soluções orientadas a dados e tradução de regras de negócio em visões analíticas complexas.
-    </div>
-    <div class="doc-section">
-        <strong>Analista de Business Intelligence :: Sxpel / Heineken | Nov 2023 - Out 2024</strong><br>
-        • Alocado na área digital da Heineken (eCommerce, eRetail), consolidando e modelando múltiplas bases de dados complexas de diversos clientes.<br>
-        • Estruturação de modelo dimensional (Star Schema) para unificar cenários em que o mesmo produto possuía mais de 10 mil denominações distintas entre clientes e sistemas, garantindo Data Quality e rastreabilidade.
-    </div>
-    <div class="doc-section">
-        <strong>MIS Analyst :: Afinz | Sep 2022 - Jun 2023</strong><br>
-        • Otimização de rotinas de atualização de relatórios, reduzindo o tempo de processamento de 1h30 para apenas 15 minutos via automação ETL com Python e SQL.<br>
-        • Estruturação de repositórios de metadados e implementação de práticas sólidas de Data Governance e Data Quality (Confluence).
-    </div>
-    <div class="doc-subtitle">Education & Certifications</div>
-    <div class="doc-section">
-        • <strong>MBA em Administração de Empresas</strong> — Fundação Getulio Vargas (FGV), 2006.<br>
-        • <strong>Bacharelado em Engenharia de Produção</strong> — CREA-SP, 2021.<br>
-        • <strong>Idiomas:</strong> Português (Nativo) | Inglês Avançado (Formação internacional pela St Giles International, Londres).
+        • <strong>Stalse / ASICS Latam (2026):</strong> Redesigned multi-country data views in BigQuery, slashing data ingestion loads from GB/TB scale down to MB using strict partitioning and incremental structures (FinOps logic).<br>
+        • <strong>NTT DATA / Itaú (2025):</strong> Engineered complex database queries via Amazon Athena to filter and process billions of transaction logs inside agile data squads.<br>
+        • <strong>Sxpel / Heineken (2023 - 2024):</strong> Managed and cleaned chaotic digital channel data, resolving a massive taxonomy challenge where a single item carried over 10,000 conflicting denominations.<br>
+        • <strong>Afinz (2022 - 2023):</strong> Automated manual MIS procedures via Python and SQL, cutting update loops from 1h30m down to 15 minutes, while building metadata catalogs in Confluence.
     </div>
     """, unsafe_allow_html=True)
 
 elif st.session_state.view_mode == "Guide Doc":
-    st.markdown('<div class="doc-container"><div class="doc-title">Document View: micro1 Alignment Matrix</div>', unsafe_allow_html=True)
+    st.markdown('<div class="doc-container"><div class="doc-title">Document View: micro1 Target Matrix</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class="doc-section">
-        <strong>Strategic Blueprint: micro1 AI Data Scientist Role</strong>
+        <strong>micro1 Laboratory Alignment Paradigm</strong>
     </div>
-    <div class="doc-subtitle">Core Job Alignment Matrix</div>
+    <div class="doc-subtitle">How your profile answers their specific AI challenges:</div>
     <div class="doc-section">
-        • <strong>The Role Paradigm:</strong> micro1 is not a traditional corporate spreadsheet shop. It is a cutting-edge data laboratory training next-generation foundation models. Your role as a Data Scientist means ensuring strict data readiness—collecting, cleaning, preprocessing, validating statistical consistency, and deploying automation workflows.<br>
-        • <strong>The Tech Stack Bridge:</strong> The job requires Python proficiency, statistical data modeling, data collection, and visualization. Your real-world data runs (K-Means clustering at Fretebras/Stalse, time-series concepts, and heavy Python pipeline automation at Afinz) perfectly fulfill these qualifiers.<br>
-        • <strong>Key Triggers to Highlight:</strong><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;- <em>Data Cleaning & Preprocessing:</em> Use the Heineken case (sorting out 10,000 product text variations into a strict schema) as absolute gold proof of your meticulous attention to data quality.<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;- <em>Statistical Modeling:</em> Showcase your Production Engineering logic and MBA background to prove you treat data data validation as a rigorous scientific discipline.<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;- <em>Agile & Remote Autonomy:</em> Your remote contractor experiences across multi-cloud infrastructure environments (AWS at Itaú/Afinz, GCP at ASICS) show you are ready to deliver end-to-end data products independently.
-    </div>
-    <div class="commentary-box">
-        <strong>C-Level Interview Tip:</strong> Always frame your answers around <strong>Data Integrity</strong>. Emphasize that you don't just dump raw files into a script—you audit schemas, clear out anomalies, map metadata, and build automated verification frameworks that guarantee top-tier training inputs.
+        1. <strong>Data Cleaning & Processing:</strong> micro1 needs analysts obsessed with data precision to train foundation models. Your Heineken normalization architecture (sorting 10,000 text anomalies) is the ultimate proof of this skill.<br>
+        2. <strong>Model Building & Statistics:</strong> Your Production Engineering degree, FGV MBA, and history deploying K-Means clustering and ARIMA+ time-series models map exactly to their requirement for structural data analysis.<br>
+        3. <strong>Programming & Automation:</strong> Your deep mastery over Python and optimization scripts across AWS Athena and GCP BigQuery ensures you code for production, avoiding manual spreadsheet tech debt.<br>
+        4. <strong>Communication:</strong> Your international background, advanced English, and structured business presentation style ensure you can synthesize technical findings for diverse cross-functional teams.
     </div>
     """, unsafe_allow_html=True)
 
 else:
-    # --- DEFAULT MAIN INTERVIEW BOARD VIEW ---
-    categories_list = [
-        "WHAT - Capabilities & Profile", 
-        "WHY - Intent & Fit", 
-        "HOW - Case Methodology (STAR)", 
-        "WHEN - Extreme Scenarios & Crisis"
+    # --- DEFAULT MAIN INTERVIEW BOARD VIEW WITH TABS ---
+    st.title("🛡️ micro1 Data Science Strategy Board")
+    st.caption("Strategic execution dashboard for peer-to-peer technical alignment.")
+    
+    # Organizing the 20 cards inside clean horizontal category tabs
+    tab_categories = [
+        "📋 WHAT - Profile & Stack",
+        "🎯 WHY - Intent & Fit",
+        "🚀 HOW - STAR Cases",
+        "⚡ WHEN - Crisis & Closing"
     ]
-
-    # Symmetrical 4-Column Layout Grid for Category Navigation
-    cols = st.columns(len(categories_list))
-
-    for idx, cat_name in enumerate(categories_list):
-        with cols[idx]:
-            st.markdown(f'<div class="category-header">{cat_name.split(" - ")[0]}</div>', unsafe_allow_html=True)
+    
+    tab_objs = st.tabs(tab_categories)
+    
+    # Mapping cards to respective categories to ensure ALL 20 cards are represented cleanly
+    category_mapping = {
+        "WHAT - Capabilities & Profile": tab_objs[0],
+        "WHY - Intent & Fit": tab_objs[1],
+        "HOW - Case Methodology (STAR)": tab_objs[2],
+        "WHEN - Extreme Scenarios & Crisis": tab_objs[3]
+    }
+    
+    for cat_name, tab_obj in category_mapping.items():
+        with tab_obj:
             cat_items = {k: v for k, v in DATA_MAPPING.items() if v["category"] == cat_name}
             
-            for item_id, item_data in cat_items.items():
-                is_active = (st.session_state.active_id == item_id)
-                tag_token = f"[{item_data.get('tag', 'CONTEXT')}] "
-                clean_title = item_data.get('title', 'Untitled')
-                btn_label = f"▸ {tag_token}{clean_title}" if is_active else f"{tag_token}{clean_title}"
-                
-                if st.button(btn_label, key=f"btn_{item_id}"):
-                    st.session_state.active_id = item_id
-                    st.rerun()
-
-    st.markdown("<div style='margin-top: 0.15rem; border-top: 1px solid #e9ecef; margin-bottom: 0.25rem;'></div>", unsafe_allow_html=True)
-
-    active_data = DATA_MAPPING.get(st.session_state.active_id, DATA_MAPPING[1])
-
-    # Responsive 50-50 Split View below navigation matrix
-    col_out1, col_out2 = st.columns([0.50, 0.50])
-
-    with col_out1:
-        st.markdown(
-            f"""
-            <div class="response-box">
-                <span style="color:#117a65; font-size:9.5px; font-weight:bold; text-transform:uppercase;">The Golden Bridge (Natural phrasing):</span><br>
-                <strong style="font-size:12.5px; color:#2c3e50; line-height:1.2;">"{active_data.get('bridge', '')}"</strong>
-            </div>
-            """, 
-            unsafe_allow_html=True
-        )
-        
-        st.markdown(
-            f"""
-            <div class="followup-box">
-                <span style="color:#2c3e50; font-size:9.5px; font-weight:bold; text-transform:uppercase;">Deep Dive / Context:</span><br>
-                <p style="font-size:12px; color:#34495e; line-height:1.25;">{active_data.get('followup', '')}</p>
-            </div>
-            """, 
-            unsafe_allow_html=True
-        )
-        
-        st.markdown(
-            f"""
-            <div class="growth-box">
-                <strong style="color:#d35400; text-transform:uppercase; font-size:9px;">The micro1 Alignment Link (The Strategic Approach):</strong><br>
-                <p style="color:#ba4a00; font-size:11.5px; line-height:1.25; margin-top:1px;">{active_data.get('growth', '')}</p>
-            </div>
-            """, 
-            unsafe_allow_html=True
-        )
-        
-        st.markdown(
-            f"""
-            <div class="match-box">
-                <strong style="color:#2980b9; text-transform:uppercase; font-size:9px;">The Match Concept / Objective:</strong><br>
-                <p style="color:#1f618d; font-size:11.5px; line-height:1.25; margin-top:1px;">{active_data.get('match', '')}</p>
-            </div>
-            """, 
-            unsafe_allow_html=True
-        )
-
-    with col_out2:
-        # ULTRA-COMPACT CONTAINER: Reduced margins, font size and inline layout for the reference text
-        bullets_list = active_data.get("bullets", [])
-        bullets_html = "".join(f'<p style="font-size:12px; color:#2c3e50; line-height:1.25; margin-bottom:2px !important;">• {b}</p>' for b in bullets_list)
-        
-        st.markdown(
-            f"""
-            <div class="bullet-container-box">
-                <span style="color:#2c3e50; font-size:10.5px; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:4px;">Supporting Core Arguments:</span>
-                {bullets_html}
-                <p style='font-size:10px; color:#7f8c8d; margin-top:2px !important;'><strong>Baseline Case:</strong> {active_data.get('case', '')}</p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        
-        # REFACTORED UX BOX: Dark Blue Accent & Symmetrical layout spacing with fallback control
-        qa_list = active_data.get("qa_responses", [])
-        
-        qa_html_items = ""
-        for qa in qa_list:
-            qa_html_items += f"""
-            <div class="qa-item">
-                <strong style="font-size:11.5px; color:#1b4f72; display:block; line-height:1.2;">Q: {qa.get('q', '')}</strong>
-                <p style="font-size:11.5px; color:#154360; line-height:1.25; margin-top:1px !important;"><strong>A:</strong> {qa.get('a', '')}</p>
-            </div>
-            """
+            if not cat_items:
+                st.info("Additional alignment modules in this tier are calibrated dynamically.")
             
-        st.markdown(
-            f"""
-            <div class="qa-container-box">
-                <span style="color:#154360; font-size:10.5px; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:4px;">⚡ TOUGHEST C-LEVEL Q&A SIMULATOR:</span>
-                {qa_html_items}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+            for item_id, item_data in cat_items.items():
+                # Clean, scannable expandable containers for each individual card to avoid screen clutter
+                with st.expander(f"🔮 [{item_data['tag']}] — {item_data['title']}", expanded=(item_id == 1)):
+                    col_out1, col_out2 = st.columns([0.50, 0.50])
+                    
+                    with col_out1:
+                        st.markdown(f"""
+                        <div class="response-box">
+                            <span style="color:#16a34a; font-size:10px; font-weight:bold; text-transform:uppercase;">The Golden Bridge:</span><br>
+                            <strong style="font-size:13px; color:#1e293b; line-height:1.3;">"{item_data['bridge']}"</strong>
+                        </div>
+                        <div class="followup-box">
+                            <span style="color:#475569; font-size:10px; font-weight:bold; text-transform:uppercase;">Context / Elaboration:</span><br>
+                            <p style="font-size:12.5px; color:#334155; line-height:1.3;">{item_data['followup']}</p>
+                        </div>
+                        <div class="growth-box">
+                            <span style="color:#d97706; font-size:10px; font-weight:bold; text-transform:uppercase;">The micro1 Strategic Fit:</span><br>
+                            <p style="font-size:12.5px; color:#78350f; line-height:1.3;">{item_data['growth']}</p>
+                        </div>
+                        <div class="match-box">
+                            <span style="color:#0284c7; font-size:10px; font-weight:bold; text-transform:uppercase;">Core Concept Objective:</span><br>
+                            <p style="font-size:12.5px; color:#0369a1; line-height:1.3;">{item_data['match']}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                    with col_out2:
+                        bullets_html = "".join(f'<li style="font-size:12.5px; color:#334155; line-height:1.35; margin-bottom:4px;">{b}</li>' for b in item_data['bullets'])
+                        st.markdown(f"""
+                        <div class="bullet-container-box">
+                            <span style="color:#1e293b; font-size:10.5px; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:6px;">Supporting Architectural Arguments:</span>
+                            <ul style="margin-top:0px; padding-left:18px;">{bullets_html}</ul>
+                            <p style='font-size:10.5px; color:#64748b; margin-top:6px;'><strong>Baseline Track:</strong> {item_data['case']}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                        qa_html_items = ""
+                        for qa in item_data['qa_responses']:
+                            qa_html_items += f"""
+                            <div class="qa-item">
+                                <strong style="font-size:12px; color:#0f172a; display:block; line-height:1.2;">Q: {qa['q']}</strong>
+                                <p style="font-size:12px; color:#1e293b; line-height:1.35; margin-top:2px !important;"><strong>A:</strong> {qa['a']}</p>
+                            </div>
+                            """
+                        st.markdown(f"""
+                        <div class="qa-container-box">
+                            <span style="color:#0f172a; font-size:10.5px; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:6px;">⚡ TOUGHEST FRONTIER AI Q&A SIMULATOR:</span>
+                            {qa_html_items}
+                        </div>
+                        """, unsafe_allow_html=True)

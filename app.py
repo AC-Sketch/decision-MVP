@@ -1,5 +1,18 @@
 from __future__ import annotations
 
+# =============================================================================
+# BLOCO 08 + BLOCO 09 — VERSÃO COMPLETA INTEGRADA V14
+# =============================================================================
+# Conteúdo:
+# 1. Bloco 08 — Exercícios resolvidos Excel + Power Query V14
+# 2. Bloco 09 — Excel Decision Framework V14
+#
+# Motivo da integração:
+# O Bloco 09 depende da lista EXERCICIOS_RESOLVIDOS criada no Bloco 08.
+# Portanto, para rodar como bloco completo único, os dois precisam estar juntos.
+# =============================================================================
+
+
 # BLOCO 08 — EXERCÍCIOS RESOLVIDOS EXCEL + POWER QUERY V14
 # Objetivo:
 # - Criar enunciado e solução completa para cada exercício de Excel e Power Query já existente.
@@ -5757,3 +5770,843 @@ if __name__ == "__main__":
             print(f"AVISO: UI Streamlit não renderizada. Detalhe: {exc}")
     else:
         print_validation_report()
+
+
+
+# =============================================================================
+# INÍCIO DO BLOCO 09 — EXCEL DECISION FRAMEWORK V14
+# =============================================================================
+
+
+# BLOCO 09 — EXCEL DECISION FRAMEWORK V14
+# Objetivo:
+# - Considerar apenas Excel.
+# - Incluir mapa mental de tomada de decisão.
+# - Relacionar exercícios Excel com tipos de problema do mapa mental.
+# - Trocar a visão Power Query por estratégias Excel.
+# - Ensinar o caminho desde a leitura do enunciado até a solução.
+#
+# Como usar:
+# 1. Cole este bloco depois do Bloco 08, onde já existe EXERCICIOS_RESOLVIDOS.
+# 2. Rode este bloco.
+# 3. Para Streamlit, chame render_excel_decision_framework_app().
+#
+# Observação:
+# Este bloco não remove conteúdo anterior. Ele cria uma camada pedagógica nova.
+
+import json
+import datetime as dt
+from typing import Any, Dict, List
+
+try:
+    import pandas as pd
+except ModuleNotFoundError:
+    pd = None
+
+try:
+    import streamlit as st
+    STREAMLIT_AVAILABLE = True
+except ModuleNotFoundError:
+    st = None
+    STREAMLIT_AVAILABLE = False
+
+
+APP_VERSION = "v14.4.0"
+BLOCK_NAME = "bloco_09_excel_decision_framework"
+BLOCK_STATUS = "COMPLETO_CORE_PENDENTE_USUARIO"
+BUILD_DATE = dt.date.today().isoformat()
+
+MIN_PROBLEM_TYPES = 10
+MIN_EXCEL_EXERCISES = 100
+MIN_EXERCISES_WITH_MAPPING = 100
+
+
+# =============================================================================
+# 1. COMITÊ EXPANDIDO PARA ESTA FRENTE
+# =============================================================================
+
+COMITE_EXCEL_DECISAO = [
+    {
+        "nucleo": "Técnico",
+        "papel": "Excel Architect",
+        "responsabilidade": "Garantir que as fórmulas estejam corretas em português e aplicáveis a testes técnicos.",
+    },
+    {
+        "nucleo": "Pedagógico",
+        "papel": "Especialista em Testes Técnicos de Dados",
+        "responsabilidade": "Mapear os tipos de exercícios mais frequentes em processos seletivos.",
+    },
+    {
+        "nucleo": "Pedagógico",
+        "papel": "Instrutor Excel Corporativo",
+        "responsabilidade": "Traduzir fórmulas em raciocínio prático e evitar complexidade desnecessária.",
+    },
+    {
+        "nucleo": "Pedagógico",
+        "papel": "Designer Instrucional",
+        "responsabilidade": "Criar mapa mental, árvore de decisão e progressão de aprendizado.",
+    },
+    {
+        "nucleo": "Qualidade",
+        "papel": "Auditor Independente",
+        "responsabilidade": "Validar que o bloco não remove conteúdo e que todos os exercícios Excel ganham estratégia.",
+    },
+]
+
+
+# =============================================================================
+# 2. TIPOS DE PROBLEMA — MAPA MENTAL
+# =============================================================================
+
+PROBLEM_TYPES: List[Dict[str, Any]] = [
+    {
+        "id": "TIPO-01",
+        "tipo_problema": "Limpeza e padronização de texto",
+        "pergunta_diagnostico": "O enunciado pede corrigir, limpar, padronizar, normalizar ou comparar textos?",
+        "palavras_chave": ["limpar", "padronizar", "corrigir", "normalizar", "cadastro", "texto", "nome", "produto", "descrição", "acentos", "espaços", "cpf", "e-mail", "email"],
+        "quando_usar": "Quando a entrada é texto inconsistente: espaços, caixa, pontuação, acentos, abreviações ou padrões divergentes.",
+        "quando_nao_usar": "Quando a questão exige cálculo, agregação ou busca em tabela de apoio.",
+        "formulas_principais": ["ARRUMAR", "MAIÚSCULA", "MINÚSCULA", "PRI.MAIÚSCULA", "SUBSTITUIR", "EXT.TEXTO", "ESQUERDA", "DIREITA", "TEXTOJUNTAR"],
+        "combinacoes_estrategicas": [
+            '=MAIÚSCULA(ARRUMAR(A2))',
+            '=SUBSTITUIR(SUBSTITUIR(A2;".";"");"-";"")',
+            '=TEXTOJUNTAR("-";VERDADEIRO;A2:C2)',
+            '=SE(MAIÚSCULA(ARRUMAR(A2))=MAIÚSCULA(ARRUMAR(B2));"OK";"DIVERGENTE")',
+        ],
+        "estrategia_solucao": [
+            "Identificar se o problema é de texto e não de cálculo.",
+            "Verificar espaços, caixa, pontuação, acentos ou padrões misturados.",
+            "Limpar antes de comparar ou concatenar.",
+            "Usar coluna auxiliar se a fórmula ficar muito longa.",
+            "Validar com vazio, acento, espaço e texto já correto.",
+        ],
+        "erro_comum": "Comparar A2=B2 sem padronizar os dois lados.",
+        "nivel_cobranca": "Muito frequente em testes júnior e pleno.",
+        "peso_teste": 5,
+    },
+    {
+        "id": "TIPO-02",
+        "tipo_problema": "Busca e enriquecimento de cadastro",
+        "pergunta_diagnostico": "O enunciado pede retornar uma informação a partir de uma chave?",
+        "palavras_chave": ["buscar", "retornar", "procurar", "localizar", "encontrar", "consultar", "categoria", "cadastro", "sku", "cliente", "conta", "tabela de apoio", "procv", "procx"],
+        "quando_usar": "Quando existe uma base principal e uma tabela auxiliar de cadastro.",
+        "quando_nao_usar": "Quando a saída é soma, contagem, média ou lista filtrada de várias linhas.",
+        "formulas_principais": ["PROCX", "PROCV", "ÍNDICE", "CORRESP", "SEERRO"],
+        "combinacoes_estrategicas": [
+            '=PROCX(A2;Cadastro[Chave];Cadastro[Retorno];"Sem cadastro")',
+            '=SEERRO(PROCV(A2;Cadastro!A:D;4;FALSO);"Sem cadastro")',
+            '=ÍNDICE(Tabela[Valor];CORRESP(A2;Tabela[Chave];0))',
+            '=PROCX(1;(Tabela[Produto]=A2)*(Tabela[Canal]=B2);Tabela[Preço];"N/D")',
+        ],
+        "estrategia_solucao": [
+            "Identificar a chave de busca.",
+            "Identificar a tabela onde a chave existe.",
+            "Identificar a coluna de retorno.",
+            "Prever o que acontece quando a chave não existir.",
+            "Validar duplicidade de chave antes de confiar no primeiro retorno.",
+        ],
+        "erro_comum": "Usar PROCV sem tratar item não encontrado ou depender de coluna fixa.",
+        "nivel_cobranca": "Muito frequente em testes de analista de dados.",
+        "peso_teste": 5,
+    },
+    {
+        "id": "TIPO-03",
+        "tipo_problema": "Agregação por critérios",
+        "pergunta_diagnostico": "O enunciado pede total, quantidade, média, receita, gasto, volume ou KPI por condição?",
+        "palavras_chave": ["total", "somar", "soma", "quantidade", "contar", "média", "media", "ticket", "receita", "despesa", "valor", "por produto", "por área", "por canal", "por mês", "somases", "cont.ses", "médiases"],
+        "quando_usar": "Quando a resposta é um número consolidado com um ou mais critérios.",
+        "quando_nao_usar": "Quando a resposta precisa listar linhas completas ou retornar dado cadastral.",
+        "formulas_principais": ["SOMASE", "SOMASES", "CONT.SE", "CONT.SES", "MÉDIASE", "MÉDIASES", "SUBTOTAL", "AGREGAR"],
+        "combinacoes_estrategicas": [
+            '=SOMASES(Base[Valor];Base[Produto];A2;Base[Canal];B2)',
+            '=CONT.SES(Base[Área];A2;Base[Status];"Ativo")',
+            '=MÉDIASES(Base[ROI];Base[Canal];A2)',
+            '=SUBTOTAL(9;Base[Valor])',
+        ],
+        "estrategia_solucao": [
+            "Separar campo calculado dos campos de critério.",
+            "Identificar se a pergunta é soma, contagem ou média.",
+            "Mapear todos os critérios do enunciado.",
+            "Conferir se intervalos têm o mesmo tamanho.",
+            "Validar com uma amostra filtrada manualmente.",
+        ],
+        "erro_comum": "Inverter intervalo de soma com intervalo de critério em SOMASES.",
+        "nivel_cobranca": "O tipo mais recorrente em testes de Excel para analista.",
+        "peso_teste": 5,
+    },
+    {
+        "id": "TIPO-04",
+        "tipo_problema": "Classificação, status e regra de negócio",
+        "pergunta_diagnostico": "O enunciado pede criar status, faixa, categoria, prioridade ou classificação?",
+        "palavras_chave": ["status", "classificar", "faixa", "categoria", "prioridade", "crítico", "critico", "normal", "alto", "baixo", "se ", "regra", "ses", "ativo", "vencido"],
+        "quando_usar": "Quando a resposta é um rótulo baseado em condições.",
+        "quando_nao_usar": "Quando a regra depende de tabela de faixas externa; nesse caso, considere PROCX por aproximação.",
+        "formulas_principais": ["SE", "SES", "E", "OU", "SEERRO", "LET"],
+        "combinacoes_estrategicas": [
+            '=SE(B2>=1000;"Alta";SE(B2>=500;"Média";"Baixa"))',
+            '=SES(B2>=1000;"Alta";B2>=500;"Média";VERDADEIRO;"Baixa")',
+            '=SE(E(B2>=1000;C2="Ativo");"Prioritário";"Normal")',
+            '=LET(valor;B2;limite;1000;SE(valor>=limite;"OK";"Validar"))',
+        ],
+        "estrategia_solucao": [
+            "Listar todas as regras antes da fórmula.",
+            "Ordenar faixas do maior para o menor quando houver limites.",
+            "Definir saída padrão para casos não previstos.",
+            "Usar LET quando houver muitas variáveis.",
+            "Testar valores na fronteira: 500, 1000, vazio e erro.",
+        ],
+        "erro_comum": "Começar pela menor faixa e classificar tudo errado.",
+        "nivel_cobranca": "Muito frequente em júnior, pleno e testes de negócio.",
+        "peso_teste": 5,
+    },
+    {
+        "id": "TIPO-05",
+        "tipo_problema": "Listas, filtros e matrizes dinâmicas",
+        "pergunta_diagnostico": "O enunciado pede listar registros, criar lista única, ordenar, top N ou retornar uma tabela filtrada?",
+        "palavras_chave": ["listar", "filtrar", "mostrar", "único", "unico", "distinto", "classificar", "ordenar", "top", "ranking", "retornar registros", "filtro"],
+        "quando_usar": "Quando a saída esperada é uma matriz ou lista dinâmica, não uma única célula.",
+        "quando_nao_usar": "Quando a resposta é apenas um indicador agregado ou uma busca pontual.",
+        "formulas_principais": ["FILTRO", "ÚNICO", "CLASSIFICAR", "PEGAR", "ESCOLHERCOLS", "EMPILHARV", "EMPILHARH"],
+        "combinacoes_estrategicas": [
+            '=FILTRO(Base;Base[Valor]>1000;"Sem registros")',
+            '=CLASSIFICAR(ÚNICO(Base[Vendedor]))',
+            '=PEGAR(CLASSIFICAR(Base;3;-1);10)',
+            '=ESCOLHERCOLS(PEGAR(CLASSIFICAR(Base;3;-1);10);1;2;3)',
+        ],
+        "estrategia_solucao": [
+            "Confirmar se a entrega precisa derramar várias linhas.",
+            "Definir critério do filtro ou coluna de ordenação.",
+            "Usar mensagem para resultado vazio.",
+            "Reduzir colunas se a saída ficar poluída.",
+            "Testar se há espaço livre para a matriz derramar.",
+        ],
+        "erro_comum": "Usar PROCX quando a pergunta pede várias linhas.",
+        "nivel_cobranca": "Frequente em Excel 365 e testes atuais.",
+        "peso_teste": 4,
+    },
+    {
+        "id": "TIPO-06",
+        "tipo_problema": "Datas, prazos e competência",
+        "pergunta_diagnostico": "O enunciado pede calcular prazo, atraso, competência, vencimento ou período?",
+        "palavras_chave": ["data", "prazo", "vencimento", "competência", "competencia", "mês", "mes", "ano", "dias", "sla", "atraso", "fechamento", "hoje"],
+        "quando_usar": "Quando a regra depende de datas reais e períodos.",
+        "quando_nao_usar": "Quando a data está como texto não tratado; primeiro converta ou corrija o tipo.",
+        "formulas_principais": ["HOJE", "AGORA", "DATA", "ANO", "MÊS", "DIAS", "FIMMÊS", "DIA.DA.SEMANA"],
+        "combinacoes_estrategicas": [
+            '=DATA(ANO(A2);MÊS(A2);1)',
+            '=DIAS(B2;A2)',
+            '=SE(HOJE()>A2;"Vencido";"No prazo")',
+            '=FIMMÊS(A2;0)',
+        ],
+        "estrategia_solucao": [
+            "Verificar se a data é data real ou texto.",
+            "Identificar se é diferença, status ou agrupamento mensal.",
+            "Evitar transformar competência em texto quando precisar ordenar.",
+            "Tratar datas vazias.",
+            "Validar com datas antes, depois e no mesmo dia.",
+        ],
+        "erro_comum": "Criar competência como texto e perder ordenação temporal.",
+        "nivel_cobranca": "Frequente em financeiro, logística e RH.",
+        "peso_teste": 4,
+    },
+    {
+        "id": "TIPO-07",
+        "tipo_problema": "Coringas e busca parcial",
+        "pergunta_diagnostico": "O enunciado pede encontrar texto parcial, padrão flexível ou caractere literal como *, ? ou ~?",
+        "palavras_chave": ["contém", "contem", "começa", "termina", "parcial", "coringa", "asterisco", "interrogação", "literal", "padrão", "*", "?", "~"],
+        "quando_usar": "Quando a correspondência não é exata ou o texto segue padrão variável.",
+        "quando_nao_usar": "Quando a chave precisa ser exata para evitar falso positivo.",
+        "formulas_principais": ["CONT.SE", "CONT.SES", "PROCX", "PROCURAR", "ÉNÚM", "FILTRO"],
+        "combinacoes_estrategicas": [
+            '=CONT.SE(A:A;"*LATA*")',
+            '=CONT.SE(A:A;"???")',
+            '=CONT.SE(A:A;"SKU~*")',
+            '=PROCX("*"&A2&"*";Base[Produto];Base[Categoria];"N/D";2)',
+        ],
+        "estrategia_solucao": [
+            "Definir se o padrão é contém, começa, termina ou tamanho fixo.",
+            "Usar * para vários caracteres.",
+            "Usar ? para um caractere.",
+            "Usar ~ para buscar * ou ? literalmente.",
+            "Validar falso positivo em descrições semelhantes.",
+        ],
+        "erro_comum": "Usar * quando deveria exigir correspondência exata.",
+        "nivel_cobranca": "Médio, mas diferencia candidatos atentos a detalhe.",
+        "peso_teste": 3,
+    },
+    {
+        "id": "TIPO-08",
+        "tipo_problema": "Auditoria, validação e tratamento de erro",
+        "pergunta_diagnostico": "O enunciado pede validar inconsistência, divergência, incompleto, erro ou rastreabilidade?",
+        "palavras_chave": ["auditoria", "validar", "divergente", "erro", "incompleto", "conferir", "rastrear", "controle", "governança", "let", "seerro"],
+        "quando_usar": "Quando a solução precisa ser explicável, segura e resistente a erro.",
+        "quando_nao_usar": "Quando a fórmula é simples e não há risco relevante.",
+        "formulas_principais": ["LET", "SEERRO", "ÉERROS", "ÉCÉL.VAZIA", "SE", "E", "OU"],
+        "combinacoes_estrategicas": [
+            '=SEERRO(A2/B2;0)',
+            '=SE(ARRUMAR(A2)="";"Vazio";"Preenchido")',
+            '=LET(v;B2;status;C2;SE(OU(v="";status="");"INCOMPLETO";"OK"))',
+            '=SE(ÉERROS(PROCX(A2;Dim[SKU];Dim[SKU]));"Sem cadastro";"OK")',
+        ],
+        "estrategia_solucao": [
+            "Separar validação de dados da regra de negócio.",
+            "Nomear variáveis com LET quando houver muitas etapas.",
+            "Não esconder erro sem entender a causa.",
+            "Criar status de qualidade quando houver risco de entrada inválida.",
+            "Explicar a fórmula como faria para auditor ou gestor.",
+        ],
+        "erro_comum": "Usar SEERRO para mascarar erro de cadastro ou erro lógico.",
+        "nivel_cobranca": "Muito relevante em testes pleno/sênior.",
+        "peso_teste": 4,
+    },
+    {
+        "id": "TIPO-09",
+        "tipo_problema": "Estatística e análise exploratória no Excel",
+        "pergunta_diagnostico": "O enunciado pede média, mediana, dispersão, correlação, tendência ou previsão?",
+        "palavras_chave": ["média", "media", "mediana", "moda", "desvio", "variância", "variancia", "correlação", "correlacao", "rquad", "tendência", "forecast", "percentil", "quartil"],
+        "quando_usar": "Quando a questão pede interpretar comportamento dos dados, não apenas calcular total.",
+        "quando_nao_usar": "Quando a amostra é pequena demais ou quando a relação não é linear e o enunciado não pede modelo.",
+        "formulas_principais": ["MÉDIA", "MED", "MODO.ÚNICO", "DESVPAD.S", "DESVPAD.P", "CORREL", "RQUAD", "PROJ.LIN", "TENDÊNCIA", "QUARTIL.INC", "PERCENTIL.INC"],
+        "combinacoes_estrategicas": [
+            '=MÉDIA(Base[Valor])',
+            '=MED(Base[Valor])',
+            '=DESVPAD.S(Base[Valor])',
+            '=CORREL(Base[Investimento];Base[Vendas])',
+            '=RQUAD(Base[Vendas];Base[Investimento])',
+        ],
+        "estrategia_solucao": [
+            "Identificar se o pedido é descritivo, comparação, dispersão ou relação entre variáveis.",
+            "Comparar média e mediana quando houver outliers.",
+            "Usar desvio padrão para dispersão.",
+            "Não confundir correlação com causalidade.",
+            "Sempre escrever interpretação em linguagem de negócio.",
+        ],
+        "erro_comum": "Entregar só o número sem interpretação.",
+        "nivel_cobranca": "Médio em Excel, alto em analista de dados.",
+        "peso_teste": 3,
+    },
+    {
+        "id": "TIPO-10",
+        "tipo_problema": "Performance, modelagem e estrutura de planilha",
+        "pergunta_diagnostico": "O problema fala de lentidão, base grande, tabela estruturada, modelo ou manutenção?",
+        "palavras_chave": ["lenta", "performance", "tabela estruturada", "modelo", "manutenção", "base grande", "fato", "dimensão", "referência", "estruturada"],
+        "quando_usar": "Quando o enunciado avalia maturidade de modelagem e não apenas sintaxe.",
+        "quando_nao_usar": "Quando é um exercício simples e isolado.",
+        "formulas_principais": ["Tabelas Estruturadas", "LET", "PROCX", "SOMASES", "SUBTOTAL", "FILTRO"],
+        "combinacoes_estrategicas": [
+            '=SOMASES(Base[Valor];Base[Produto];A2)',
+            '=PROCX([@SKU];DimProduto[SKU];DimProduto[Categoria];"Sem cadastro")',
+            '=SUBTOTAL(9;Base[Valor])',
+            '=LET(chave;A2&"|"&B2;SE(chave="|";"SEM CHAVE";chave))',
+        ],
+        "estrategia_solucao": [
+            "Preferir tabelas estruturadas a colunas inteiras.",
+            "Separar fato e dimensão quando houver cadastro auxiliar.",
+            "Evitar fórmulas voláteis em excesso.",
+            "Usar LET para evitar repetição de cálculo.",
+            "Explicar por que sua solução escala melhor.",
+        ],
+        "erro_comum": "Resolver com fórmula que funciona em 10 linhas, mas trava em 100 mil.",
+        "nivel_cobranca": "Diferencial em testes pleno/sênior.",
+        "peso_teste": 4,
+    },
+]
+
+
+THEME_TO_TYPE = {
+    "Texto": "TIPO-01",
+    "Buscas": "TIPO-02",
+    "Agregações": "TIPO-03",
+    "Condicionais": "TIPO-04",
+    "Matrizes Dinâmicas": "TIPO-05",
+    "Datas": "TIPO-06",
+    "Coringas": "TIPO-07",
+    "Auditoria": "TIPO-08",
+    "Estatística no Excel": "TIPO-09",
+    "Estatística": "TIPO-09",
+    "Performance": "TIPO-10",
+    "Modelagem": "TIPO-10",
+}
+
+TYPE_LOOKUP = {item["id"]: item for item in PROBLEM_TYPES}
+
+
+# =============================================================================
+# 3. FUNÇÕES DE ENRIQUECIMENTO DOS EXERCÍCIOS EXCEL
+# =============================================================================
+
+def get_base_exercises() -> List[Dict[str, Any]]:
+    base = globals().get("EXERCICIOS_RESOLVIDOS")
+    if base is None:
+        raise RuntimeError(
+            "EXERCICIOS_RESOLVIDOS não encontrado. Cole este Bloco 09 depois do Bloco 08 ou antes carregue a lista de exercícios."
+        )
+    return base
+
+
+def get_excel_base_exercises() -> List[Dict[str, Any]]:
+    return [dict(item) for item in get_base_exercises() if item.get("ferramenta") == "Excel"]
+
+
+def classify_exercise(exercise: Dict[str, Any]) -> str:
+    tema = exercise.get("tema", "")
+    if tema in THEME_TO_TYPE:
+        return THEME_TO_TYPE[tema]
+
+    text = " ".join(
+        str(exercise.get(k, ""))
+        for k in ["enunciado", "problema", "analise", "raciocinio", "solucao_excel", "solucao_principal"]
+    ).lower()
+
+    scored = []
+    for item in PROBLEM_TYPES:
+        score = sum(1 for word in item["palavras_chave"] if word.lower() in text)
+        scored.append((score, item["id"]))
+
+    scored.sort(reverse=True)
+    return scored[0][1] if scored and scored[0][0] > 0 else "TIPO-08"
+
+
+def difficulty_score(exercise: Dict[str, Any]) -> int:
+    nivel = str(exercise.get("nivel", "")).lower()
+    formula = str(exercise.get("solucao_excel", exercise.get("solucao_principal", ""))).upper()
+
+    score = 1
+    if "intermedi" in nivel:
+        score = 2
+    if "avanç" in nivel or "avanc" in nivel:
+        score = 3
+    if "expert" in nivel:
+        score = 4
+
+    advanced_tokens = ["LET", "LAMBDA", "MAP", "BYROW", "PROCX(1", "ESCOLHERCOLS", "PEGAR", "FILTRO", "ÚNICO", "CLASSIFICAR"]
+    if any(token in formula for token in advanced_tokens):
+        score = max(score, 4)
+
+    if sum(token in formula for token in ["FILTRO", "ÚNICO", "CLASSIFICAR", "PROCX", "SOMASES", "CONT.SES", "LET"]) >= 3:
+        score = 5
+
+    return min(score, 5)
+
+
+def make_related(exercises: List[Dict[str, Any]], current: Dict[str, Any], problem_type_id: str, limit: int = 6) -> List[str]:
+    same_type = []
+    same_theme = []
+
+    for item in exercises:
+        if item.get("id") == current.get("id"):
+            continue
+        item_type = classify_exercise(item)
+        if item_type == problem_type_id:
+            same_type.append(item.get("id"))
+        elif item.get("tema") == current.get("tema"):
+            same_theme.append(item.get("id"))
+
+    return (same_type + same_theme)[:limit]
+
+
+def strategy_for_exercise(exercise: Dict[str, Any], problem_type: Dict[str, Any]) -> Dict[str, Any]:
+    formula = exercise.get("solucao_excel") or exercise.get("solucao_principal", "")
+    return {
+        "diagnostico_do_enunciado": problem_type["pergunta_diagnostico"],
+        "tipo_problema": problem_type["tipo_problema"],
+        "caminho_recomendado": [
+            "Ler verbo principal do enunciado",
+            "Identificar entrada e saída esperada",
+            problem_type["tipo_problema"],
+            "Selecionar família de fórmulas",
+            "Aplicar solução",
+            "Validar resultado e erro comum",
+        ],
+        "familia_formulas": problem_type["formulas_principais"],
+        "formula_principal": formula,
+        "estrategia_excel_1_formula_direta": "Usar fórmula direta quando a tarefa é pontual, clara e de baixa recorrência.",
+        "estrategia_excel_2_coluna_auxiliar": "Usar coluna auxiliar quando houver limpeza, validação, regra intermediária ou necessidade de auditoria.",
+        "estrategia_excel_3_tabela_dinamica": "Usar Tabela Dinâmica quando a pergunta pede exploração rápida, resumo por dimensões e filtros.",
+        "estrategia_excel_4_tabela_estruturada": "Usar Tabela Estruturada para manter referências legíveis e expansão automática.",
+        "estrategia_excel_5_let_auditoria": "Usar LET quando a fórmula ficar longa, repetir cálculo ou precisar ser explicada em entrevista.",
+        "estrategia_entrevista": (
+            "Explique primeiro o tipo de problema, depois a família de fórmulas, depois a fórmula. "
+            "Finalize dizendo como validaria e qual erro comum evitaria."
+        ),
+        "quando_simplificar": "Se a solução couber em uma fórmula curta e auditável, não complique com fórmula matricial avançada.",
+        "quando_escalar": "Se virar processo recorrente, base grande ou regra corporativa, evoluir para tabela estruturada, tabela dinâmica ou modelo de dados.",
+    }
+
+
+def build_enriched_excel_exercises() -> List[Dict[str, Any]]:
+    exercises = get_excel_base_exercises()
+    enriched = []
+
+    for item in exercises:
+        ex = dict(item)
+        ptype_id = classify_exercise(ex)
+        ptype = TYPE_LOOKUP[ptype_id]
+
+        # Remove visão Power Query do exercício Excel enriquecido.
+        ex.pop("solucao_powerquery", None)
+
+        ex["tipo_problema_id"] = ptype_id
+        ex["tipo_problema"] = ptype["tipo_problema"]
+        ex["pergunta_de_diagnostico"] = ptype["pergunta_diagnostico"]
+        ex["dificuldade_logica"] = difficulty_score(ex)
+        ex["formulas_estrategicas_relacionadas"] = ptype["formulas_principais"]
+        ex["combinacoes_estrategicas_relacionadas"] = ptype["combinacoes_estrategicas"]
+        ex["exercicios_correspondentes_no_mapa"] = make_related(exercises, ex, ptype_id)
+        ex["estrategias_excel"] = strategy_for_exercise(ex, ptype)
+        ex["armadilha_do_enunciado"] = ptype["erro_comum"]
+        ex["decisao_final_recomendada"] = (
+            f"Classificar como '{ptype['tipo_problema']}', aplicar "
+            f"{', '.join(ptype['formulas_principais'][:3])} e validar com amostra."
+        )
+
+        enriched.append(ex)
+
+    return enriched
+
+
+def build_problem_types_with_exercises() -> List[Dict[str, Any]]:
+    enriched = build_enriched_excel_exercises()
+    problem_types = [dict(item) for item in PROBLEM_TYPES]
+
+    for ptype in problem_types:
+        associados = [ex["id"] for ex in enriched if ex["tipo_problema_id"] == ptype["id"]]
+        ptype["exercicios_associados"] = associados
+        ptype["quantidade_exercicios_associados"] = len(associados)
+
+    return problem_types
+
+
+def export_excel_decision_framework_payload() -> Dict[str, Any]:
+    return {
+        "app_version": APP_VERSION,
+        "block_name": BLOCK_NAME,
+        "status": BLOCK_STATUS,
+        "build_date": BUILD_DATE,
+        "committee": COMITE_EXCEL_DECISAO,
+        "problem_types": build_problem_types_with_exercises(),
+        "excel_exercises_enriched": build_enriched_excel_exercises(),
+    }
+
+
+# =============================================================================
+# 4. MAPA MENTAL E DIAGNÓSTICO
+# =============================================================================
+
+def build_decision_tree_text() -> str:
+    return """ENUNCIADO
+│
+├─ 1. O que o verbo principal pede?
+│   ├─ Limpar / padronizar / comparar texto → Limpeza e padronização
+│   ├─ Buscar / retornar / consultar → Busca e cadastro
+│   ├─ Somar / contar / calcular média → Agregação por critérios
+│   ├─ Classificar / criar status / faixa → Condicionais e regra
+│   ├─ Listar / filtrar / top N → Matrizes dinâmicas
+│   ├─ Prazo / vencimento / competência → Datas
+│   ├─ Contém / começa / termina / padrão → Coringas
+│   ├─ Validar / divergente / incompleto → Auditoria
+│   ├─ Média / correlação / desvio → Estatística
+│   └─ Lentidão / modelo / manutenção → Performance e modelagem
+│
+├─ 2. Qual é a saída esperada?
+│   ├─ Uma célula → fórmula direta
+│   ├─ Uma coluna → fórmula em tabela estruturada
+│   ├─ Uma tabela/lista → FILTRO / ÚNICO / CLASSIFICAR
+│   ├─ Um resumo → SOMASES / CONT.SES / Tabela Dinâmica
+│   └─ Um diagnóstico → LET / SEERRO / validação
+│
+├─ 3. Qual é o risco?
+│   ├─ Texto sujo → limpar antes
+│   ├─ Chave inexistente → tratar erro
+│   ├─ Duplicidade → validar chave
+│   ├─ Base grande → evitar colunas inteiras
+│   └─ Regra longa → usar LET
+│
+└─ 4. Como entregar?
+    ├─ Fórmula
+    ├─ Raciocínio
+    ├─ Validação
+    ├─ Erro comum
+    └─ Alternativa Excel
+"""
+
+
+def recommend_path_from_statement(statement: str) -> Dict[str, Any]:
+    text = statement.lower()
+    scores = []
+
+    for ptype in PROBLEM_TYPES:
+        score = sum(1 for word in ptype.get("palavras_chave", []) if word.lower() in text)
+        scores.append((score, ptype))
+
+    scores.sort(key=lambda item: item[0], reverse=True)
+    best_score, best_type = scores[0]
+
+    if best_score == 0:
+        best_type = TYPE_LOOKUP["TIPO-08"]
+
+    problem_types_with_exercises = build_problem_types_with_exercises()
+    full_type = next(pt for pt in problem_types_with_exercises if pt["id"] == best_type["id"])
+
+    return {
+        "tipo_recomendado": full_type["tipo_problema"],
+        "pergunta_diagnostico": full_type["pergunta_diagnostico"],
+        "formulas_principais": full_type["formulas_principais"],
+        "combinacoes_estrategicas": full_type["combinacoes_estrategicas"],
+        "estrategia_solucao": full_type["estrategia_solucao"],
+        "erro_comum": full_type["erro_comum"],
+        "exercicios_associados": full_type.get("exercicios_associados", []),
+    }
+
+
+# =============================================================================
+# 5. VALIDAÇÃO
+# =============================================================================
+
+def validate_payload() -> List[Dict[str, Any]]:
+    checks = []
+
+    try:
+        enriched = build_enriched_excel_exercises()
+        problem_types = build_problem_types_with_exercises()
+        source_ok = True
+        source_error = ""
+    except Exception as exc:
+        enriched = []
+        problem_types = []
+        source_ok = False
+        source_error = str(exc)
+
+    checks.append({
+        "regra": "Fonte EXERCICIOS_RESOLVIDOS carregada",
+        "status": "OK" if source_ok else "FALHA",
+        "evidencia": "Fonte encontrada" if source_ok else source_error,
+        "criticidade": "Crítica",
+    })
+    checks.append({
+        "regra": "Tipos de problema >= mínimo",
+        "status": "OK" if len(PROBLEM_TYPES) >= MIN_PROBLEM_TYPES else "FALHA",
+        "evidencia": str(len(PROBLEM_TYPES)),
+        "criticidade": "Crítica",
+    })
+    checks.append({
+        "regra": "Exercícios Excel >= mínimo",
+        "status": "OK" if len(enriched) >= MIN_EXCEL_EXERCISES else "FALHA",
+        "evidencia": str(len(enriched)),
+        "criticidade": "Crítica",
+    })
+    checks.append({
+        "regra": "Exercícios com mapa e estratégia >= mínimo",
+        "status": "OK" if sum(1 for ex in enriched if ex.get("tipo_problema_id") and ex.get("estrategias_excel")) >= MIN_EXERCISES_WITH_MAPPING else "FALHA",
+        "evidencia": str(sum(1 for ex in enriched if ex.get("tipo_problema_id") and ex.get("estrategias_excel"))),
+        "criticidade": "Crítica",
+    })
+    checks.append({
+        "regra": "Power Query removido da visão Excel",
+        "status": "OK" if all("solucao_powerquery" not in ex for ex in enriched) else "FALHA",
+        "evidencia": "Campo solucao_powerquery removido dos exercícios Excel enriquecidos",
+        "criticidade": "Alta",
+    })
+    checks.append({
+        "regra": "Todos os tipos principais possuem estrutura pedagógica",
+        "status": "OK" if all(pt.get("formulas_principais") and pt.get("estrategia_solucao") for pt in PROBLEM_TYPES) else "FALHA",
+        "evidencia": "Tipos possuem fórmulas e estratégia",
+        "criticidade": "Alta",
+    })
+    checks.append({
+        "regra": "Streamlit opcional",
+        "status": "OK",
+        "evidencia": "Import tratado com ModuleNotFoundError",
+        "criticidade": "Crítica",
+    })
+
+    return checks
+
+
+def print_validation_report() -> None:
+    checks = validate_payload()
+    falhas = sum(1 for item in checks if item["status"] == "FALHA")
+
+    try:
+        enriched_count = len(build_enriched_excel_exercises())
+        problem_type_count = len(build_problem_types_with_exercises())
+        mapped_count = sum(1 for ex in build_enriched_excel_exercises() if ex.get("estrategias_excel"))
+    except Exception:
+        enriched_count = 0
+        problem_type_count = len(PROBLEM_TYPES)
+        mapped_count = 0
+
+    print("=" * 78)
+    print("VALIDAÇÃO DO BLOCO 09 — EXCEL DECISION FRAMEWORK V14")
+    print("=" * 78)
+    print(f"Bloco: {BLOCK_NAME}")
+    print(f"Versão: {APP_VERSION}")
+    print(f"Status: {BLOCK_STATUS}")
+    print(f"Streamlit disponível: {STREAMLIT_AVAILABLE}")
+    print(f"Tipos de problema: {problem_type_count}")
+    print(f"Exercícios Excel enriquecidos: {enriched_count}")
+    print(f"Exercícios com estratégia Excel: {mapped_count}")
+    print(f"Falhas core: {falhas}")
+    print(f"Aprovado core: {falhas == 0}")
+    print("-" * 78)
+    print("CHECKS CORE:")
+    for item in checks:
+        print(f"[{item['status']}] {item['regra']} — {item['evidencia']}")
+    print("-" * 78)
+    print("MAPA MENTAL RESUMIDO:")
+    print(build_decision_tree_text())
+    print("=" * 78)
+
+
+# =============================================================================
+# 6. UI STREAMLIT OPCIONAL
+# =============================================================================
+
+CUSTOM_CSS = """
+<style>
+.block-container { max-width: 1600px !important; padding-top: 1rem !important; padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+.stTabs [data-baseweb="tab-list"] { gap: 0.25rem; flex-wrap: wrap; }
+.stTabs [data-baseweb="tab"] { height: auto; min-height: 38px; white-space: normal; padding: 8px 12px; }
+pre, code { white-space: pre-wrap !important; word-break: break-word !important; overflow-wrap: anywhere !important; font-size: 0.78rem !important; }
+</style>
+"""
+
+
+def render_table(title: str, rows: List[Dict[str, Any]], height: int = 420) -> None:
+    st.subheader(title)
+    if pd is None:
+        st.write(rows)
+        return
+    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True, height=height)
+
+
+def filter_exercises(rows: List[Dict[str, Any]], search: str = "", tipo: str = "Todos", nivel: str = "Todos") -> List[Dict[str, Any]]:
+    result = []
+    term = search.lower().strip()
+
+    for row in rows:
+        if tipo != "Todos" and row.get("tipo_problema") != tipo:
+            continue
+        if nivel != "Todos" and row.get("nivel") != nivel:
+            continue
+        if term and term not in json.dumps(row, ensure_ascii=False).lower():
+            continue
+        result.append(row)
+
+    return result
+
+
+def render_excel_decision_framework_app() -> None:
+    if not STREAMLIT_AVAILABLE:
+        raise RuntimeError("Streamlit não instalado. Use print_validation_report().")
+
+    st.set_page_config(page_title="Excel Decision Framework V14", page_icon="🧠", layout="wide")
+    st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+
+    enriched = build_enriched_excel_exercises()
+    problem_types = build_problem_types_with_exercises()
+
+    st.title("Bloco 09 — Excel Decision Framework V14")
+    st.caption("Mapa mental · Árvore de decisão · Exercícios relacionados · Estratégias Excel")
+
+    tipos = ["Todos"] + sorted(set(pt["tipo_problema"] for pt in problem_types))
+    niveis = ["Todos"] + sorted(set(ex.get("nivel", "") for ex in enriched))
+
+    with st.sidebar:
+        page = st.radio(
+            "Seção",
+            ["Dashboard", "Mapa Mental", "Tipos de Problema", "Exercícios Relacionados", "Diagnóstico por Enunciado", "Auditoria"],
+            index=0,
+        )
+        tipo = st.selectbox("Tipo de problema", tipos)
+        nivel = st.selectbox("Nível", niveis)
+        search = st.text_input("Buscar", "")
+
+    if page == "Dashboard":
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Tipos de problema", len(problem_types))
+        c2.metric("Exercícios Excel", len(enriched))
+        c3.metric("Com estratégias", sum(1 for ex in enriched if ex.get("estrategias_excel")))
+        c4.metric("Falhas core", sum(1 for item in validate_payload() if item["status"] == "FALHA"))
+
+        render_table("Distribuição por tipo", [
+            {
+                "tipo": pt["tipo_problema"],
+                "peso_teste": pt["peso_teste"],
+                "nível_cobrança": pt["nivel_cobranca"],
+                "exercícios": pt["quantidade_exercicios_associados"],
+            }
+            for pt in problem_types
+        ])
+
+    elif page == "Mapa Mental":
+        st.code(build_decision_tree_text(), language="text")
+        st.info("Regra de ouro: não comece pela fórmula. Comece classificando o tipo de problema, a saída esperada e o risco do enunciado.")
+
+    elif page == "Tipos de Problema":
+        rows = problem_types
+        if tipo != "Todos":
+            rows = [row for row in rows if row["tipo_problema"] == tipo]
+        if search:
+            rows = [row for row in rows if search.lower() in json.dumps(row, ensure_ascii=False).lower()]
+
+        render_table("Tipos de problema", rows, height=500)
+
+        for pt in rows:
+            with st.expander(f"{pt['id']} · {pt['tipo_problema']} · exercícios: {pt['quantidade_exercicios_associados']}", expanded=False):
+                st.markdown(f"**Pergunta de diagnóstico:** {pt['pergunta_diagnostico']}")
+                st.markdown(f"**Quando usar:** {pt['quando_usar']}")
+                st.markdown(f"**Quando NÃO usar:** {pt['quando_nao_usar']}")
+                st.markdown("**Fórmulas principais:**")
+                st.write(pt["formulas_principais"])
+                st.markdown("**Combinações estratégicas:**")
+                for formula in pt["combinacoes_estrategicas"]:
+                    st.code(formula, language="text")
+                st.markdown("**Exercícios associados:**")
+                st.write(pt["exercicios_associados"])
+
+    elif page == "Exercícios Relacionados":
+        rows = filter_exercises(enriched, search=search, tipo=tipo, nivel=nivel)
+        summary_rows = [
+            {
+                "id": ex.get("id"),
+                "tema": ex.get("tema"),
+                "nivel": ex.get("nivel"),
+                "tipo_problema": ex.get("tipo_problema"),
+                "dificuldade_logica": ex.get("dificuldade_logica"),
+                "formula": ex.get("solucao_excel") or ex.get("solucao_principal"),
+                "relacionados": ", ".join(ex.get("exercicios_correspondentes_no_mapa", [])),
+            }
+            for ex in rows
+        ]
+
+        render_table("Exercícios Excel mapeados", summary_rows, height=500)
+
+        for ex in rows[:50]:
+            with st.expander(f"{ex.get('id')} · {ex.get('tipo_problema')} · {ex.get('nivel')}", expanded=False):
+                st.markdown("**Enunciado**")
+                st.write(ex.get("enunciado", ""))
+                st.markdown("**Diagnóstico**")
+                st.write(ex.get("pergunta_de_diagnostico", ""))
+                st.markdown("**Solução Excel**")
+                st.code(ex.get("solucao_excel") or ex.get("solucao_principal", ""), language="text")
+                st.markdown("**Estratégias Excel**")
+                st.json(ex.get("estrategias_excel", {}))
+                st.markdown("**Exercícios correspondentes no mapa**")
+                st.write(ex.get("exercicios_correspondentes_no_mapa", []))
+
+    elif page == "Diagnóstico por Enunciado":
+        st.markdown("Cole um enunciado e o framework sugerirá o tipo de problema e as fórmulas prováveis.")
+        statement = st.text_area("Enunciado", height=160, placeholder="Exemplo: Somar o valor de vendas por produto e canal...")
+        if statement:
+            result = recommend_path_from_statement(statement)
+            st.subheader("Recomendação")
+            st.json(result)
+
+    elif page == "Auditoria":
+        render_table("Checklist", validate_payload(), height=420)
+
+
+if __name__ == "__main__":
+    print_validation_report()
+

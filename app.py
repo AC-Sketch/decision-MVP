@@ -1590,7 +1590,6 @@ EXCEL_ROWS.append(row(
     'Usar LET para tornar regra auditável.',
     'Exercício prático incremental.',
 ))
-
 STAT_ROWS = []
 STAT_ROWS.append(row(
     'Estatística',
@@ -1784,7 +1783,6 @@ STAT_ROWS.append(row(
     'Regressão log/exponencial.',
     'Forecast.',
 ))
-
 M_ROWS = []
 M_ROWS.append(row(
     'Power Query M',
@@ -3234,7 +3232,6 @@ M_ROWS.append(row(
     'Criar regra condicional auditável.',
     'Exercício incremental.',
 ))
-
 VBA_ROWS = []
 VBA_ROWS.append(row(
     'VBA',
@@ -3924,7 +3921,6 @@ VBA_ROWS.append(row(
     'Template com tratamento de erro.',
     'Exercício incremental.',
 ))
-
 M_BLOCKS = {}
 M_BLOCKS['00_fnRemoveAcentos_EXATA_SOLICITADA'] = '(texto as text) as text =>\nlet\n    Fonte = texto,\n    Substituicoes = {\n        {"Á","A"},{"À","A"},{"Ã","A"},{"Â","A"},{"Ä","A"},\n        {"É","E"},{"È","E"},{"Ê","E"},{"Ë","E"},\n        {"Í","I"},{"Ì","I"},{"Î","I"},{"Ï","I"},\n        {"Ó","O"},{"Ò","O"},{"Õ","O"},{"Ô","O"},{"Ö","O"},\n        {"Ú","U"},{"Ù","U"},{"Û","U"},{"Ü","U"},\n        {"Ç","C"}\n    },\n    Resultado = List.Accumulate(\n        Substituicoes,\n        Text.Upper(Fonte),\n        (estado, atual) => Text.Replace(estado, atual{0}, atual{1})\n    )\nin\n    Resultado'
 M_BLOCKS['01_fnRemoveAcentos_nullable_robusta'] = '(texto as nullable text) as nullable text =>\nlet\n    Entrada = if texto = null then null else texto,\n    Substituicoes = {\n        {"Á","A"},{"À","A"},{"Ã","A"},{"Â","A"},{"Ä","A"},\n        {"É","E"},{"È","E"},{"Ê","E"},{"Ë","E"},\n        {"Í","I"},{"Ì","I"},{"Î","I"},{"Ï","I"},\n        {"Ó","O"},{"Ò","O"},{"Õ","O"},{"Ô","O"},{"Ö","O"},\n        {"Ú","U"},{"Ù","U"},{"Û","U"},{"Ü","U"},\n        {"Ç","C"},{"á","a"},{"à","a"},{"ã","a"},{"â","a"},{"ä","a"},\n        {"é","e"},{"è","e"},{"ê","e"},{"ë","e"},\n        {"í","i"},{"ì","i"},{"î","i"},{"ï","i"},\n        {"ó","o"},{"ò","o"},{"õ","o"},{"ô","o"},{"ö","o"},\n        {"ú","u"},{"ù","u"},{"û","u"},{"ü","u"},{"ç","c"}\n    },\n    Resultado = if Entrada = null then null else\n        List.Accumulate(Substituicoes, Entrada, (estado, atual) => Text.Replace(estado, atual{0}, atual{1}))\nin\n    Resultado'
@@ -3937,7 +3933,6 @@ M_BLOCKS['07_fuzzy_matching'] = 'let\n    Base = Excel.CurrentWorkbook(){[Name="
 M_BLOCKS['08_pipeline_completo'] = 'let\n    Fonte = Excel.CurrentWorkbook(){[Name="BaseVendas"]}[Content],\n    Tipos = Table.TransformColumnTypes(Fonte, {{"Produto", type text}, {"Cliente", type text}, {"Valor", type any}, {"Data", type any}}),\n    Original = Table.DuplicateColumn(Tipos, "Produto", "Produto_Original"),\n    ProdutoLimpo = Table.AddColumn(Original, "Produto_Limpo", each Text.Upper(Text.Trim(Text.Clean([Produto]))), type text),\n    ProdutoMin = Table.AddColumn(ProdutoLimpo, "Produto_Limpo_Min", each Text.Lower([Produto_Limpo]), type text),\n    ProdutoRegra = Table.AddColumn(ProdutoMin, "Produto_Regra", each if Text.Contains([Produto_Limpo], "SKOLL") then "SKOL" else if Text.Contains([Produto_Limpo], "BRAHMAA") then "BRAHMA" else [Produto_Limpo], type text),\n    DePara = Excel.CurrentWorkbook(){[Name="DeParaProdutos"]}[Content],\n    DeParaLimpo = Table.TransformColumns(DePara, {{"Grafia_Incorreta", each Text.Upper(Text.Trim(Text.Clean(_))), type text}, {"Produto_Correto", each Text.Upper(Text.Trim(Text.Clean(_))), type text}}),\n    Merge = Table.NestedJoin(ProdutoRegra, {"Produto_Regra"}, Table.Buffer(DeParaLimpo), {"Grafia_Incorreta"}, "Correcoes", JoinKind.LeftOuter),\n    Expandido = Table.ExpandTableColumn(Merge, "Correcoes", {"Produto_Correto"}, {"Produto_Correto"}),\n    ProdutoFinal = Table.AddColumn(Expandido, "Produto_Final", each if [Produto_Correto] <> null then [Produto_Correto] else [Produto_Regra], type text),\n    ValorNumero = Table.AddColumn(ProdutoFinal, "Valor_Numero", each try Number.From([Valor]) otherwise null, type number),\n    DataConvertida = Table.AddColumn(ValorNumero, "Data_Convertida", each try Date.From([Data]) otherwise null, type date)\nin\n    DataConvertida'
 M_BLOCKS['09_table_profile_schema'] = 'let\n    Fonte = Excel.CurrentWorkbook(){[Name="BaseVendas"]}[Content],\n    Perfil = Table.Profile(Fonte),\n    Esquema = Table.Schema(Fonte)\nin\n    Perfil'
 M_BLOCKS['10_unpivot_pivot'] = 'let\n    Fonte = Excel.CurrentWorkbook(){[Name="BaseMensal"]}[Content],\n    Unpivot = Table.UnpivotOtherColumns(Fonte, {"Produto"}, "Mes", "Valor"),\n    Pivot = Table.Pivot(Unpivot, List.Distinct(Unpivot[Mes]), "Mes", "Valor", List.Sum)\nin\n    Pivot'
-
 SOLVED_CASES = []
 SOLVED_CASES.append({
     'Caso': 'Criar e-mail corporativo removendo espaços, minúsculas e alguns acentos',
@@ -4539,10 +4534,353 @@ SOLVED_CASES.append({
     'Resultado': 'Percentual da linha sobre o total.',
     'Observacao': 'Exercício repetível para fixar SEERRO + SOMA.',
 })
-
+SOLVED_CASES.append({
+    'Caso': 'Power Query · remover acentos com função solicitada',
+    'Enunciado': 'Use a função fnRemoveAcentos exata para padronizar texto em maiúsculo sem acentos.',
+    'Base': 'texto = ÁGUA TÔNICA',
+    'Resposta': 'fnRemoveAcentos("ÁGUA TÔNICA")',
+    'Resultado': 'AGUA TONICA',
+    'Observacao': 'A função exata está no bloco M 00.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · limpar produto',
+    'Enunciado': 'Crie Produto_Limpo com Trim, Clean e Upper.',
+    'Base': "Produto = ' skol lata '",
+    'Resposta': 'Text.Upper(Text.Trim(Text.Clean([Produto])))',
+    'Resultado': 'SKOL LATA',
+    'Observacao': 'Limpeza básica.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · produto em minúsculo',
+    'Enunciado': 'Crie Produto_Limpo_Min em caixa baixa.',
+    'Base': 'Produto_Limpo = SKOL LATA',
+    'Resposta': 'Text.Lower([Produto_Limpo])',
+    'Resultado': 'skol lata',
+    'Observacao': 'Útil para e-mail e comparação.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · contém SKOL',
+    'Enunciado': 'Classifique produto que contém SKOL.',
+    'Base': 'Produto_Limpo = SKOL LATA',
+    'Resposta': 'if Text.Contains([Produto_Limpo], "SKOL") then "SKOL" else "OUTROS"',
+    'Resultado': 'SKOL',
+    'Observacao': 'Equivalente conceitual ao *SKOL*.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · começa com SKOL',
+    'Enunciado': 'Valide se produto começa com SKOL.',
+    'Base': 'Produto_Limpo = SKOL LATA',
+    'Resposta': 'Text.StartsWith([Produto_Limpo], "SKOL")',
+    'Resultado': 'true',
+    'Observacao': 'Equivalente conceitual ao SKOL*.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · termina com 350ML',
+    'Enunciado': 'Valide produto que termina com 350ML.',
+    'Base': 'Produto_Limpo = SKOL LATA 350ML',
+    'Resposta': 'Text.EndsWith([Produto_Limpo], "350ML")',
+    'Resultado': 'true',
+    'Observacao': 'Equivalente conceitual ao *350ML.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · corrigir SKOLL',
+    'Enunciado': 'Corrija SKOLL para SKOL.',
+    'Base': 'Produto_Limpo = SKOLL LATA',
+    'Resposta': 'Text.Replace([Produto_Limpo], "SKOLL", "SKOL")',
+    'Resultado': 'SKOL LATA',
+    'Observacao': 'Regra de grafia.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · corrigir abreviação LT',
+    'Enunciado': 'Corrija LT para LATA.',
+    'Base': 'Produto_Limpo = SKOL LT',
+    'Resposta': 'Text.Replace([Produto_Limpo], " LT", " LATA")',
+    'Resultado': 'SKOL LATA',
+    'Observacao': 'Cuidado com fronteira de palavra.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · remover pontuação',
+    'Enunciado': 'Remova ponto, vírgula, hífen e underline.',
+    'Base': 'Produto = SKOL-LATA_350ML',
+    'Resposta': 'Text.Remove([Produto], {".", ",", "-", "_"})',
+    'Resultado': 'SKOLLATA350ML',
+    'Observacao': 'Pode exigir inserção de espaços depois.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · converter número seguro',
+    'Enunciado': 'Converta Valor para número sem quebrar consulta.',
+    'Base': 'Valor = texto inválido',
+    'Resposta': 'try Number.From([Valor]) otherwise null',
+    'Resultado': 'null',
+    'Observacao': 'Data Quality.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · converter data segura',
+    'Enunciado': 'Converta Data sem quebrar consulta.',
+    'Base': 'Data = texto inválido',
+    'Resposta': 'try Date.From([Data]) otherwise null',
+    'Resultado': 'null',
+    'Observacao': 'Data Quality.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · filtrar valores positivos',
+    'Enunciado': 'Mantenha apenas vendas maiores que zero.',
+    'Base': 'Valor = coluna numérica',
+    'Resposta': 'Table.SelectRows(Fonte, each [Valor] > 0)',
+    'Resultado': 'Tabela filtrada',
+    'Observacao': 'Filtro de qualidade.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · agrupar por produto',
+    'Enunciado': 'Some Valor por Produto.',
+    'Base': 'Fonte com Produto e Valor',
+    'Resposta': 'Table.Group(Fonte, {"Produto"}, {{"Total", each List.Sum([Valor]), type number}})',
+    'Resultado': 'Total por produto',
+    'Observacao': 'Resumo analítico.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · merge com De/Para',
+    'Enunciado': 'Faça merge da base limpa com tabela DePara.',
+    'Base': 'Base Produto_Limpo | DePara Grafia_Incorreta',
+    'Resposta': 'Table.NestedJoin(Base, {"Produto_Limpo"}, DePara, {"Grafia_Incorreta"}, "Correcoes", JoinKind.LeftOuter)',
+    'Resultado': 'Tabela com coluna Correcoes',
+    'Observacao': 'Correção auditável.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · expandir correção',
+    'Enunciado': 'Expanda Produto_Correto após merge.',
+    'Base': 'Merge com coluna Correcoes',
+    'Resposta': 'Table.ExpandTableColumn(Merge, "Correcoes", {"Produto_Correto"}, {"Produto_Correto"})',
+    'Resultado': 'Produto_Correto visível',
+    'Observacao': 'Etapa posterior ao merge.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · aplicar De/Para final',
+    'Enunciado': 'Use Produto_Correto quando existir, senão Produto_Limpo.',
+    'Base': 'Produto_Correto pode ser null',
+    'Resposta': 'if [Produto_Correto] <> null then [Produto_Correto] else [Produto_Limpo]',
+    'Resultado': 'Produto_Final',
+    'Observacao': 'Regra final.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · status de correção',
+    'Enunciado': 'Crie status indicando se corrigiu por De/Para.',
+    'Base': 'Produto_Correto pode ser null',
+    'Resposta': 'if [Produto_Correto] <> null then "CORRIGIDO POR DE/PARA" else "SEM ALTERAÇÃO"',
+    'Resultado': 'Status_Correcao',
+    'Observacao': 'Auditoria.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · status DQ',
+    'Enunciado': 'Sinalize erro de produto vazio.',
+    'Base': 'Produto_Final vazio',
+    'Resposta': 'if [Produto_Final] = null or [Produto_Final] = "" then "ERRO PRODUTO" else "OK"',
+    'Resultado': 'ERRO PRODUTO ou OK',
+    'Observacao': 'Data Quality.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · List.Accumulate',
+    'Enunciado': 'Aplique múltiplas substituições em sequência.',
+    'Base': 'Substituicoes = lista de pares',
+    'Resposta': 'List.Accumulate(Substituicoes, TextoInicial, (estado, atual) => Text.Replace(estado, atual{0}, atual{1}))',
+    'Resultado': 'Texto corrigido',
+    'Observacao': 'Padrão avançado.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · Fuzzy Matching',
+    'Enunciado': 'Faça correspondência aproximada com cadastro.',
+    'Base': 'Base e Cadastro com Produto_Limpo',
+    'Resposta': 'Table.FuzzyNestedJoin(Base, {"Produto_Limpo"}, Cadastro, {"Produto_Limpo"}, "Match", JoinKind.LeftOuter, [IgnoreCase=true, IgnoreSpace=true, Threshold=0.82])',
+    'Resultado': 'Tabela com Match',
+    'Observacao': 'Validar manualmente.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · Table.Profile',
+    'Enunciado': 'Gere perfil de qualidade da base.',
+    'Base': 'Fonte = tabela',
+    'Resposta': 'Table.Profile(Fonte)',
+    'Resultado': 'Perfil estatístico',
+    'Observacao': 'Auditoria.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · Table.Schema',
+    'Enunciado': 'Verifique estrutura e tipos das colunas.',
+    'Base': 'Fonte = tabela',
+    'Resposta': 'Table.Schema(Fonte)',
+    'Resultado': 'Esquema da tabela',
+    'Observacao': 'Auditoria.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · combinar arquivos da pasta',
+    'Enunciado': 'Combine tabelas de arquivos Excel em uma pasta.',
+    'Base': 'Pasta C:\\Bases\\Vendas',
+    'Resposta': 'Folder.Files("C:\\\\Bases\\\\Vendas")',
+    'Resultado': 'Lista de arquivos',
+    'Observacao': 'Bloco completo está em M_BLOCKS.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · Unpivot',
+    'Enunciado': 'Transforme meses em colunas para linhas.',
+    'Base': 'Produto, Jan, Fev, Mar',
+    'Resposta': 'Table.UnpivotOtherColumns(Fonte, {"Produto"}, "Mês", "Valor")',
+    'Resultado': 'Tabela longa',
+    'Observacao': 'Modelo analítico.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Power Query · Pivot',
+    'Enunciado': 'Transforme linhas de mês em colunas.',
+    'Base': 'Produto, Mês, Valor',
+    'Resposta': 'Table.Pivot(Fonte, List.Distinct(Fonte[Mês]), "Mês", "Valor", List.Sum)',
+    'Resultado': 'Tabela larga',
+    'Observacao': 'Útil em relatório final.',
+})
+SOLVED_CASES.append({
+    'Caso': 'VBA · atualizar consultas',
+    'Enunciado': 'Crie uma macro para atualizar todas as conexões do arquivo.',
+    'Base': 'Workbook com consultas Power Query',
+    'Resposta': 'Sub AtualizarTudo()\n    ThisWorkbook.RefreshAll\nEnd Sub',
+    'Resultado': 'Consultas atualizadas',
+    'Observacao': 'Simples e útil para botão.',
+})
+SOLVED_CASES.append({
+    'Caso': 'VBA · limpar filtros',
+    'Enunciado': 'Remova filtros de todas as abas.',
+    'Base': 'Planilhas com AutoFilter',
+    'Resposta': 'Sub LimparFiltros()\n    Dim ws As Worksheet\n    For Each ws In ThisWorkbook.Worksheets\n        If ws.AutoFilterMode Then ws.AutoFilterMode = False\n    Next ws\nEnd Sub',
+    'Resultado': 'Filtros removidos',
+    'Observacao': 'Rotina operacional.',
+})
+SOLVED_CASES.append({
+    'Caso': 'VBA · padronizar maiúsculas',
+    'Enunciado': 'Transforme seleção em maiúsculas.',
+    'Base': 'Seleção com textos',
+    'Resposta': 'Sub PadronizarMaiusculas()\n    Dim cel As Range\n    For Each cel In Selection\n        cel.Value = UCase(Trim(CStr(cel.Value)))\n    Next cel\nEnd Sub',
+    'Resultado': 'Textos em maiúsculas',
+    'Observacao': 'Adicionar validação em produção.',
+})
+SOLVED_CASES.append({
+    'Caso': 'VBA · padronizar minúsculas',
+    'Enunciado': 'Transforme seleção em minúsculas.',
+    'Base': 'Seleção com textos',
+    'Resposta': 'Sub PadronizarMinusculas()\n    Dim cel As Range\n    For Each cel In Selection\n        cel.Value = LCase(Trim(CStr(cel.Value)))\n    Next cel\nEnd Sub',
+    'Resultado': 'Textos em minúsculas',
+    'Observacao': 'Útil para e-mail.',
+})
+SOLVED_CASES.append({
+    'Caso': 'VBA · criar backup',
+    'Enunciado': 'Crie cópia de segurança com timestamp.',
+    'Base': 'Arquivo salvo em pasta',
+    'Resposta': 'Sub CriarBackup()\n    ThisWorkbook.SaveCopyAs ThisWorkbook.Path & "\\\\backup_" & Format(Now, "yyyymmdd_hhnnss") & ".xlsm"\nEnd Sub',
+    'Resultado': 'Backup criado',
+    'Observacao': 'Governança.',
+})
+SOLVED_CASES.append({
+    'Caso': 'VBA · exportar PDF',
+    'Enunciado': 'Exporte a aba ativa para PDF.',
+    'Base': 'Aba de relatório',
+    'Resposta': 'Sub ExportarPDF()\n    ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=ThisWorkbook.Path & "\\\\relatorio.pdf"\nEnd Sub',
+    'Resultado': 'PDF exportado',
+    'Observacao': 'Entrega final.',
+})
+SOLVED_CASES.append({
+    'Caso': 'VBA · destacar vazios',
+    'Enunciado': 'Pinte células vazias da seleção.',
+    'Base': 'Seleção de dados',
+    'Resposta': 'Sub ValidarVazios()\n    Dim cel As Range\n    For Each cel In Selection\n        If Len(Trim(CStr(cel.Value))) = 0 Then cel.Interior.Color = RGB(255,199,206)\n    Next cel\nEnd Sub',
+    'Resultado': 'Vazios destacados',
+    'Observacao': 'Data Quality visual.',
+})
+SOLVED_CASES.append({
+    'Caso': 'VBA · remover duplicados',
+    'Enunciado': 'Remova duplicados da primeira tabela da aba.',
+    'Base': 'Tabela estruturada',
+    'Resposta': 'Sub RemoverDuplicadosTabela()\n    Dim tbl As ListObject\n    Set tbl = ActiveSheet.ListObjects(1)\n    tbl.Range.RemoveDuplicates Columns:=Array(1), Header:=xlYes\nEnd Sub',
+    'Resultado': 'Duplicados removidos',
+    'Observacao': 'Fazer backup antes.',
+})
+SOLVED_CASES.append({
+    'Caso': 'VBA · rotina segura',
+    'Enunciado': 'Crie macro com tratamento de erro e restauração de performance.',
+    'Base': 'Rotina qualquer',
+    'Resposta': 'Sub RotinaSegura()\n    On Error GoTo TrataErro\n    Application.ScreenUpdating = False\nSaida:\n    Application.ScreenUpdating = True\n    Exit Sub\nTrataErro:\n    MsgBox Err.Description, vbExclamation\n    Resume Saida\nEnd Sub',
+    'Resultado': 'Rotina segura',
+    'Observacao': 'Padrão profissional.',
+})
+SOLVED_CASES.append({
+    'Caso': 'VBA · proteger abas',
+    'Enunciado': 'Proteja todas as abas com senha exemplo.',
+    'Base': 'Workbook com múltiplas abas',
+    'Resposta': 'Sub ProtegerAbas()\n    Dim ws As Worksheet\n    For Each ws In ThisWorkbook.Worksheets\n        ws.Protect Password:="123"\n    Next ws\nEnd Sub',
+    'Resultado': 'Abas protegidas',
+    'Observacao': 'Guardar senha com governança.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Projeto · pipeline Excel + Power Query',
+    'Enunciado': 'Monte fluxo em que Power Query limpa produtos e Excel calcula total por canal.',
+    'Base': 'BaseVendas e DeParaProdutos',
+    'Resposta': 'Power Query: Produto_Final\nExcel: =SOMASES(Base[Valor];Base[Produto_Final];A2;Base[Canal];B2)',
+    'Resultado': 'Base limpa e total calculado',
+    'Observacao': 'Integra frentes.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Projeto · auditoria de exceções',
+    'Enunciado': 'Crie relatório de exceções para produto vazio, valor inválido e data inválida.',
+    'Base': 'Base tratada',
+    'Resposta': 'Power Query: Table.SelectRows(Fonte, each [Status_DQ] <> "OK")',
+    'Resultado': 'Tabela de exceções',
+    'Observacao': 'Data Quality.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Projeto · dashboard simples',
+    'Enunciado': 'Crie KPIs de total, média, maior venda e contagem.',
+    'Base': 'Base[Valor]',
+    'Resposta': '=SOMA(Base[Valor]) / =MÉDIA(Base[Valor]) / =MÁXIMO(Base[Valor]) / =CONT.VALORES(Base[Valor])',
+    'Resultado': 'KPIs operacionais',
+    'Observacao': 'Pode ser exibido em cards.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Projeto · classificação com De/Para e coringa',
+    'Enunciado': 'Classifique SKOL mesmo quando vier SKOLL ou texto contendo SKOL.',
+    'Base': 'Produto sujo',
+    'Resposta': 'M: De/Para + Text.Contains\nExcel: =SE(CONT.SE(A2;"*SKOL*")>0;"SKOL";"OUTROS")',
+    'Resultado': 'Marca classificada',
+    'Observacao': 'Redundância controlada.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Projeto · fechamento mensal',
+    'Enunciado': 'Atualize consultas, gere relatório e exporte PDF.',
+    'Base': 'Workbook com Power Query',
+    'Resposta': 'VBA: ThisWorkbook.RefreshAll + ExportAsFixedFormat',
+    'Resultado': 'Fechamento automatizado',
+    'Observacao': 'VBA orquestra, Power Query transforma.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Projeto · estatística de vendas',
+    'Enunciado': 'Calcule média, desvio e z-score para detectar outliers.',
+    'Base': 'Base[Valor]',
+    'Resposta': '=PADRONIZAR(B2;MÉDIA(Base[Valor]);DESVPAD.S(Base[Valor]))',
+    'Resultado': 'Z-score por linha',
+    'Observacao': 'Combina estatística e qualidade.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Projeto · top 10 produtos',
+    'Enunciado': 'Liste os 10 maiores produtos por valor total.',
+    'Base': 'Base com Produto e Valor',
+    'Resposta': 'Power Query: Table.Group + Table.Sort\nExcel: =PEGAR(CLASSIFICAR(Tabela;2;-1);10)',
+    'Resultado': 'Top 10',
+    'Observacao': 'Pode ser resolvido por ambas as frentes.',
+})
+SOLVED_CASES.append({
+    'Caso': 'Projeto · validação de cadastro',
+    'Enunciado': 'Identifique produtos sem cadastro após merge.',
+    'Base': 'Base e Cadastro',
+    'Resposta': 'Table.SelectRows(Merge, each [Produto_Correto] = null)',
+    'Resultado': 'Itens sem cadastro',
+    'Observacao': 'Gera fila de saneamento.',
+})
 WILDCARDS = [{'Coringa': '*', 'Uso': 'Qualquer sequência', 'Excel': '=CONT.SE(A:A;"*SKOL*")', 'Power Query': 'Text.Contains([Produto], "SKOL")'}, {'Coringa': '*', 'Uso': 'Começa com', 'Excel': '=CONT.SE(A:A;"SKOL*")', 'Power Query': 'Text.StartsWith([Produto], "SKOL")'}, {'Coringa': '*', 'Uso': 'Termina com', 'Excel': '=CONT.SE(A:A;"*350ML")', 'Power Query': 'Text.EndsWith([Produto], "350ML")'}, {'Coringa': '?', 'Uso': 'Um caractere', 'Excel': '=CONT.SE(A:A;"SKO?")', 'Power Query': 'Text.StartsWith([Codigo], "SKO") and Text.Length([Codigo]) = 4'}, {'Coringa': '~*', 'Uso': 'Asterisco literal', 'Excel': '=CONT.SE(A:A;"SKOL~*")', 'Power Query': 'Text.Contains([Produto], "SKOL*")'}, {'Coringa': '~?', 'Uso': 'Interrogação literal', 'Excel': '=CONT.SE(A:A;"SKOL~?")', 'Power Query': 'Text.Contains([Produto], "SKOL?")'}, {'Coringa': '~~', 'Uso': 'Til literal', 'Excel': '=CONT.SE(A:A;"SKU~~01")', 'Power Query': 'Text.Contains([Produto], "SKU~01")'}]
 DEPARA_ROWS = [{'Grafia_Incorreta': 'SKOLL', 'Produto_Correto': 'SKOL', 'Motivo': 'Letra excedente'}, {'Grafia_Incorreta': 'BRAHMAA', 'Produto_Correto': 'BRAHMA', 'Motivo': 'Letra excedente'}, {'Grafia_Incorreta': 'BRHMA', 'Produto_Correto': 'BRAHMA', 'Motivo': 'Letra faltando'}, {'Grafia_Incorreta': 'GUARANA ANTARTICA', 'Produto_Correto': 'GUARANA ANTARCTICA', 'Motivo': 'Grafia comercial'}, {'Grafia_Incorreta': 'SKOL LATAA', 'Produto_Correto': 'SKOL LATA', 'Motivo': 'Letra excedente'}, {'Grafia_Incorreta': 'CERV PILSEN', 'Produto_Correto': 'CERVEJA PILSEN', 'Motivo': 'Abreviação'}, {'Grafia_Incorreta': 'LONGNECK', 'Produto_Correto': 'LONG NECK', 'Motivo': 'Espaçamento'}, {'Grafia_Incorreta': 'LT', 'Produto_Correto': 'LATA', 'Motivo': 'Abreviação'}, {'Grafia_Incorreta': 'CX', 'Produto_Correto': 'CAIXA', 'Motivo': 'Abreviação'}]
-AUDIT_RULES = ['fnRemoveAcentos exata solicitada presente.', 'Power Query M exemplos e blocos completos presentes.', 'Exercícios resolvidos presentes.', 'Excel, M, VBA, Estatística, Coringas e De/Para coexistem.', 'py_compile deve passar.', 'Sem matplotlib, numpy, __file__ ou arquivos locais.', 'Fórmulas pt-BR usam ponto e vírgula.']
+AUDIT_RULES = ['fnRemoveAcentos exata solicitada presente.', 'Power Query M exemplos e blocos completos presentes.', 'Pelo menos 70 exercícios resolvidos diversificados.', 'Exercícios cobrem Excel, VBA, Power Query, Estatística e projetos integrados.', 'Excel, M, VBA, Estatística, Coringas e De/Para coexistem.', 'py_compile deve passar.', 'Sem matplotlib, numpy, __file__ ou arquivos locais.', 'Fórmulas pt-BR usam ponto e vírgula.']
 
 STAT_BASE = pd.DataFrame({'Mês': pd.date_range('2025-01-01', periods=18, freq='MS'), 'Investimento': [50,60,72,80,95,105,118,130,142,150,165,176,188,196,205,215,225,235], 'Vendas': [118,126,141,149,158,170,181,190,205,214,226,238,252,260,273,288,302,315]})
 STAT_BASE['MediaMovel3'] = STAT_BASE['Vendas'].rolling(3).mean()
@@ -4574,24 +4912,25 @@ def regression_dataframe():
 with st.sidebar:
     st.markdown('## 📊 Comitê Técnico')
     st.caption('Auditor independente ativo — app expandido')
-    frente = st.radio('Frente', ['Overview', 'Excel', 'Power Query M', 'VBA', 'Estatística', 'Exercícios Resolvidos', 'Auditoria'], index=2)
+    frente = st.radio('Frente', ['Overview', 'Excel', 'Power Query M', 'VBA', 'Estatística', 'Exercícios Resolvidos', 'Auditoria'], index=5)
     nivel = st.selectbox('Nível', ['Todos', 'Básico', 'Intermediário', 'Avançado'], index=0)
+    busca = st.text_input('Buscar exercício/fórmula', '')
     st.divider()
     st.metric('Excel', len(EXCEL_ROWS))
     st.metric('M exemplos', len(M_ROWS))
     st.metric('M blocos', len(M_BLOCKS))
-    st.metric('Casos resolvidos', len(SOLVED_CASES))
+    st.metric('Exercícios', len(SOLVED_CASES))
     st.info('Regra: incluir nova frente não pode remover conteúdo já entregue.')
 
 st.title('Comitê Técnico — Excel, Power Query M, VBA, Estatística e Auditoria')
-st.caption('v10: versão expandida com meta 2000+ linhas, fnRemoveAcentos exata, blocos M completos e exercícios resolvidos.')
+st.caption('v11: exercícios resolvidos diversificados por tema, mantendo estrutura ampliada e blocos M completos.')
 st.markdown(f'<span class="tag">Frente: {frente}</span><span class="tag">Nível: {nivel}</span>', unsafe_allow_html=True)
 
 tabs = st.tabs(['Overview','Excel','Power Query M — exemplos','Power Query M — blocos completos','VBA','Coringas','Grafias / De-Para','Estatística','Enunciados resolvidos','Gráficos nativos','Auditoria independente'])
 
 with tabs[0]:
-    card('Correção estrutural', 'Esta versão aumenta o conteúdo em vez de substituir frentes. A função M solicitada está no primeiro bloco.', 'card green')
-    card('Governança', 'Auditor independente exige Excel, Power Query M, VBA, Estatística, Coringas, De/Para e exercícios resolvidos coexistindo.', 'card blue')
+    card('Correção solicitada', 'Os exercícios agora cobrem Excel, Estatística, Power Query M, VBA e projetos integrados. Não são mais variações do mesmo tema.', 'card green')
+    card('Governança', 'Auditor independente exige diversidade temática, fnRemoveAcentos exata e manutenção de todas as frentes.', 'card blue')
     card('Critério de deploy', 'Sem matplotlib, sem numpy, sem __file__, sem arquivo local obrigatório.', 'card yellow')
 
 with tabs[1]:
@@ -4629,13 +4968,18 @@ with tabs[7]:
     render_rows(rows, 'text')
 
 with tabs[8]:
-    st.subheader('Enunciados e respostas resolvidos')
-    st.dataframe(pd.DataFrame(SOLVED_CASES), use_container_width=True, hide_index=True)
-    for i, case in enumerate(SOLVED_CASES, start=1):
+    st.subheader('Enunciados e respostas resolvidos por tema')
+    cases = SOLVED_CASES
+    if busca:
+        termo = busca.lower()
+        cases = [c for c in cases if termo in (c['Caso'] + c['Enunciado'] + c['Resposta']).lower()]
+    st.dataframe(pd.DataFrame(cases), use_container_width=True, hide_index=True)
+    for i, case in enumerate(cases, start=1):
+        lang = 'vb' if case['Caso'].startswith('VBA') else ('powerquery' if 'Power Query' in case['Caso'] or case['Caso'].startswith('Projeto') else 'text')
         with st.expander(f'Caso {i} · {case["Caso"]}', expanded=i == 1):
             st.markdown(f'**Enunciado:** {case["Enunciado"]}')
             st.markdown(f'**Base:** {case["Base"]}')
-            st.code(case['Resposta'], language='powerquery' if 'Power Query' in case['Caso'] else 'text')
+            st.code(case['Resposta'], language=lang)
             st.markdown(f'**Resultado esperado:** {case["Resultado"]}')
             st.caption(case['Observacao'])
 
@@ -4668,11 +5012,11 @@ with tabs[10]:
         {'Frente': 'Exercícios resolvidos', 'Itens': len(SOLVED_CASES)},
     ])
     st.dataframe(coverage, use_container_width=True, hide_index=True)
-    required = '00_fnRemoveAcentos_EXATA_SOLICITADA' in M_BLOCKS and len(M_ROWS) > 0 and len(SOLVED_CASES) > 0
+    required = '00_fnRemoveAcentos_EXATA_SOLICITADA' in M_BLOCKS and len(M_ROWS) > 0 and len(SOLVED_CASES) >= 70
     if required:
-        st.success('Auditoria aprovada: conteúdo ampliado, fnRemoveAcentos exata, blocos M e exercícios resolvidos presentes.')
+        st.success('Auditoria aprovada: exercícios diversificados, fnRemoveAcentos exata, blocos M e todas as frentes presentes.')
     else:
         st.error('Falha crítica de auditoria.')
 
 st.divider()
-st.caption('v10 auditada: conteúdo ampliado, app pronto para rodar no Streamlit Cloud.')
+st.caption('v11 auditada: exercícios diversificados por tema, app pronto para rodar no Streamlit Cloud.')

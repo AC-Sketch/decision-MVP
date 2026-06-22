@@ -495,7 +495,7 @@ DATA_MAPPING = {
 # BLOCO POWER QUERY COMPLETO — ROBUSTO
 # ============================================================
 
-BLOCO_POWER_QUERY_COMPLETO = dedent("""
+BLOCO_POWER_QUERY_COMPLETO = dedent(r'''
 let
     // ========================================================
     // 1. FONTE PRINCIPAL
@@ -814,7 +814,7 @@ let
     )
 in
     ResultadoFinal
-""").strip()
+''').strip()
 
 
 BLOCO_RELATORIO_EXCECOES = dedent("""

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import streamlit as st
 import random
+import json
 
 # ==========================================
-# 1. DATABASE COMPLETA EMBUTIDA
+# 1. DATABASE COMPLETA EMBUTIDA (JSON)
 # ==========================================
 DATABASE_DB = {
     "modulos": [
@@ -558,7 +559,7 @@ class ChemistryEngine:
                 results.append({"tipo": "Módulo", "nome": mod["titulo"], "contexto": mod["descricao"]})
             for top in mod.get("topicos", []):
                 if query in top["nome"].lower():
-                    results.append({"tipo": "Tópico", "nome": top["nome"], "contexto": f"Dentro do módulo: {mod['titulo']}"})
+                    results.append({"tipo": "Tópico", "nome": top["nome"], "contexto": "Dentro do módulo: " + mod["titulo"]})
         
         for exe in self.exercises.get("exercicios", []):
             if query in exe["enunciado"].lower():

@@ -1,8 +1,7 @@
 import streamlit as st
-import plotly.graph_objects as go
 
 # ==============================================================================
-# CONFIGURAÇÃO DA PÁGINA E DESIGN SYSTEM
+# CONFIGURAÇÃO DA PÁGINA E DESIGN SYSTEM (UX/UI PROFISSIONAL)
 # ==============================================================================
 st.set_page_config(
     page_title="Plataforma Objetivo - Química 1º Ano",
@@ -11,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Estilização em CSS para emular uma apostila digital de alta performance
+# Customização visual via CSS para criar uma interface de apostila moderna
 CUSTOM_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -184,7 +183,7 @@ elif modulo == "🧠 2. Mapa Mental Interativo":
         st.markdown('<div class="mm-sub" style="background-color:#6D28D9;"><b>Rutherford:</b> Núcleo central com eletrosfera vazia.</div>', unsafe_allow_html=True)
 
 # ==============================================================================
-# MÓDULO 3: SIMULADOR DE MUDANÇA DE FASE (BLINDADO CONTRA ERROS)
+# MÓDULO 3: SIMULADOR DE MUDANÇA DE FASE (NATIVO E À PROVA DE ERROS)
 # ==============================================================================
 elif modulo == "📊 3. Simulador de Mudança de Fase":
     st.title("📊 Simulador de Curva de Aquecimento")
@@ -200,41 +199,26 @@ elif modulo == "📊 3. Simulador de Mudança de Fase":
         
         st.info("""
         **Comportamento Gráfico:**
-        Os patamares retos horizontais representam a coexistência de estados físicos enquanto a energia térmica rompe interações moleculares (Calor Latente).
+        Os patamares horizontais representam a coexistência de estados físicos (Calor Latente) onde a temperatura permanece constante até a mudança completa de fase.
         """)
         
     with col_plot:
-        # Lógica de pontos estáticos lineares simples para eliminar qualquer erro de array
-        tempo = [0, 5, 15, 25, 35, 45, 55]
-        temperatura = [pf - 10, pf, pf, (pf + pe) / 2, pe, pe, pe + 10]
+        # Construção usando dicionário nativo e st.line_chart para blindar contra falhas do Plotly/Numpy
+        dados_grafico = {
+            "Temperatura (°C)": [pf - 10, pf, pf, (pf + pe) / 2, pe, pe, pe + 10]
+        }
         
-        figura = go.Figure()
-        figura.add_trace(go.Scatter(
-            x=tempo, 
-            y=temperatura,
-            mode='lines+markers',
-            line=dict(color='#1E3A8A', width=4),
-            marker=dict(size=8, color='#0D9488'),
-            name='Substância Pura'
-        ))
-        
-        figura.update_layout(
-            title="Diagrama Termodinâmico de Aquecimento",
-            xaxis_title="Tempo Decorrido (min)",
-            yaxis_title="Temperatura (°C)",
-            plot_bgcolor="#F8FAFC",
-            margin=dict(l=20, r=20, t=40, b=20)
-        )
-        st.plotly_chart(figura, use_container_width=True)
+        st.write("### Gráfico da Curva de Aquecimento:")
+        st.line_chart(dados_grafico)
+        st.caption("Eixo horizontal: Evolução do tempo / Eixo vertical: Variação de Temperatura (°C)")
 
 # ==============================================================================
-# MÓDULO 4: TESTE DE NIVELAMENTO (SEGURO CONTRA RESETS)
+# MÓDULO 4: TESTE DE NIVELAMENTO
 # ==============================================================================
 elif modulo == "📝 4. Teste de Nivelamento":
     st.title("📝 Teste de Nivelamento — Padrão Objetivo")
     st.markdown("---")
     
-    # Questões fixadas diretamente para evitar loops complexos no session_state
     st.markdown("##### 1. Um sistema composto por água líquida, gelo picado e óleo de cozinha apresenta quantas fases visíveis?")
     q1 = st.radio("Escolha uma opção:", ["1 fase", "2 fases", "3 fases", "4 fases"], key="quest_1")
     
@@ -242,7 +226,7 @@ elif modulo == "📝 4. Teste de Nivelamento":
     q2 = st.radio("Escolha uma opção:", ["Dalton", "Thomson", "Rutherford", "Bohr"], key="quest_2")
     
     st.markdown("##### 3. A transição direta do estado gasoso para o estado sólido é denominada corretamente como:")
-    q3 = st.radio("Escolha uma opção:", ["Fusão", "Vaporização", "Condensação", "Sublimação ou Resublimação"], key="quest_3")
+    q3 = st.radio("Escolha uma option:", ["Fusão", "Vaporização", "Condensação", "Sublimação ou Resublimação"], key="quest_3")
     
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("🏁 Corrigir Simulado"):

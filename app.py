@@ -617,18 +617,18 @@ if menu == "Painel Geral & Roadmap":
     st.subheader("Conteúdo Programático Oficial - Padrão Colégio Objetivo")
     
     for mod in engine.db.get("modulos", []):
-        with st.expander(f"📦 {mod['id']} - {mod['titulo']}", expanded=True):
-            st.markdown(f"*{mod['descricao']}*")
+        with st.expander("📦 " + mod['id'] + " - " + mod['titulo'], expanded=True):
+            st.markdown("*" + mod['descricao'] + "*")
             for top in mod.get("topicos", []):
                 col1, col2, col3 = st.columns([2, 1, 1])
-                col1.write(f"🔹 **{top['nome']}**")
-                col2.write(f"🎯 ENEM: `{top['importancia_enem']}`")
-                col3.write(f"🏫 FUVEST: `{top['importancia_fuvest']}`")
+                col1.write("🔹 **" + top['nome'] + "**")
+                col2.write("🎯 ENEM: `" + top['importancia_enem'] + "`")
+                col3.write("🏫 FUVEST: `" + top['importancia_fuvest'] + "`")
 
     st.markdown("---")
     st.subheader("🔗 Conexões e Dependências Cognitivas (Roadmap)")
     for conn in engine.roadmap.get("mapa_mental", {}).get("conexoes", []):
-        st.info(f"**{conn['origem']}** ➔ **{conn['destino']}** | *{conn['tipo']}*: {conn['detalhes']}")
+        st.info("**" + conn['origem'] + "** ➔ **" + conn['destino'] + "** | *" + conn['tipo'] + "*: " + conn['detalhes'])
 
 elif menu == "Árvores de Decisão":
     st.title("🌳 Algoritmos e Árvores de Decisão para Resolução")
@@ -647,27 +647,27 @@ elif menu == "Matriz Problema-Solução":
     for item in engine.matrix.get("matriz", []):
         resolved = engine.resolve_matrix(item["id"])
         with st.container():
-            st.markdown(f"### 🎯 Desafio: {resolved['problema']}")
+            st.markdown("### 🎯 Desafio: " + resolved['problema'])
             c1, c2, c3 = st.columns(3)
             
             with c1:
                 st.warning("⚠️ Armadilha / Erro Comum")
                 if resolved["armadilha"]:
-                    st.markdown(f"**{resolved['armadilha']['nome']}**\n\n{resolved['armadilha']['descricao']}")
+                    st.markdown("**" + resolved['armadilha']['nome'] + "**\n\n" + resolved['armadilha']['descricao'])
                 else:
                     st.write("Sem armadilhas críticas mapeadas.")
                     
             with c2:
                 st.success("📐 Fórmula / Relação")
                 if resolved["formula"]:
-                    st.markdown(f"**{resolved['formula']['nome']}**\n\n`{resolved['formula']['expressao']}`\n\n*{resolved['formula']['aplicacao']}*")
+                    st.markdown("**" + resolved['formula']['nome'] + "**\n\n`" + resolved['formula']['expressao'] + "`\n\n*" + resolved['formula']['aplicacao'] + "*")
                 else:
                     st.write("Conceitual - Não requer fórmula.")
                     
             with c3:
                 st.info("💡 Estratégia de Leitura")
                 if resolved["estrategia"]:
-                    st.markdown(f"**Contexto:** {resolved['estrategia']['contexto']}\n\n**Gatilhos:** {', '.join(resolved['estrategia']['gatilhos'])}")
+                    st.markdown("**Contexto:** " + resolved['estrategia']['contexto'] + "\n\n**Gatilhos:** " + ", ".join(resolved['estrategia']['gatilhos']))
                 else:
                     st.write("Geral aplicada.")
             st.markdown("---")
@@ -683,10 +683,10 @@ elif menu == "Simulado Adaptativo":
 
     if "questions" in st.session_state:
         for idx, q in enumerate(st.session_state.questions):
-            st.markdown(f"#### Questão {idx+1} ({q['banca_origem']} - Nível {q['dificuldade']})")
+            st.markdown("#### Questão " + str(idx+1) + " (" + q['banca_origem'] + " - Nível " + q['dificuldade'] + ")")
             st.markdown(q["enunciado"])
-            opts = [f"{k}) {v}" for k, v in q["alternativas"].items()]
-            ans = st.radio(f"Selecione a alternativa para a questão {idx+1}:", opts, key=f"q_{idx}")
+            opts = [k + ") " + v for k, v in q["alternativas"].items()]
+            ans = st.radio("Selecione a alternativa para a questão " + str(idx+1) + ":", opts, key="q_" + str(idx))
             st.session_state.answers[idx] = ans[0]
             st.markdown("---")
             
@@ -699,10 +699,10 @@ elif menu == "Simulado Adaptativo":
                 user_ans = st.session_state.answers.get(idx)
                 correct = q["resposta_correta"]
                 if user_ans == correct:
-                    st.success(f"Questão {idx+1}: Resposta Correta ({user_ans})")
+                    st.success("Questão " + str(idx+1) + ": Resposta Correta (" + user_ans + ")")
                 else:
-                    st.error(f"Questão {idx+1}: Você marcou {user_ans}. O gabarito é {correct}.")
-                st.markdown(f"**Resolução:** {q['resolucao']}")
+                    st.error("Questão " + str(idx+1) + ": Você marcou " + user_ans + ". O gabarito é " + correct + ".")
+                st.markdown("**Resolução:** " + q['resolucao'])
                 st.markdown("---")
 
 elif menu == "Flashcards Interativos":
@@ -715,13 +715,13 @@ elif menu == "Flashcards Interativos":
         
     if st.session_state.card_idx < len(cards):
         card = cards[st.session_state.card_idx]
-        st.info(f"### Pergunta:\n{card['frente']}")
+        st.info("### Pergunta:\n" + card['frente'])
         
         if st.button("Revelar Verso (Resposta)"):
             st.session_state.reveal = True
             
         if st.session_state.reveal:
-            st.success(f"### Resposta:\n{card['verso']}")
+            st.success("### Resposta:\n" + card['verso'])
             if st.button("Próximo Card"):
                 st.session_state.card_idx += 1
                 st.session_state.reveal = False
@@ -739,8 +739,8 @@ elif menu == "Busca Unificada":
     query = st.text_input("Digite o termo, conceito ou palavra-chave (ex: 'mistura', 'ferro', 'ebulição'):")
     if query:
         res = engine.smart_search(query)
-        st.write(f"Encontrados {len(res)} resultados correspondentes:")
+        st.write("Encontrados " + str(len(res)) + " resultados correspondentes:")
         for r in res:
             with st.chat_message("assistant"):
-                st.markdown(f"**[{r['tipo']}]** {r['nome']}")
-                st.markdown(f"Contexto: {r['contexto']}")
+                st.markdown("**[" + r['tipo'] + "]** " + r['nome'])
+                st.markdown("Contexto: " + r['contexto'])

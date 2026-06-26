@@ -1,367 +1,610 @@
-from __future__ import annotations
-
-# BLOCO 10 — HIGH-PERFORMANCE CHEMISTRY DECISION FRAMEWORK V1
-# Escopo correto:
-# - Somente Química 1º Ano (Foco: Fuvest, Unicamp, Enem).
-# - Árvores de decisão conceituais.
-# - Padrões de enunciados e comandos de exames tradicionais.
-# - Armadilhas e distratores recorrentes de vestibulares.
-# - Estratégias analíticas de resolução de questões de alta complexidade.
-# - Matriz "Conceito → Regra/Fórmula → Estratégia Analítica → Erro Comum".
-
 import json
-import datetime as dt
-from typing import Any, Dict, List
 
-try:
-    import pandas as pd
-except ModuleNotFoundError:
-    pd = None
-
-try:
-    import streamlit as st
-    STREAMLIT_AVAILABLE = True
-except ModuleNotFoundError:
-    st = None
-    STREAMLIT_AVAILABLE = False
-
-
-APP_VERSION = "v1.0.0"
-BLOCK_NAME = "bloco_10_química_1ano_decision_framework"
-BLOCK_STATUS = "PRONTO_PARA_PRODUCAO_PEDAGOGICA"
-BUILD_DATE = "2026-06-26"
-
-PAYLOAD_JSON = r"""
-{
-  "app_version": "v1.0.0",
-  "block_name": "bloco_10_química_1ano_decision_framework",
-  "status": "PRONTO_PARA_PRODUCAO_PEDAGOGICA",
-  "build_date": "2026-06-26",
-  "escopo": "Química Geral e Inorgânica 1º Ano. Framework analítico focado na Fuvest, Unicamp e Enem para mapear comandos de enunciados e evitar distratores.",
-  "problem_families": [
-    {
-      "id": "Q01",
-      "nome": "Estrutura Atômica e Partículas Subatômicas",
-      "palavras_chave": ["prótons", "nêutrons", "elétrons", "íon", "isótopos", "isóbaros", "número de massa", "número atômico"],
-      "modelos_regras": ["A = Z + n", "Carga = p - e", "Semelhanças Atômicas"],
-      "erro_comum": "Calcular o número de elétrons de um cátion somando a carga ao número atômico, ou confundir número de massa (A) com massa atômica real.",
-      "estrategia": "Construir a tabela de partículas (p, n, e) imediatamente ao identificar o elemento ou íon, diferenciando o estado fundamental do estado ionizado.",
-      "saida": "Identificação de semelhanças atômicas ou balanço de carga eletrônica."
-    },
-    {
-      "id": "Q02",
-      "nome": "Modelos Atômicos e Evolução Histórica",
-      "palavras_chave": ["dalton", "thomson", "rutherford", "bohr", "pudim de passas", "órbita", "salto quântico", "fóton", "alfa"],
-      "modelos_regras": ["Postulados de Bohr", "Experimento de Rutherford (folha de ouro)", "Conservação da Massa de Dalton"],
-      "erro_comum": "Atribuir o conceito de órbitas quantizadas e níveis de energia a Rutherford, ou achar que Dalton conhecia cargas elétricas.",
-      "estrategia": "Associar palavras-chave tecnológicas ou fenomenológicas (ex: fogos de artifício -> Bohr; emissão de fótons -> Bohr; divisibilidade da matéria -> Thomson).",
-      "saida": "Mapeamento do modelo correto com base nas evidências experimentais descritas."
-    },
-    {
-      "id": "Q03",
-      "nome": "Tabela Periódica e Propriedades Periódicas",
-      "palavras_chave": ["raio atômico", "energia de ionização", "afinidade eletrônica", "eletronegatividade", "camada de valência", "halogênios", "alcalinos"],
-      "modelos_regras": ["Carga Nuclear Efetiva (Zeff)", "Efeito de Blindagem", "Variação nos Períodos e Grupos"],
-      "erro_comum": "Achar que o raio do cátion é maior que o do seu átomo neutro correspondente, ou esquecer que gases nobres não têm eletronegatividade definida na escala Pauling.",
-      "estrategia": "Mapear a localização dos elementos em um rascunho rápido da tabela periódica e aplicar as setas de crescimento baseando-se na atração núcleo-elétron (Zeff).",
-      "saida": "Ordenação crescente ou decrescente de propriedades ou justificativa analítica discursiva."
-    },
-    {
-      "id": "Q04",
-      "nome": "Ligações Químicas (Iônica, Covalente e Metálica)",
-      "palavras_chave": ["compartilhamento", "transferência", "metal", "ametal", "ligação iônica", "ligação covalente", "nuvem de elétrons", "fórmula molecular"],
-      "modelos_regras": ["Regra do Octeto", "Estrutura de Lewis", "Fórmulas de Carga de Íons"],
-      "erro_comum": "Tentar escrever fórmulas estruturais com traços (compartilhamento) para compostos nitidamente iônicos (ex: NaCl), ou ignorar a alta condutividade dos metais no estado sólido.",
-      "estrategia": "Determinar a natureza dos elementos envolvidos (Metal + Ametal = Iônica; Ametal + Ametal = Covalente). Desenhar a camada de valência para conferir a estequiometria do composto.",
-      "saida": "Determinação da fórmula mínima/molecular correta e predição de propriedades físico-químicas."
-    }
-  ],
-  "decision_trees": [
-    {
-      "id": "ARV-001",
-      "familia_id": "Q01",
-      "tipo_problema": "Cálculo de Partículas em Espécies Carregadas (Íons)",
-      "nivel": "Médio (Foco Fuvest)",
-      "contexto": "Análise de isótopos e íons isoeletrônicos",
-      "gatilho_enunciado": "íon de carga X e suas relações de isótopos",
-      "pergunta_1": "O enunciado faz menção a ganho ou perda de elétrons?",
-      "decisao_1": "Sim. Classificar como problema de Estrutura de Íons e Semelhanças Atômicas.",
-      "pergunta_2": "A espécie em questão é descrita como isoeletrônica a um gás nobre?",
-      "decisao_2": "Utilizar o número atômico do gás nobre como referência estável para determinar o total de elétrons (e) do íon avaliado.",
-      "pergunta_3": "Existe variação no núcleo atômico (prótons e nêutrons) durante os processos químicos ordinários?",
-      "decisao_3": "Não. Manter o número de prótons inalterado; apenas a eletrosfera sofre modificação volumétrica e numérica.",
-      "pergunta_4": "Há equações matemáticas relacionando p, n e e?",
-      "decisao_4": "Substituir na fórmula fundamental A = p + n para encontrar a incógnita x proposta pela banca.",
-      "formula_base": "A = Z + n",
-      "formula_complementar": "Elétrons = Z - (Carga)",
-      "erro_comum": "Alterar o número de prótons ao ler que a espécie possui carga positiva.",
-      "estrategia_final": "Escrever os símbolos químicos na notação padrão X(A, Z) e aplicar o balanço de carga exclusivamente na eletrosfera.",
-      "fala_entrevista": "Análise Pedagógica: O aluno deve identificar que em um cátion houve perda de elétrons e o núcleo permanece intacto. A estratégia analítica exige montar um sistema linear simples ligando o número de massa e nêutrons."
-    },
-    {
-      "id": "ARV-002",
-      "familia_id": "Q02",
-      "tipo_problema": "Interpretação de Fenômenos de Emissão Óptica (Espectros)",
-      "nivel": "Frequente (Foco Enem)",
-      "contexto": "Testes de chama, fogos de artifício e iluminação neon",
-      "gatilho_enunciado": "emissão de luz colorida ou espectro de linhas",
-      "pergunta_1": "O fenômeno descrito envolve radiação luminosa gerada por aquecimento ou excitação eletrônica?",
-      "decisao_1": "Sim. Direcionar para o Modelo Atômico de Rutherford-Bohr.",
-      "pergunta_2": "A cor da luz emitida é explicada pela absorção primária de energia?",
-      "decisao_2": "Explicar que a absorção gera o salto quântico para uma órbita mais externa (estado excitado), porém a emissão do fóton ocorre apenas no retorno à órbita interna.",
-      "pergunta_3": "O enunciado tenta colocar alternativas sobre órbitas elípticas ou subníveis orbitais modernos?",
-      "decisao_3": "Eliminar essas alternativas se a questão focar puramente nas transições fundamentais de Bohr.",
-      "pergunta_4": "A questão aborda a energia do fóton (frequência e cor)?",
-      "decisao_4": "Associar que saltos maiores correspondem a maior energia (ex: luz violeta/azul possui mais energia que luz vermelha).",
-      "formula_base": "E = h * nu (Quantização de Energia)",
-      "formula_complementar": "Transições Eletrônicas Descontínuas",
-      "erro_comum": "Afirmar que o elétron emite energia e luz quando salta para longe do núcleo (para fora).",
-      "estrategia_final": "Lembrar da sequência mecânica: Absorve Energia (Salto Externo) -> Instabilidade -> Retorna (Emissão Quântica de Luz).",
-      "fala_entrevista": "Análise Pedagógica: Esse é o clássico modelo gerador de distratores no Enem. O candidato confunde absorção com emissão. O framework garante o mapeamento correto do vetor de fluxo energético do elétron."
-    }
-  ],
-  "statement_patterns": [
-    {
-      "id": "PAD-001",
-      "tema": "Propriedades Periódicas comparadas",
-      "padrao_comando": "Considere os elementos X, Y e Z pertencentes ao mesmo período da tabela... ordene segundo o potencial de ionização.",
-      "distrator_perigoso": "Inversão entre raio e energia de ionização ou desconsideração da atração eletrônica pelo aumento do número atômico no mesmo período."
-    }
-  ],
-  "common_traps": [
-    {
-      "id": "TRAP-001",
-      "conceito": "Raio Iônico",
-      "pegadinha": "Afirmar que o raio de Fe3+ é maior que o de Fe2+. Na verdade, quanto mais elétrons perdidos, menor o raio devido à menor blindagem e maior atração do núcleo sobre a nuvem restante."
-    }
-  ],
-  "interview_strategies": [
-    {
-      "id": "EST-001",
-      "nome": "Estratégia dos Quatro Pilares para Questões Discursivas da Fuvest",
-      "passo_1": "Identificar a família do elemento (metal/ametal) e sua localização periódica.",
-      "passo_2": "Explicar o fenômeno com base na Carga Nuclear Efetiva ou Força de Atração Cúlimbica.",
-      "passo_3": "Exibir a fórmula química ou a distribuição eletrônica correta para embasar o argumento.",
-      "passo_4": "Concluir correlacionando a propriedade microscópica com a evidência macroscópica solicitada."
-    }
-  ],
-  "exercises": [
-    {
-      "id": "EX-001",
-      "tipo_problema": "Ligações Químicas e Propriedades dos Materiais",
-      "nivel": "Difícil (Unicamp)",
-      "enunciado": "Um determinado sólido X apresenta alto ponto de fusão, não conduz eletricidade no estado sólido, mas torna-se um excelente condutor quando fundido ou dissolvido em água. Já o sólido Y conduz corrente elétrica diretamente no estado sólido. Identifique as ligações químicas predominantes em X e Y e justifique.",
-      "diagnostico": "A questão exige a correlação entre o tipo de ligação química e as propriedades macroscópicas das substâncias (retículos cristalinos iônicos vs. retículos metálicos).",
-      "formula_recomendada": "Teoria da Dissociação Iônica / Modelo do Mar de Elétrons",
-      "raciocinio_entrevista": "X deve ser um composto iônico, pois íons fixos no retículo não conduzem corrente, mas ganham mobilidade na fase líquida ou em solução. Y possui elétrons livres (deslocalizados) característicos de ligações metálicas.",
-      "passo_a_passo": [
-        "1. Analisar as propriedades de X: Alto ponto de fusão + Condutibilidade em meio líquido/aquoso = Composto Iônico.",
-        "2. Analisar as propriedades de Y: Condutibilidade no estado sólido = Composto Metálico.",
-        "3. Justificar X: Na fase sólida, os íons estão presos em posições fixas por forças eletrostáticas. Ao fundir ou dissolver, o retículo quebra, liberando íons móveis.",
-        "4. Justificar Y: Os metais possuem elétrons de valência deslocalizados ('mar de elétrons') com alta mobilidade sob diferença de potencial em qualquer estado físico."
-      ]
-    }
-  ],
-  "decision_matrix": [
-    {
-      "conceito": "Modelo de Thomson",
-      "regra": "Esfera carregada positivamente com elétrons incrustados",
-      "estrategia": "Usar quando o comando citar a divisibilidade do átomo ou natureza elétrica da matéria",
-      "erro_comum": "Achar que Thomson propôs órbitas ou núcleo denso"
-    },
-    {
-      "conceito": "Raio Atômico",
-      "regra": "Aumenta para a esquerda (períodos) e para baixo (grupos)",
-      "estrategia": "Avaliar o número de camadas preenchidas e a carga nuclear efetiva",
-      "erro_comum": "Achar que maior número atômico no mesmo período gera maior raio"
-    }
-  ]
+# Define the data dictionaries exactly as before
+database_data = {
+    "modulos": [
+        {
+            "id": "MOD-01",
+            "titulo": "Introdução à Matéria e Suas Transformações",
+            "descricao": "Estudo das propriedades da matéria, estados físicos, curvas de aquecimento e sistemas químicos.",
+            "topicos": [
+                {"id": "TOP-011", "nome": "Propriedades Gerais e Específicas", "importancia_enem": "Média", "importancia_fuvest": "Alta"},
+                {"id": "TOP-012", "nome": "Estados Físicos e Fenômenos", "importancia_enem": "Alta", "importancia_fuvest": "Média"},
+                {"id": "TOP-013", "nome": "Gráficos de Aquecimento (Puras, Eutéticas, Azeotrópicas)", "importancia_enem": "Alta", "importancia_fuvest": "Alta"},
+                {"id": "TOP-014", "nome": "Métodos de Separação de Misturas", "importancia_enem": "Máxima", "importancia_fuvest": "Alta"}
+            ]
+        },
+        {
+            "id": "MOD-02",
+            "titulo": "Atomística e Estrutura Atômica",
+            "descricao": "Evolução dos modelos atômicos, partículas subatômicas, semelhanças atômicas e distribuição eletrônica.",
+            "topicos": [
+                {"id": "TOP-021", "nome": "Evolução dos Modelos Atômicos", "importancia_enem": "Média", "importancia_fuvest": "Alta"},
+                {"id": "TOP-022", "nome": "Estrutura Atômica e Íons", "importancia_enem": "Média", "importancia_fuvest": "Média"},
+                {"id": "TOP-023", "nome": "Semelhanças Atômicas (Isótopos, Isóbaros, Isótonos, Isoeletrônicos)", "importancia_enem": "Baixa", "importancia_fuvest": "Média"},
+                {"id": "TOP-024", "nome": "Distribuição Eletrônica (Linus Pauling) e Números Quânticos", "importancia_enem": "Média", "importancia_fuvest": "Alta"}
+            ]
+        },
+        {
+            "id": "MOD-03",
+            "titulo": "Classificação Periódica dos Elementos",
+            "descricao": "Organização da Tabela Periódica moderna e propriedades periódicas dos elementos químicos.",
+            "topicos": [
+                {"id": "TOP-031", "nome": "Organização e Grupos da Tabela Periódica", "importancia_enem": "Baixa", "importancia_fuvest": "Média"},
+                {"id": "TOP-032", "nome": "Propriedades Periódicas (Raio, Ionização, Eletronegatividade)", "importancia_enem": "Alta", "importancia_fuvest": "Alta"}
+            ]
+        },
+        {
+            "id": "MOD-04",
+            "titulo": "Ligações Químicas e Forças Intermoleculares",
+            "descricao": "Estudo de como os átomos se unem para formar substâncias e suas interações espaciais.",
+            "topicos": [
+                {"id": "TOP-041", "nome": "Ligação Iônica e Metálica", "importancia_enem": "Média", "importancia_fuvest": "Média"},
+                {"id": "TOP-042", "nome": "Ligação Covalente e Geometria Molecular", "importancia_enem": "Média", "importancia_fuvest": "Alta"},
+                {"id": "TOP-043", "nome": "Polaridade Molecular e Forças Intermoleculares", "importancia_enem": "Máxima", "importancia_fuvest": "Máxima"}
+            ]
+        },
+        {
+            "id": "MOD-05",
+            "titulo": "Funções Inorgânicas",
+            "descricao": "Estudo de Ácidos, Bases, Sais e Óxidos segundo a teoria de Arrhenius.",
+            "topicos": [
+                {"id": "TOP-051", "nome": "Ácidos e Bases (Arrhenius, Força e Nomenclatura)", "importancia_enem": "Alta", "importancia_fuvest": "Alta"},
+                {"id": "TOP-052", "nome": "Sais e Óxidos (Reações de Neutralização e Classificação)", "importancia_enem": "Alta", "importancia_fuvest": "Alta"}
+            ]
+        },
+        {
+            "id": "MOD-06",
+            "titulo": "Reações Químicas e Introdução à Estequiometria",
+            "descricao": "Leis ponderais, balanceamento e cálculos estequiométricos fundamentais.",
+            "topicos": [
+                {"id": "TOP-061", "nome": "Classificação de Reações e Balanceamento", "importancia_enem": "Média", "importancia_fuvest": "Média"},
+                {"id": "TOP-062", "nome": "Leis Ponderais e Estequiometria Simples", "importancia_enem": "Máxima", "importancia_fuvest": "Máxima"}
+            ]
+        }
+    ],
+    "flashcards": [
+        {"id": "FC-01", "topico_id": "TOP-011", "frente": "O que diferencia uma propriedade física de uma propriedade química?", "verso": "A propriedade física pode ser medida sem alterar a identidade da substância (ex: ponto de fusão). A propriedade química descreve a capacidade de uma substância de sofrer uma transformação química (ex: combustibilidade)."},
+        {"id": "FC-02", "topico_id": "TOP-013", "frente": "Como se comporta a temperatura durante a fusão de uma mistura azeotrópica?", "verso": "Ela varia durante a fusão, mas permanece constante durante a ebulição (comportamento de substância pura na ebulição)."},
+        {"id": "FC-03", "topico_id": "TOP-014", "frente": "Qual método separa água e acetona baseado nos pontos de ebulição?", "verso": "Destilação fracionada."},
+        {"id": "FC-04", "topico_id": "TOP-021", "frente": "Qual a principal विशेषता do modelo atômico de Thomson?", "verso": "O átomo é uma esfera maciça de carga positiva com elétrons incrustados, conhecido como 'pudim de passas'."},
+        {"id": "FC-05", "topico_id": "TOP-024", "frente": "O que estabelece o Princípio da Exclusão de Pauli?", "verso": "Dois elétrons em um mesmo átomo não podem ter os mesmos quatro números quânticos."},
+        {"id": "FC-06", "topico_id": "TOP-032", "frente": "Qual é a tendência do raio atômico em um período da Tabela Periódica?", "verso": "O raio atômico diminui da esquerda para a direita devido ao aumento da carga nuclear efetiva puxando os elétrons mais fortemente."},
+        {"id": "FC-07", "topico_id": "TOP-043", "frente": "Que tipo de força intermolecular ocorre entre moléculas de água?", "verso": "Ligação de Hidrogênio (interação dipolo-dipolo extremamente forte)."},
+        {"id": "FC-08", "topico_id": "TOP-051", "frente": "Segundo Arrhenius, o que é um ácido?", "verso": "É uma substância molecular que, em solução aquosa, sofre ionização, liberando exclusivamente o cátion H+ (ou H3O+)."}
+    ]
 }
+
+formulas_data = {
+    "formulas": [
+        {
+            "id": "FOR-01",
+            "nome": "Densidade Absoluta",
+            "expressao": "d = m / V",
+            "variaveis": {"d": "Densidade (g/cm³ ou g/L)", "m": "Massa (g)", "V": "Volume (cm³ ou L)"},
+            "aplicacao": "Relação de massa por unidade de volume de um sistema. Essencial em problemas de flutuação e pureza de materiais.",
+            "unidades_alerta": "Cuidado com conversões: 1 cm³ = 1 mL; 1 dm³ = 1 L; 1 m³ = 1000 L."
+        },
+        {
+            "id": "FOR-02",
+            "nome": "Relações Fundamentais do Átomo",
+            "expressao": "A = Z + n",
+            "variaveis": {"A": "Número de Massa", "Z": "Número Atômico (prótons)", "n": "Número de Nêutrons"},
+            "aplicacao": "Determinação de estrutura de partículas atômicas e identificação de isótopos/isóbaros/isótonos.",
+            "unidades_alerta": "Massa e número atômico são adimensionais (números inteiros)."
+        },
+        {
+            "id": "FOR-03",
+            "nome": "Cálculo de Mol e Massa Molar",
+            "expressao": "n = m / MM",
+            "variaveis": {"n": "Quantidade de matéria (mol)", "m": "Massa da amostra (g)", "MM": "Massa Molar (g/mol)"},
+            "aplicacao": "Conversão de massa macroscópica em contagem de entidades elementares para estequiometria.",
+            "unidades_alerta": "A massa 'm' deve sempre estar em gramas para cancelar com a unidade g/mol."
+        },
+        {
+            "id": "FOR-04",
+            "nome": "Volume Molar nas CNTP",
+            "expressao": "V = n * 22,4",
+            "variaveis": {"V": "Volume ocupado por gás ideal (L)", "n": "Quantidade de mols (mol)", "22.4": "Constante de volume molar nas CNTP (L/mol)"},
+            "aplicacao": "Cálculo de volume de gases produzidos ou consumidos em reações químicas sob condições normais de temperatura e pressão.",
+            "unidades_alerta": "Válido apenas nas CNTP (0 °C e 1 atm)."
+        }
+    ]
+}
+
+trees_data = {
+    "arvores": [
+        {
+            "id": "TREE-01",
+            "titulo": "Classificação de Sistemas e Misturas",
+            "raiz": {
+                "pergunta": "O sistema apresenta o mesmo aspecto visual em toda a sua extensão sob ultramicroscópio?",
+                "sim": {
+                    "pergunta": "O sistema é formado por apenas uma substância química (composta ou simples)?",
+                    "sim": "Substância Pura Homogênea (Ex: Água destilada)",
+                    "nao": "Mistura Homogênea ou Solução (Ex: Água salgada filtrada)"
+                },
+                "nao": {
+                    "pergunta": "A heterogeneidade é visível a olho nu?",
+                    "sim": "Mistura Heterogênea Macroscópica (Ex: Água e óleo, granito)",
+                    "nao": "Mistura Heterogênea Coloidal (Ex: Leite, Sangue, Maionese)"
+                }
+            }
+        },
+        {
+            "id": "TREE-02",
+            "titulo": "Escolha do Método de Separação de Misturas",
+            "raiz": {
+                "pergunta": "O sistema é Homogêneo ou Heterogêneo?",
+                "homogeneo": {
+                    "pergunta": "Quais são os estados físicos dos componentes?",
+                    "solido-liquido": {
+                        "pergunta": "Deseja-se recuperar o líquido?",
+                        "sim": "Destilação Simples (Ex: Água e sal)",
+                        "nao": "Evaporação (Ex: Salinas)"
+                    },
+                    "liquido-liquido": "Destilação Fracionada (Ex: Água e Acetona, Petróleo)",
+                    "gas-gas": "Liquefação Fracionada seguida de Destilação Fracionada"
+                },
+                "heterogeneo": {
+                    "pergunta": "Quais são os estados físicos dos componentes?",
+                    "solido-liquido": {
+                        "pergunta": "A separação precisa ser rápida ou por gravidade lenta?",
+                        "rapida": "Centrifugação ou Filtração a Vácuo",
+                        "lenta": "Filtração Comum ou Decantação"
+                    },
+                    "liquido-liquido": "Decantação com Funil de Separação (Funil de Bromo / Decantação)",
+                    "solido-solido": {
+                        "pergunta": "Existe diferença de densidade tratável por líquido intermediário?",
+                        "sim": "Flotação",
+                        "nao": "Catação, Ventilação, Separação Magnética ou Tamisação"
+                    }
+                }
+            }
+        },
+        {
+            "id": "TREE-03",
+            "titulo": "Identificação de Forças Intermoleculares",
+            "raiz": {
+                "pergunta": "A molécula é Polar ou Apolar?",
+                "apolar": {
+                    "pergunta": "Envolve gases nobres ou hidrocarbonetos puros?",
+                    "sim": "Dispersões de London / Dipolo Induzido-Dipolo Induzido",
+                    "nao": "Dipolo Induzido-Dipolo Induzido"
+                },
+                "polar": {
+                    "pergunta": "Possui átomo de Hidrogênio ligado diretamente a F, O ou N?",
+                    "sim": "Ligação de Hidrogênio (Antiga Ponte de Hidrogênio)",
+                    "nao": {
+                        "pergunta": "Ocorre na presença de íons livres em solução?",
+                        "sim": "Interação Íon-Dipolo",
+                        "nao": "Dipolo Permanente-Dipolo Permanente (Dipolo-Dipolo)"
+                    }
+                }
+            }
+        }
+    ]
+}
+
+mistakes_data = {
+    "armadilhas": [
+        {
+            "id": "TRAP-01",
+            "topico_id": "TOP-013",
+            "nome": "Confundir Ponto de Ebulição Constante com Substância Pura",
+            "descricao": "Achar que se o gráfico tem um patamar fixo, o sistema é obrigatoriamente puro.",
+            "mecanismo": "Misturas azeotrópicas mimetizam substâncias puras durante a ebulição, mantendo a temperatura constante.",
+            "como_evitar": "Verifique o comportamento do gráfico na Fusão. Se a Fusão variar e a Ebulição for constante, é uma mistura azeotrópica."
+        },
+        {
+            "id": "TRAP-02",
+            "topico_id": "TOP-024",
+            "nome": "Distribuição de Íons de Elementos de Transição",
+            "descricao": "Fazer a distribuição eletrônica retirando elétrons do subnível mais energético em vez da camada de valência.",
+            "mecanismo": "Para o Ferro (Z=26): [Ar] 4s² 3d⁶. Ao formar Fe²⁺, o estudante remove do 3d (ficando 4s² 3d⁴), o que é incorreto.",
+            "como_evitar": "Sempre faça a distribuição do átomo neutro primeiro. Identifique a camada de valência (maior nível 'n') e remova dali os elétrons (correto para Fe²⁺: [Ar] 3d⁶)."
+        },
+        {
+            "id": "TRAP-03",
+            "topico_id": "TOP-043",
+            "nome": "CO₂ possui ligações polares, logo a molécula é polar",
+            "descricao": "Associar polaridade da ligação diretamente com a polaridade da molécula de forma automática.",
+            "mecanismo": "O CO₂ possui ligações C=O polares, porém sua geometria é linear. Os vetores de momento dipolar se anulam, resultando em momento dipolar resultante nulo (μ = 0), tornando a molécula apolar.",
+            "como_evitar": "Determine a geometria da molécula pelo modelo de repulsão dos pares eletrônicos antes de bater o martelo sobre a polaridade molecular."
+        }
+    ]
+}
+
+prompts_data = {
+    "padroes": [
+        {
+            "id": "PAT-01",
+            "topico_id": "TOP-014",
+            "contexto": "Instalações industriais, tratamento de água ou laboratórios rudimentares.",
+            "gatilhos": ["sequência de operações", "fluxograma de separação", "insumos insolúveis", "fases distintas"],
+            "estrategia_leitura": "Focar diretamente no estado físico de cada componente e em qual propriedade física (densidade, solubilidade, tamanho) difere entre eles a cada etapa."
+        },
+        {
+            "id": "PAT-02",
+            "topico_id": "TOP-043",
+            "contexto": "Explicação de ponto de ebulição, solubilidade de poluentes ou comportamento de polímeros.",
+            "gatilhos": ["série homóloga", "temperatura de ebulição", "solúvel em água", "interação de compostos"],
+            "estrategia_leitura": "Identificar se a questão compara tamanhos de cadeias moleculares (forças de London maiores em moléculas maiores) ou tipos de forças distintas (London vs Dipolo vs Ligação de H)."
+        }
+    ]
+}
+
+vestibular_data = {
+    "bancas": [
+        {
+            "nome": "ENEM",
+            "perfil": "Altamente contextualizado, foco extremo em sustentabilidade, separação de misturas no cotidiano, forças intermoleculares aplicadas a materiais e biologia.",
+            "pesos": {"TOP-014": 10, "TOP-043": 9, "TOP-062": 8, "TOP-021": 3},
+            "dicas_mestre": "Não busque decoreba de fórmulas. Busque entender o fenômeno físico-químico aplicado a cenários ambientais ou industriais."
+        },
+        {
+            "nome": "FUVEST",
+            "perfil": "Técnico, preciso, exige domínio analítico profundo, clareza em conceitos abstratos como números quânticos, geometria molecular e estequiometria rigorosa com pureza/rendimento.",
+            "pesos": {"TOP-014": 7, "TOP-043": 9, "TOP-062": 10, "TOP-024": 6},
+            "dicas_mestre": "Cuidado com a precisão dos cálculos e a escrita de fórmulas estruturais completas na segunda fase."
+        },
+        {
+            "nome": "UNICAMP",
+            "perfil": "Interdisciplinar, focado em experimentos contemporâneos, leitura de gráficos complexos, tabelas informativas densas e dedução lógica a partir do enunciado.",
+            "pesos": {"TOP-013": 8, "TOP-014": 8, "TOP-043": 8, "TOP-062": 9},
+            "dicas_mestre": "Use os dados fornecidos na própria prova; a UNICAMP adora testar sua capacidade de extrair informação estruturada de textos científicos."
+        }
+    ]
+}
+
+exercises_data = {
+    "exercicios": [
+        {
+            "id": "EXE-01",
+            "topico_id": "TOP-013",
+            "enunciado": "Um estudante aquece uma amostra sólida contida em um cadinho e monitora sua variação térmica. Observa que a fusão inicia-se a 80 °C e termina a 85 °C. Contudo, ao atingir o ponto de ebulição a 120 °C, a temperatura estabiliza-se completamente até a evaporação total. Esse comportamento indica que a amostra original constitui uma:",
+            "alternativas": {
+                "A": "Substância pura composta.",
+                "B": "Mistura homogênea eutética.",
+                "C": "Mistura homogênea azeotrópica.",
+                "D": "Substância pura simples.",
+                "E": "Mistura heterogênea coloidal."
+            },
+            "resposta_correta": "C",
+            "dificuldade": "Média",
+            "banca_origem": "FUVEST (Adaptado)",
+            "resolucao": "As misturas azeotrópicas comportam-se como substâncias puras durante a ebulição (patamar constante), mas exibem faixa de temperatura variável durante o processo de fusão.",
+            "link_matrix": "MAT-01"
+        },
+        {
+            "id": "EXE-02",
+            "topico_id": "TOP-024",
+            "enunciado": "O elemento ferro (Z = 26) é essencial para o transporte de oxigênio no sangue humano por meio da hemoglobina, onde se encontra na forma de cátion Fe²⁺. A configuração eletrônica correta da camada de valência desse cátion no estado fundamental é:",
+            "alternativas": {
+                "A": "4s² 3d⁴",
+                "B": "3d⁶",
+                "C": "4s¹ 3d⁵",
+                "D": "4s² 3d⁶",
+                "E": "3d⁴"
+            },
+            "resposta_correta": "B",
+            "dificuldade": "Difícil",
+            "banca_origem": "UNICAMP",
+            "resolucao": "A configuração do Ferro neutro é [Ar] 4s² 3d⁶. Sendo a camada de valência o quarto nível (4s²), a ionização para formar Fe²⁺ remove prioritariamente esses dois elétrons periféricos, restando a subcamada [Ar] 3d⁶.",
+            "link_matrix": "MAT-02"
+        },
+        {
+            "id": "EXE-03",
+            "topico_id": "TOP-043",
+            "enunciado": "A água apresenta ponto de ebulição anomalamente elevado (100 °C) quando comparada com o sulfeto de hidesiogênio (H₂S, -60 °C), embora o enxofre esteja logo abaixo do oxigênio no mesmo grupo da Tabela Periódica. Essa disparidade de comportamento físico decorre prioritariamente do fato de que:",
+            "alternativas": {
+                "A": "O H₂S possui ligações covalentes apolares.",
+                "B": "As moléculas de H₂O unem-se por forças de dipolo induzido.",
+                "C": "A água estabelece ligações de hidrogênio intermoleculares intensas.",
+                "D": "O raio atômico do enxofre confere maior geometria linear ao H₂S.",
+                "E": "A água é um composto iônico em condições ambientes."
+            },
+            "resposta_correta": "C",
+            "dificuldade": "Fácil",
+            "banca_origem": "ENEM",
+            "resolucao": "O oxigênio é altamente eletronegativo. A ligação H-O gera dipolos marcantes que interagem via ligações de hidrogênio, demandando expressiva energia térmica para transição de fase líquida para gasosa.",
+            "link_matrix": "MAT-03"
+        }
+    ]
+}
+
+roadmap_data = {
+    "mapa_mental": {
+        "nodo_central": "Química Geral 1° Ano (Objetivo)",
+        "conexoes": [
+            {
+                "origem": "Matéria Inicial",
+                "destino": "Sistemas Químicos",
+                "tipo": "Pré-requisito",
+                "detalhes": "Compreender estados físicos antes de mapear técnicas de fracionamento."
+            },
+            {
+                "origem": "Modelos Atômicos",
+                "destino": "Configuração Eletrônica",
+                "tipo": "Evolução Conceitual",
+                "detalhes": "O modelo de Bohr e Schrödinger serve de alicerce para a distribuição eletrônica em subníveis."
+            },
+            {
+                "origem": "Configuração Eletrônica",
+                "destino": "Tabela Periódica",
+                "tipo": "Mapeamento Estático",
+                "detalhes": "A posição do elemento (período/grupo) é condicionada pelo seu subnível eletrônico terminal."
+            },
+            {
+                "origem": "Tabela Periódica",
+                "destino": "Ligações Químicas",
+                "tipo": "Aplicações de Afinidade",
+                "detalhes": "Diferenças de eletronegatividade definem se a ligação será iônica, covalente ou metálica."
+            }
+        ]
+    }
+}
+
+matrix_data = {
+    "matriz": [
+        {
+            "id": "MAT-01",
+            "problema": "Análise de curvas térmicas e comportamento de fusão/ebulição",
+            "formula_id": None,
+            "estrategia_id": "PAT-01",
+            "erro_id": "TRAP-01"
+        },
+        {
+            "id": "MAT-02",
+            "problema": "Configuração eletrônica de íons metálicos estáveis",
+            "formula_id": "FOR-02",
+            "estrategia_id": None,
+            "erro_id": "TRAP-02"
+        },
+        {
+            "id": "MAT-03",
+            "problema": "Comparação de volatilidade e temperaturas de ebulição",
+            "formula_id": None,
+            "estrategia_id": "PAT-02",
+            "erro_id": "TRAP-03"
+        }
+    ]
+}
+
+# Construct monolithic script string
+monolithic_code = f"""# -*- coding: utf-8 -*-
+import streamlit as st
+import random
+
+# ==========================================
+# 1. DATABASE COMPLETA EMBUTIDA (JSON SIMULADO)
+# ==========================================
+DATABASE_DB = {json.dumps(database_data, ensure_ascii=False, indent=4)}
+FORMULAS_DB = {json.dumps(formulas_data, ensure_ascii=False, indent=4)}
+TREES_DB = {json.dumps(trees_data, ensure_ascii=False, indent=4)}
+MISTAKES_DB = {json.dumps(mistakes_data, ensure_ascii=False, indent=4)}
+PROMPTS_DB = {json.dumps(prompts_data, ensure_ascii=False, indent=4)}
+VESTIBULAR_DB = {json.dumps(vestibular_data, ensure_ascii=False, indent=4)}
+EXERCISES_DB = {json.dumps(exercises_data, ensure_ascii=False, indent=4)}
+ROADMAP_DB = {json.dumps(roadmap_data, ensure_ascii=False, indent=4)}
+MATRIX_DB = {json.dumps(matrix_data, ensure_ascii=False, indent=4)}
+
+# ==========================================
+# 2. MOTOR DE DECISÃO INTERNO (ENGINE)
+# ==========================================
+class ChemistryEngine:
+    def __init__(self):
+        self.db = DATABASE_DB
+        self.formulas = FORMULAS_DB
+        self.trees = TREES_DB
+        self.mistakes = MISTAKES_DB
+        self.prompts = PROMPTS_DB
+        self.vestibular = VESTIBULAR_DB
+        self.exercises = EXERCISES_DB
+        self.roadmap = ROADMAP_DB
+        self.matrix = MATRIX_DB
+
+    def smart_search(self, query):
+        if not query:
+            return []
+        query = query.lower()
+        results = []
+        for mod in self.db.get("modulos", []):
+            if query in mod["titulo"].lower() or query in mod["descricao"].lower():
+                results.append({{"tipo": "Módulo", "nome": mod["titulo"], "contexto": mod["descricao"]}})
+            for top in mod.get("topicos", []):
+                if query in top["nome"].lower():
+                    results.append({{"tipo": "Tópico", "nome": top["nome"], "contexto": f"Dentro do módulo: {{mod['titulo']}}"}}).
+        
+        for exe in self.exercises.get("exercicios", []):
+            if query in exe["enunciado"].lower():
+                results.append({{"tipo": "Exercício", "nome": exe["banca_origem"], "contexto": exe["enunciado"][:100] + "..."}})
+        return results
+
+    def get_adaptive_test(self, performance_profile, num_questions=3):
+        all_questions = self.exercises.get("exercicios", [])
+        if performance_profile == "Iniciante":
+            filtered = [q for q in all_questions if q["dificuldade"] in ["Fácil", "Média"]]
+        else:
+            filtered = [q for q in all_questions if q["dificuldade"] in ["Média", "Difícil"]]
+        
+        if not filtered:
+            filtered = all_questions
+        return random.sample(filtered, min(len(filtered), num_questions))
+
+    def resolve_matrix(self, matrix_id):
+        match = next((item for item in self.matrix.get("matriz", []) if item["id"] == matrix_id), None)
+        if not match:
+            return None
+        
+        formula = next((f for f in self.formulas.get("formulas", []) if f["id"] == match["formula_id"]), None)
+        strategy = next((p for p in self.prompts.get("padroes", []) if p["id"] == match["estrategia_id"]), None)
+        trap = next((m for m in self.mistakes.get("armadilhas", []) if m["id"] == match["erro_id"]), None)
+        
+        return {{
+            "problema": match["problema"],
+            "formula": formula,
+            "estrategia": strategy,
+            "armadilha": trap
+        }}
+
+# ==========================================
+# 3. INTERFACE DE USUÁRIO (STREAMLIT APP)
+# ==========================================
+st.set_page_config(page_title="Química Objetivo - 1° Ano", layout="wide", initial_sidebar_state="expanded")
+
+@st.cache_resource
+def get_engine():
+    return ChemistryEngine()
+
+engine = get_engine()
+
+st.sidebar.title("⚛️ Química - Objetivo 1° Ano")
+st.sidebar.markdown("Plataforma Unificada e Inteligente de Aprendizagem de Química Geral.")
+
+menu = st.sidebar.radio(
+    "Navegação Estruturada",
+    ["Painel Geral & Roadmap", "Árvores de Decisão", "Matriz Problema-Solução", "Simulado Adaptativo", "Flashcards Interativos", "Busca Unificada"]
+)
+
+if menu == "Painel Geral & Roadmap":
+    st.title("🗺️ Mapa de Bordo & Grade Curricular")
+    st.subheader("Conteúdo Programático Oficial - Padrão Colégio Objetivo")
+    
+    for mod in engine.db.get("modulos", []):
+        with st.expander(f"📦 {{mod['id']}} - {{mod['titulo']}}", expanded=True):
+            st.markdown(f"*{{mod['descricao']}}*")
+            for top in mod.get("topicos", []):
+                col1, col2, col3 = st.columns([2, 1, 1])
+                col1.write(f"🔹 **{{top['nome']}}**")
+                col2.write(f"🎯 ENEM: `{{top['importancia_enem']}}`")
+                col3.write(f"🏫 FUVEST: `{{top['importancia_fuvest']}}`")
+
+    st.markdown("---")
+    st.subheader("🔗 Conexões e Dependências Cognitivas (Roadmap)")
+    for conn in engine.roadmap.get("mapa_mental", {}).get("conexoes", []):
+        st.info(f"**{{conn['origem']}}** ➔ **{{conn['destino']}}** | *{{conn['tipo']}}*: {{conn['detalhes']}}")
+
+elif menu == "Árvores de Decisão":
+    st.title("🌳 Algoritmos e Árvores de Decisão para Resolução")
+    st.markdown("Utilize os diagramas lógicos estruturados para resolver desafios conceituais comuns.")
+    
+    selected_tree = st.selectbox("Escolha uma árvore de diagnóstico:", [t["titulo"] for t in engine.trees.get("arvores", [])])
+    tree_obj = next(t for t in engine.trees.get("arvores", []) if t["titulo"] == selected_tree)
+    
+    st.write("### Estrutura de Decisão:")
+    st.json(tree_obj["raiz"])
+
+elif menu == "Matriz Problema-Solução":
+    st.title("🧮 Matriz de Resolução Inteligente (Problema ➔ Fórmula ➔ Estratégia)")
+    st.markdown("Navegue pela correlação analítica multidimensional para mitigar erros recorrentes nos grandes vestibulares.")
+    
+    for item in engine.matrix.get("matriz", []):
+        resolved = engine.resolve_matrix(item["id"])
+        with st.container():
+            st.markdown(f"### 🎯 Desafio: {{resolved['problema']}}")
+            c1, c2, c3 = st.columns(3)
+            
+            with c1:
+                st.warning("⚠️ Armadilha / Erro Comum")
+                if resolved["armadilha"]:
+                    st.markdown(f"**{{resolved['armadilha']['nome']}}**\\n\\n{{resolved['armadilha']['descricao']}}")
+                else:
+                    st.write("Sem armadilhas críticas mapeadas.")
+                    
+            with c2:
+                st.success("📐 Fórmula / Relação")
+                if resolved["formula"]:
+                    st.markdown(f"**{{resolved['formula']['nome']}}**\\n\\n`{{resolved['formula']['expressao']}}`\\n\\n*{{resolved['formula']['aplicacao']}}*")
+                else:
+                    st.write("Conceitual - Não requer fórmula.")
+                    
+            with c3:
+                st.info("💡 Estratégia de Leitura")
+                if resolved["estrategia"]:
+                    st.markdown(f"**Contexto:** {{resolved['estrategia']['contexto']}}\\n\\n**Gatilhos:** {{', '.join(resolved['estrategia']['gatilhos'])}}")
+                else:
+                    st.write("Geral aplicada.")
+            st.markdown("---")
+
+elif menu == "Simulado Adaptativo":
+    st.title("🧠 Simulado Adaptativo Computacional")
+    perfil = st.select_slider("Selecione seu nível de proficiência atual:", options=["Iniciante", "Avançado"])
+    
+    if st.button("Gerar Bloco de Questões Adaptativas"):
+        st.session_state.questions = engine.get_adaptive_test(perfil)
+        st.session_state.answers = {}
+        st.session_state.submitted = False
+
+    if "questions" in st.session_state:
+        for idx, q in enumerate(st.session_state.questions):
+            st.markdown(f"#### Questão {{idx+1}} ({{q['banca_origem']}} - Nível {{q['dificuldade']}})")
+            st.markdown(q["enunciado"])
+            opts = [f"{{k}}) {{v}}" for k, v in q["alternativas"].items()]
+            ans = st.radio(f"Selecione a alternativa para a questão {{idx+1}}:", opts, key=f"q_{{idx}}")
+            st.session_state.answers[idx] = ans[0]
+            st.markdown("---")
+            
+        if st.button("Submeter Respostas e Ver Análise"):
+            st.session_state.submitted = True
+            
+        if st.session_state.get("submitted"):
+            st.subheader("📊 Relatório de Desempenho Analítico")
+            for idx, q in enumerate(st.session_state.questions):
+                user_ans = st.session_state.answers.get(idx)
+                correct = q["resposta_correta"]
+                if user_ans == correct:
+                    st.success(f"Questão {{idx+1}}: Resposta Correta ({{user_ans}})")
+                else:
+                    st.error(f"Questão {{idx+1}}: Você marcou {{user_ans}}. O gabarito é {{correct}}.")
+                st.markdown(f"**Resolução:** {{q['resolucao']}}")
+                st.markdown("---")
+
+elif menu == "Flashcards Interativos":
+    st.title("🗂️ Sistema de Revisão Espaçada (Flashcards)")
+    cards = engine.db.get("flashcards", [])
+    
+    if "card_idx" not in st.session_state:
+        st.session_state.card_idx = 0
+        st.session_state.reveal = False
+        
+    if st.session_state.card_idx < len(cards):
+        card = cards[st.session_state.card_idx]
+        st.info(f"### Pergunta:\\n{{card['frente']}}")
+        
+        if st.button("Revelar Verso (Resposta)"):
+            st.session_state.reveal = True
+            
+        if st.session_state.reveal:
+            st.success(f"### Resposta:\\n{{card['verso']}}")
+            if st.button("Próximo Card"):
+                st.session_state.card_idx += 1
+                st.session_state.reveal = False
+                st.rerun()
+    else:
+        st.balloons()
+        st.success("Você concluiu todos os flashcards do módulo!")
+        if st.button("Reiniciar"):
+            st.session_state.card_idx = 0
+            st.session_state.reveal = False
+            st.rerun()
+
+elif menu == "Busca Unificada":
+    st.title("🔍 Sistema de Busca Inteligente Indexada")
+    query = st.text_input("Digite o termo, conceito ou palavra-chave (ex: 'mistura', 'ferro', 'ebulição'):")
+    if query:
+        res = engine.smart_search(query)
+        st.write(f"Encontrados {{len(res)}} resultados correspondentes:")
+        for r in res:
+            with st.chat_message("assistant"):
+                st.markdown(f"**[{{r['tipo']}}]** {{r['nome']}}")
+                st.markdown(f"Contexto: {{r['contexto']}}")
 """
 
+# Fix syntax typo inside results.append line in engine smart_search
+monolithic_code = monolithic_code.replace('results.append({"tipo": "Tópico", "nome": top["nome"], "contexto": f"Dentro do módulo: {mod[\'titulo\']}"}).', 'results.append({"tipo": "Tópico", "nome": top["nome"], "contexto": f"Dentro do módulo: {mod[\'titulo\']}"})')
 
-# CARREGAMENTO E PARSING ANALÍTICO DO PAYLOAD
-try:
-    DATA_STORE = json.loads(PAYLOAD_JSON)
-    PROBLEM_FAMILIES = DATA_STORE["problem_families"]
-    DECISION_TREES = DATA_STORE["decision_trees"]
-    STATEMENT_PATTERNS = DATA_STORE["statement_patterns"]
-    COMMON_TRAPS = DATA_STORE["common_traps"]
-    INTERVIEW_STRATEGIES = DATA_STORE["interview_strategies"]
-    EXERCISES = DATA_STORE["exercises"]
-    DECISION_MATRIX = DATA_STORE["decision_matrix"]
-except Exception as e:
-    # Fallback estrutural defensivo de Engenharia de Software caso ocorra erro de string/escape
-    PROBLEM_FAMILIES = []
-    DECISION_TREES = []
-    STATEMENT_PATTERNS = []
-    COMMON_TRAPS = []
-    INTERVIEW_STRATEGIES = []
-    EXERCISES = []
-    DECISION_MATRIX = []
+with open("quimica_objetivo_monolitico.py", "w", encoding="utf-8") as f:
+    f.write(monolithic_code)
 
-
-def recommend_from_statement(statement: str) -> Dict[str, Any]:
-    """
-    Motor de Recomendação Química: Analisa o texto do enunciado por correspondência 
-    de substrings (tags e conceitos da matriz curricular de escolas fortes) 
-    e retorna o mapeamento das regras de resolução adequadas.
-    """
-    s_lower = statement.lower()
-    matched_family = None
-    
-    # Mapeamento heurístico de palavras-chave da Química do 1º Ano
-    for family in PROBLEM_FAMILIES:
-        if any(keyword in s_lower for keyword in family["palavras_chave"]):
-            matched_family = family
-            break
-            
-    if not matched_family:
-        # Padrão defensivo caso a busca aberta não combine termos exatos
-        if "fórmula" in s_lower or "ligação" in s_lower or "compartilhamento" in s_lower:
-            matched_family = next((f for f in PROBLEM_FAMILIES if f["id"] == "Q04"), PROBLEM_FAMILIES[0])
-        else:
-            matched_family = PROBLEM_FAMILIES[0]
-            
-    # Busca de árvore de decisão correlacionada
-    related_tree = next((t for t in DECISION_TREES if t["familia_id"] == matched_family["id"]), None)
-    if not related_tree and DECISION_TREES:
-        related_tree = DECISION_TREES[0]
-        
-    return {
-        "diagnostico_quimico": f"Detectado padrão analítico associado à área: {matched_family['nome']}",
-        "estrategia_resolucao": matched_family["estrategia"],
-        "modelos_regras_recomendadas": matched_family["modelos_regras"],
-        "erro_comum_a_evitar": matched_family["erro_comum"],
-        "fluxo_de_decisao_sugerido": related_tree
-    }
-
-
-def filter_rows(matrix: List[Dict[str, Any]], search_query: str, key_to_filter: str, family_type: str = "Todos") -> List[Dict[str, Any]]:
-    """Filtra os componentes da matriz conceitual para exibição dinâmica nas tabelas Streamlit."""
-    results = []
-    q = search_query.lower()
-    for row in matrix:
-        val_text = str(row.get(key_to_filter, "")).lower()
-        if q and q not in val_text:
-            continue
-        results.append(row)
-    return results
-
-
-def validate_payload() -> List[Dict[str, str]]:
-    """Mecanismo de auditoria e consistência de dados (Checklist Pedagógico-Estrutural)."""
-    checklist = []
-    checklist.append({"Item do Checklist": "Mapeamento Curricular Mínimo (Química 1º Ano)", "Status": "OK - Estrutura Atômica, Tabela Periódica, Ligações Químicas cobertas."})
-    checklist.append({"Item do Checklist": "Rigor Fuvest/Unicamp nos Distratores", "Status": "OK - Armadilhas conceituais injetadas com sucesso."})
-    checklist.append({"Item do Checklist": "Integridade Estrutural das Chaves", "Status": "OK - Compatível com parser de tabelas originais."})
-    return checklist
-
-
-def render_table(title: str, rows: List[Dict[str, Any]], height: int = 400):
-    """Renderização robusta de tabelas utilizando abstração Pandas no Streamlit."""
-    st.markdown(f"### {title}")
-    if not rows:
-        st.warning("Nenhum dado conceitual localizado para os filtros aplicados.")
-        return
-    if pd:
-        df = pd.DataFrame(rows)
-        st.dataframe(df, use_container_width=True, height=height)
-    else:
-        st.write(rows)
-
-
-def main():
-    """Ponto de Entrada Streamlit adaptado para a Interface de Resolução de Química."""
-    if not STREAMLIT_AVAILABLE:
-        print(f"Chemistry Decision Framework {APP_VERSION} carregado em modo CLI.")
-        print(json.dumps(validate_payload(), indent=2))
-        return
-
-    st.set_page_config(page_title="Chemistry Framework - 1º Ano Ensino Médio", layout="wide")
-    st.title("🧪 Framework de Decisão Analítica - Química 1º Ano")
-    st.caption(f"Engine Pedagógica {APP_VERSION} · Preparatório Fuvest/Unicamp/Enem · Padrão Objetivo")
-
-    # BARRA LATERAL - NAVEGAÇÃO E METADADOS DO SISTEMA DE ENSINO
-    st.sidebar.header("📚 Sistema de Navegação")
-    page = st.sidebar.radio("Selecione a Camada de Estudo:", ["Árvores de Decisão", "Matriz de Conceitos", "Diagnóstico de Questões", "Auditoria Operacional"])
-    
-    st.sidebar.divider()
-    st.sidebar.markdown(f"**Metadata Tecnológica:**")
-    st.sidebar.text(f"ID Bloco: {BLOCK_NAME}\nStatus: {BLOCK_STATUS}\nData Build: {BUILD_DATE}")
-
-    # FILTROS GLOBAIS DE CONCEITOS QUÍMICOS
-    st.sidebar.subheader("🔍 Filtros de Tópicos")
-    tipo = st.sidebar.selectbox("Grande Área Curricular:", ["Todos", "Estrutura Atômica", "Tabela Periódica", "Ligações Químicas"])
-    search = st.sidebar.text_input("Buscar palavra-chave (ex: raio, bohr):", "")
-
-    if page == "Árvores de Decisão":
-        st.subheader("🌲 Árvores de Decisão Analítica para Enunciados Complexos")
-        st.markdown("Mapeamento do comportamento do elétron e do núcleo baseado nos comandos de comando de exames seletivos tradicionais.")
-        
-        # Filtro dinâmico das árvores injetadas
-        filtered_trees = [t for t in DECISION_TREES if search.lower() in str(t.values()).lower()]
-        
-        for tree in filtered_trees:
-            with st.expander(f"📌 {tree['id']} · {tree['tipo_problema']} ({tree['nivel']})", expanded=True):
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.markdown("**Fluxo Condicional de Interpretação (Framework de Software):**")
-                    st.info(f"**Se:** {tree['pergunta_1']}  \n↳ *Abordagem:* {tree['decisao_1']}")
-                    st.info(f"**Se:** {tree['pergunta_2']}  \n↳ *Abordagem:* {tree['decisao_2']}")
-                    st.info(f"**Se:** {tree['pergunta_3']}  \n↳ *Abordagem:* {tree['decisao_3']}")
-                with col2:
-                    st.markdown("**Regras, Erros Comuns e Direcionamento de Resolução:**")
-                    st.success(f"**Modelo/Regra de Apoio Principal:** {tree['formula_base']}")
-                    st.warning(f"**Pegadinha Recorrente da Banca:** {tree['erro_comum']}")
-                    st.error(f"**Estratégia Final de Resolução:** {tree['estrategia_final']}")
-                    st.markdown(f"*Direcionamento Discursivo:* \"{tree['fala_entrevista']}\"")
-
-    elif page == "Matriz de Conceitos":
-        st.subheader("📋 Matriz de Resumo: Conceito → Regra → Estratégia → Erro Comum")
-        rows = filter_rows(DECISION_MATRIX, search, "conceito")
-        render_table("Relações Conceituais para Consulta Rápida (Revisão de Véspera)", rows, 450)
-        
-        st.subheader("⚠️ Pegadinhas de Vestibular Mapeadas (Distratores)")
-        st.table(COMMON_TRAPS)
-
-    elif page == "Diagnóstico de Questões":
-        st.subheader("🧠 Motor de Recomendação Química Inteligente")
-        st.markdown("Cole o enunciado completo ou trecho de uma questão de vestibular abaixo para analisar semanticamente o problema, extrair as regras fundamentais e prever as armadilhas conceituais da banca.")
-        
-        statement = st.text_area("Insira o enunciado da questão para extração de contexto:", height=180, 
-                                 placeholder="Ex: Considere o íon de um elemento estável que apresenta 18 elétrons e carga 2- e sabendo que possui número de massa igual a 32, determine...")
-        
-        if statement:
-            st.markdown("### 📊 Diagnóstico e Roteiro de Resolução Gerado:")
-            result = recommend_from_statement(statement)
-            
-            st.markdown(f"#### **{result['diagnostico_quimico']}**")
-            
-            c1, col2 = st.columns(2)
-            with c1:
-                st.subheader("💡 Estratégia Analítica de Ataque")
-                st.write(result['estrategia_resolution'] if 'estrategia_resolution' in result else result['estrategia_resolucao'])
-                st.subheader("🔬 Modelos e Leis Fundamentais Aplicadas")
-                for r in result['modelos_regras_recommended'] if 'modelos_regras_recommended' in result else result['modelos_regras_recomendadas']:
-                    st.markdown(f"- {r}")
-            with col2:
-                st.subheader("🚨 Atenção Máxima ao Distrator (Não caia nessa!)")
-                st.error(result['erro_comum_a_evitar'])
-                
-            st.divider()
-            st.markdown("### 📝 Exercício Prático Correlacionado com Resolução Passo a Passo")
-            for ex in EXERCISES:
-                st.markdown(f"**Enunciado:** {ex['enunciado']}")
-                st.markdown(f"**Fórmula/Modelo Recomendado:** `{ex['formula_recomendada']}`")
-                with st.expander("👁️ Visualizar Resolução Analítica Detalhada", expanded=False):
-                    for step in ex['passo_a_passo']:
-                        st.write(step)
-
-    elif page == "Auditoria Operacional":
-        st.subheader("⚙️ Auditoria do Framework Conceitual")
-        render_table("Validação de Cobertura e Integridade Pedagógica", validate_payload(), 200)
-
-
-if __name__ == "__main__":
-    main()
+print("File built successfully")

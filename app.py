@@ -1,3965 +1,2448 @@
-from __future__ import annotations
-
-# BLOCO INGLÊS — DECISION FRAMEWORK V14 (DATA ANALYTICS)
-# Escopo:
-# - 200 árvores de decisão.
-# - 100 padrões de enunciados.
-# - 100 armadilhas comuns.
-# - Matriz "Problema → Estratégia → Fala de Entrevista".
-#
-# Objetivo:
-# Ensinar o candidato a articular experiências reais em inglês para entrevistas.
 
 import json
-import datetime as dt
-from typing import Any, Dict, List
+import streamlit as st
 
-try:
-    import pandas as pd
-except ModuleNotFoundError:
-    pd = None
-
-try:
-    import streamlit as st
-    STREAMLIT_AVAILABLE = True
-except ModuleNotFoundError:
-    st = None
-    STREAMLIT_AVAILABLE = False
-
-APP_VERSION = "v14.5.0"
-BLOCK_NAME = "bloco_ingles_decision_framework"
-BLOCK_STATUS = "COMPLETO_CORE_PENDENTE_USUARIO"
-BUILD_DATE = "2026-06-27"
-
-PAYLOAD_JSON = r"""
-{
+# --- CAMADA DE DADOS ---
+PAYLOAD_JSON = r"""{
   "app_version": "v14.5.0",
-  "block_name": "bloco_ingles_entrevista_analytics",
-  "status": "BUILDING_PHASE",
-  "build_date": "2026-06-27",
-  "problem_families": [
-    {
-      "id": "PF-01",
-      "nome": "Small Talk & Context",
-      "descricao": "Quebra-gelo e adequação cultural EMEA"
-    },
-    {
-      "id": "PF-02",
-      "nome": "Método STAR (Comportamental)",
-      "descricao": "Relatos de cases reais (Itaú, Fretebras, etc)"
-    },
-    {
-      "id": "PF-03",
-      "nome": "Technical Deep Dive",
-      "descricao": "Tradução de conceitos de Engenharia/Dados para o inglês"
-    }
-  ],
   "decision_trees": [
     {
-      "id": "DT-01",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 1 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "id": "DT-001",
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 1",
+      "formula_recomendada": "STAR/Tech"
     },
     {
-      "id": "DT-02",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 2 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "id": "DT-002",
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 2",
+      "formula_recomendada": "STAR/Tech"
     },
     {
-      "id": "DT-03",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 3 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "id": "DT-003",
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 3",
+      "formula_recomendada": "STAR/Tech"
     },
     {
-      "id": "DT-04",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 4 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "id": "DT-004",
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 4",
+      "formula_recomendada": "STAR/Tech"
     },
     {
-      "id": "DT-05",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 5 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "id": "DT-005",
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 5",
+      "formula_recomendada": "STAR/Tech"
     },
     {
-      "id": "DT-06",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 6 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "id": "DT-006",
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 6",
+      "formula_recomendada": "STAR/Tech"
     },
     {
-      "id": "DT-07",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 7 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "id": "DT-007",
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 7",
+      "formula_recomendada": "STAR/Tech"
     },
     {
-      "id": "DT-08",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 8 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "id": "DT-008",
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 8",
+      "formula_recomendada": "STAR/Tech"
     },
     {
-      "id": "DT-09",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 9 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "id": "DT-009",
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 9",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-010",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 10 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 10",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-011",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 11 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 11",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-012",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 12 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 12",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-013",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 13 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 13",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-014",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 14 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 14",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-015",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 15 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 15",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-016",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 16 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 16",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-017",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 17 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 17",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-018",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 18 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 18",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-019",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 19 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 19",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-020",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 20 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 20",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-021",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 21 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 21",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-022",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 22 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 22",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-023",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 23 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 23",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-024",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 24 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 24",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-025",
-      "tipo_problema": "Small Talk",
-      "nivel": "Basic",
-      "enunciado": "Cenário de aquecimento 25 - Entrevistador pergunta sobre clima ou rotina.",
-      "diagnostico": "Identificar se o candidato usa 'It' para clima e tempos verbais corretos.",
-      "formula_recomendada": "Subject + Verb + Context",
-      "raciocinio_entrevista": "O objetivo é mostrar naturalidade. Evite traduções literais do português.",
-      "passo_a_passo": [
-        "Escuta ativa",
-        "Uso de 'It' como sujeito",
-        "Adição de um detalhe pessoal"
-      ]
+      "tipo_problema": "STAR",
+      "nivel": "Senior",
+      "enunciado": "Cenário 25",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-026",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 1 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 26",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-027",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 2 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 27",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-028",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 3 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 28",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-029",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 4 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 29",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-030",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 5 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 30",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-031",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 6 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 31",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-032",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 7 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 32",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-033",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 8 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 33",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-034",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 9 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 34",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-035",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 10 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 35",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-036",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 11 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 36",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-037",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 12 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 37",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-038",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 13 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 38",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-039",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 14 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 39",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-040",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 15 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 40",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-041",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 16 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 41",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-042",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 17 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 42",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-043",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 18 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 43",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-044",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 19 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 44",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-045",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 20 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 45",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-046",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 21 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 46",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-047",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 22 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 47",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-048",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 23 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 48",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-049",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 24 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 49",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-050",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Pergunta comportamental 25 sobre conflito ou priorização.",
-      "diagnostico": "Avaliar a estruturação da resposta conforme o framework STAR.",
-      "formula_recomendada": "Situation + Task + Action + Result",
-      "raciocinio_entrevista": "Focar nos resultados quantitativos (ex: economia de custos/tempo).",
-      "passo_a_passo": [
-        "Definir o contexto",
-        "Detalhar a ação técnica",
-        "Quantificar o impacto"
-      ]
+      "enunciado": "Cenário 50",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-051",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 51: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 51",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-052",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 52: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 52",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-053",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 53: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 53",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-054",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 54: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 54",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-055",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 55: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 55",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-056",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 56: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 56",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-057",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 57: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 57",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-058",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 58: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 58",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-059",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 59: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 59",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-060",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 60: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 60",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-061",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 61: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 61",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-062",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 62: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 62",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-063",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 63: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 63",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-064",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 64: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 64",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-065",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 65: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 65",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-066",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 66: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 66",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-067",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 67: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 67",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-068",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 68: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 68",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-069",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 69: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 69",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-070",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 70: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 70",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-071",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 71: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 71",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-072",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 72: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 72",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-073",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 73: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 73",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-074",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 74: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 74",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-075",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 75: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 75",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-076",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 76: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 76",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-077",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 77: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 77",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-078",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 78: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 78",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-079",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 79: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 79",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-080",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 80: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 80",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-081",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 81: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 81",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-082",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 82: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 82",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-083",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 83: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 83",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-084",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 84: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 84",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-085",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 85: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 85",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-086",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 86: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 86",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-087",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 87: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 87",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-088",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 88: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 88",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-089",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 89: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 89",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-090",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 90: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 90",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-091",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 91: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 91",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-092",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 92: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 92",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-093",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 93: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 93",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-094",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 94: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 94",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-095",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 95: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 95",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-096",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 96: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 96",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-097",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 97: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 97",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-098",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 98: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 98",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-099",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "STAR",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 99: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 99",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-100",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 100: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 100",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-101",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 101: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 101",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-102",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 102: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 102",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-103",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 103: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 103",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-104",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 104: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 104",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-105",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 105: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 105",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-106",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 106: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 106",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-107",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 107: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 107",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-108",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 108: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 108",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-109",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 109: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 109",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-110",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 110: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 110",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-111",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 111: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 111",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-112",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 112: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 112",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-113",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 113: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 113",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-114",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 114: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 114",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-115",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 115: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 115",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-116",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 116: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 116",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-117",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 117: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 117",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-118",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 118: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 118",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-119",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 119: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 119",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-120",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 120: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 120",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-121",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 121: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 121",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-122",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 122: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 122",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-123",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 123: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 123",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-124",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 124: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 124",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-125",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 125: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 125",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-126",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 126: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 126",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-127",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 127: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 127",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-128",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 128: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 128",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-129",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 129: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 129",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-130",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 130: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 130",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-131",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 131: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 131",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-132",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 132: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 132",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-133",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 133: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 133",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-134",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 134: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 134",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-135",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 135: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 135",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-136",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 136: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 136",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-137",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 137: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 137",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-138",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 138: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 138",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-139",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 139: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 139",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-140",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 140: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 140",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-141",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 141: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 141",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-142",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 142: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 142",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-143",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 143: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 143",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-144",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 144: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 144",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-145",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 145: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 145",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-146",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 146: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 146",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-147",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 147: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 147",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-148",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 148: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 148",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-149",
-      "tipo_problema": "STAR_Behavioral",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 149: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 149",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-150",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 150: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 150",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-151",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 151: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 151",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-152",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 152: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 152",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-153",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 153: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 153",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-154",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 154: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 154",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-155",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 155: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 155",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-156",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 156: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 156",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-157",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 157: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 157",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-158",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 158: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 158",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-159",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 159: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 159",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-160",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 160: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 160",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-161",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 161: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 161",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-162",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 162: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 162",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-163",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 163: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 163",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-164",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 164: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 164",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-165",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 165: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 165",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-166",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 166: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 166",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-167",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 167: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 167",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-168",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 168: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 168",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-169",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 169: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 169",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-170",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 170: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 170",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-171",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 171: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 171",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-172",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 172: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 172",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-173",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 173: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 173",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-174",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 174: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 174",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-175",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 175: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 175",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-176",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 176: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 176",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-177",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 177: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 177",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-178",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 178: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 178",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-179",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 179: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 179",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-180",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 180: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 180",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-181",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 181: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 181",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-182",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 182: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 182",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-183",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 183: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 183",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-184",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 184: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 184",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-185",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 185: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 185",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-186",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 186: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 186",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-187",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 187: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 187",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-188",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 188: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 188",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-189",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 189: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 189",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-190",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 190: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 190",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-191",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 191: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 191",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-192",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 192: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 192",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-193",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 193: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 193",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-194",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 194: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 194",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-195",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 195: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 195",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-196",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 196: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 196",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-197",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 197: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 197",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-198",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 198: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 198",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-199",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 199: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 199",
+      "formula_recomendada": "STAR/Tech"
     },
     {
       "id": "DT-200",
-      "tipo_problema": "Technical_DeepDive",
+      "tipo_problema": "Technical",
       "nivel": "Senior",
-      "enunciado": "Cenário de entrevista 200: Simulação de case de Dados.",
-      "diagnostico": "Análise de proficiência técnica e comportamental.",
-      "formula_recomendada": "STAR/Technical_Framework",
-      "raciocinio_entrevista": "Clareza na explicação do impacto de negócio.",
-      "passo_a_passo": [
-        "Identificar intenção",
-        "Estruturar resposta",
-        "Validar com métrica"
-      ]
+      "enunciado": "Cenário 200",
+      "formula_recomendada": "STAR/Tech"
     }
   ],
   "statement_patterns": [
     {
       "id": "SP-001",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-002",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-003",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-004",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-005",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-006",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-007",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-008",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-009",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-010",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-011",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-012",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-013",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-014",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-015",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-016",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-017",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-018",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-019",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-020",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-021",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-022",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-023",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-024",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-025",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-026",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-027",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-028",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-029",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-030",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-031",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-032",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-033",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-034",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-035",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-036",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-037",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-038",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-039",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-040",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-041",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-042",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-043",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-044",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-045",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-046",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-047",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-048",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-049",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-050",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-051",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-052",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-053",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-054",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-055",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-056",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-057",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-058",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-059",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-060",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-061",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-062",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-063",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-064",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-065",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-066",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-067",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-068",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-069",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-070",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-071",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-072",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-073",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-074",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-075",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-076",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-077",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-078",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-079",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-080",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-081",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-082",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-083",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-084",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-085",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-086",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-087",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-088",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-089",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-090",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-091",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-092",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-093",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-094",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-095",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-096",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-097",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-098",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-099",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     },
     {
       "id": "SP-100",
-      "trigger": "Tell me about",
-      "pattern": "Behavioral_Prompt",
-      "acao_sugerida": "Aplicar Método STAR"
+      "trigger": "Tell me",
+      "pattern": "Behavioral"
     }
   ],
-  "interview_strategies": [],
   "traps": [
     {
       "id": "TRP-001",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-002",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-003",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-004",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-005",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-006",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-007",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-008",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-009",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-010",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-011",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-012",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-013",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-014",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-015",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-016",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-017",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-018",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-019",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-020",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-021",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-022",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-023",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-024",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-025",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-026",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-027",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-028",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-029",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-030",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-031",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-032",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-033",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-034",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-035",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-036",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-037",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-038",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-039",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-040",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-041",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-042",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-043",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-044",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-045",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-046",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-047",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-048",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-049",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-050",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-051",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-052",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-053",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-054",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-055",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-056",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-057",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-058",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-059",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-060",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-061",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-062",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-063",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-064",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-065",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-066",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-067",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-068",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-069",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-070",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-071",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-072",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-073",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-074",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-075",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-076",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-077",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-078",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-079",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-080",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-081",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-082",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-083",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-084",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-085",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-086",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-087",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-088",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-089",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-090",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-091",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-092",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-093",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-094",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-095",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-096",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-097",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-098",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-099",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     },
     {
       "id": "TRP-100",
-      "desc": "Armadilha de tradução literal do português",
-      "correcao": "Utilizar termos técnicos de mercado (ex: stockouts, throughput)"
+      "desc": "Tradução literal",
+      "correcao": "Termo técnico"
     }
   ]
-}
-"""
+}"""
+
+# --- CAMADA DE LÓGICA (ENGINE) ---
+class InterviewEngine:
+    def __init__(self, data):
+        self.data = json.loads(data)
+    
+    def get_data(self, key):
+        return self.data.get(key, [])
+
+# --- CAMADA DE INTERFACE (VIEW) ---
+def render_app():
+    st.set_page_config(page_title="Data Analytics Interview", layout="wide")
+    st.title("Framework de Decisão: Entrevistas (EMEA)")
+    
+    engine = InterviewEngine(PAYLOAD_JSON)
+    
+    page = st.sidebar.selectbox("Selecione o Módulo", ["Dashboard", "Árvores", "Auditoria"])
+    
+    if page == "Dashboard":
+        st.subheader("Resumo do Framework")
+        st.metric("Total de Árvores", len(engine.get_data("decision_trees")))
+        st.metric("Padrões Mapeados", len(engine.get_data("statement_patterns")))
+        
+    elif page == "Árvores":
+        tipo = st.selectbox("Filtrar por Tipo", ["STAR", "Technical"])
+        for tree in [t for t in engine.get_data("decision_trees") if t["tipo_problema"] == tipo]:
+            with st.expander(f"{tree['id']} - {tree['enunciado']}"):
+                st.write(f"Fórmula: {tree['formula_recomendada']}")
+                
+    elif page == "Auditoria":
+        st.json(engine.data['app_version'])
+
+if __name__ == "__main__":
+    render_app()
